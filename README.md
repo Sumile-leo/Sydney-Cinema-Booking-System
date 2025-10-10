@@ -1,39 +1,33 @@
-# COMP9001 Final Project - Elemental Magic Arena
+# COMP9001 Final Project - Ticket Booking System
 
 English Version | [中文版](./README_CN.md)
 
 ## Project Overview
 
-This is the final project for COMP9001 course at the University of Sydney (USYD). The project is an **Elemental Magic Arena** - a particle-based magic defense game where players use elemental spells to defend against waves of enemies.
+This is the final project for COMP9001 course at the University of Sydney (USYD). The project is a **Ticket Booking System** with both desktop GUI and web interface, using MySQL database for data management.
 
 ## Course Information
 
 - **University**: University of Sydney (USYD)
 - **Course Code**: COMP9001
 - **Project Type**: Final Project
-- **Project Name**: Elemental Magic Arena (元素魔法大乱斗)
+- **Project Name**: Ticket Booking System (购票系统)
 - **Submission Deadline**: November 2, 2025
 
 ## Project Features
 
-### 🎮 Game Concept
-Players act as a magic wizard, drawing elemental magic with the mouse to defeat enemies attacking from above. Different elements have strengths and weaknesses, and combining elements creates powerful combo spells!
-
-### Core Features
-- 🔥 **5 Elemental Magic**: Fire, Water, Thunder, Ice, Wind
-- 💫 **Particle Effects**: Stunning particle system with trails and glow effects
-- 👹 **Enemy System**: 5 enemy types with elemental attributes and weaknesses
-- ⚔️ **Combo Skills**: Combine elements to create 8+ powerful magic combos
-- 📈 **Progression System**: Level up, unlock skills, and upgrade attributes
-- 🎯 **Wave System**: Increasing difficulty with boss battles
-- ✨ **Visual Effects**: Explosions, screen shake, slow motion, and more
+### 🎫 Core Functions
+- **Event Management**: Browse and search events/shows
+- **User System**: Registration, login, and profile management
+- **Booking System**: Select seats and purchase tickets
+- **Order Management**: View order history and ticket details
+- **Admin Panel**: Event management and order statistics
 
 ### Technical Highlights
-- 🖥️ **Built with PyQt5**: Modern GUI with custom particle rendering
-- 🎨 **Advanced Particle System**: Thousands of particles with physics simulation
-- ⚡ **Real-time Combat**: 60 FPS gameplay with smooth animations
-- 🎮 **Game Mechanics**: Element interactions, collision detection, AI enemies
-- 🌟 **Visual Polish**: Bloom effects, motion blur, screen effects
+- 🖥️ **Desktop Application**: Built with PyQt5 (Modern and beautiful GUI)
+- 🌐 **Web Application**: Flask-based lightweight web application
+- 💾 **Database**: MySQL for data persistence
+- 🎨 **Modern UI**: Professional and user-friendly interface design
 
 ## Project Structure
 
@@ -41,46 +35,57 @@ Players act as a magic wizard, drawing elemental magic with the mouse to defeat 
 Comp9001_finalproject/
 ├── README.md                  # Project documentation (English)
 ├── README_CN.md               # Project documentation (Chinese)
-├── PROJECT_PROPOSAL.md        # Detailed project proposal (English)
-├── PROJECT_PROPOSAL_CN.md     # Detailed project proposal (Chinese)
+├── PROJECT_SUMMARY.md         # Brief project description
 ├── requirements.txt           # Python dependencies
 ├── .gitignore                 # Git ignore file
-├── main.py                    # Game entry point
-├── game/                      # Game source code
+├── main.py                    # Application entry point
+├── backend/                   # Flask backend application
 │   ├── __init__.py
-│   ├── window.py             # Main game window
-│   ├── particle.py           # Particle system
-│   ├── element.py            # Element types and properties
-│   ├── enemy.py              # Enemy classes
-│   ├── combat.py             # Combat logic
-│   ├── effects.py            # Visual effects
-│   ├── combo_system.py       # Combo skill system
-│   ├── level_system.py       # Leveling and progression
-│   ├── skill_tree.py         # Skill tree system
-│   ├── boss.py               # Boss enemies
-│   ├── ui.py                 # User interface
-│   ├── audio.py              # Sound effects and music
-│   └── manager.py            # Game state management
+│   ├── app.py                 # Flask application
+│   ├── models.py              # Database models
+│   ├── routes/                # API routes
+│   └── config.py             # Configuration
+├── desktop/                   # Desktop GUI application (PyQt5)
+│   ├── __init__.py
+│   ├── main_window.py         # Main GUI window
+│   ├── login_dialog.py        # Login dialog
+│   ├── booking_window.py      # Booking interface
+│   └── admin_panel.py         # Admin interface
+├── database/                  # Database scripts and schema
+│   ├── schema.sql             # Database schema
+│   └── init_db.py             # Database initialization
+├── web/                       # Web frontend
+│   ├── static/                # Static resources (CSS, JS)
+│   │   ├── css/               # Stylesheets
+│   │   └── js/                # JavaScript files
+│   └── templates/             # HTML templates
 ├── assets/                    # Game assets (optional)
-│   ├── sounds/               # Sound effects
-│   ├── music/                # Background music
-│   └── images/               # Images and sprites
-└── docs/                      # Additional documentation
+│   ├── sounds/                # Sound effects
+│   └── music/                 # Background music
+├── docs/                      # Additional documentation
+│   └── particle_demo.py       # Particle demo (reference)
+└── tests/                     # Test code
 ```
 
 ## Tech Stack
 
 - **Programming Language**: Python 3.8+
-- **GUI Framework**: PyQt5
-- **Graphics**: QPainter with custom rendering
-- **Mathematics**: NumPy for particle physics
-- **Audio**: pygame.mixer (optional)
+- **Web Framework**: Flask
+- **Desktop GUI**: PyQt5
+- **Database**: MySQL
+- **Frontend**: HTML5, CSS3, JavaScript
+- **Additional Libraries**: 
+  - PyMySQL / mysql-connector-python (Database driver)
+  - Flask-SQLAlchemy (ORM, optional)
+  - PyQt5 Designer (GUI design tool)
+  - Other Python libraries as needed
 
 ## Getting Started
 
 ### Prerequisites
 
 - Python 3.8 or higher
+- MySQL Server 5.7 or higher
 - pip (Python package manager)
 - Git
 
@@ -97,147 +102,95 @@ Comp9001_finalproject/
    pip install -r requirements.txt
    ```
 
-### Running the Game
+3. **Configure MySQL database**
+   - Start MySQL service
+   - Create database and import schema
+   - Update database configuration in config file
 
+4. **Initialize the database**
+   ```bash
+   python database/init_db.py
+   ```
+
+### Running the Application
+
+#### Desktop Application
 ```bash
-python main.py
+python desktop/main_window.py
 ```
 
-## Game Controls
-
-### Mouse Controls
-- **Left Click + Drag**: Draw elemental magic
-- **Mouse Movement**: Aim magic spells
-
-### Keyboard Controls
-- **1 / Q**: Switch to Fire element 🔥
-- **2 / W**: Switch to Water element 💧
-- **3 / E**: Switch to Thunder element ⚡
-- **4 / R**: Switch to Ice element ❄️
-- **5 / T**: Switch to Wind element 🌪️
-- **Space**: Use combo skill (when ready)
-- **Shift**: Defensive stance
-- **Tab**: View skill tree
-- **Esc**: Pause menu
-- **[ / ]**: Adjust time speed (debug)
-
-## Gameplay
-
-### Objective
-Survive as many waves as possible by defeating enemies with elemental magic. Use the correct elements to exploit enemy weaknesses and combine elements for powerful combos!
-
-### Element System
-
-**Element Interactions:**
-- 🔥 Fire is strong against 💧 Water enemies (ice creatures)
-- 💧 Water is strong against 🔥 Fire enemies
-- ⚡ Thunder is strong against 💧 Water (electrocution)
-- ❄️ Ice freezes and slows enemies
-- 🌪️ Wind pushes and redirects enemies
-
-**Combo Magic:**
-- 🌋 Steam Explosion = Fire + Water
-- ⚡ Thunder Storm = Thunder + Water
-- 🌪️ Fire Tornado = Fire + Wind
-- 💎 Crystal Burst = Ice + Thunder
-- 🌈 Plasma Cannon = Fire + Thunder
-- ...and more to discover!
-
-### Enemy Types
-
-1. **🔥 Fire Slime** - Fast, weak to water
-2. **💧 Water Elemental** - Medium, weak to thunder
-3. **⚡ Thunder Spirit** - Very fast, weak to ice
-4. **❄️ Ice Giant** - Slow, high HP, weak to fire
-5. **🌪️ Wind Knight** - Fast, deflects weak spells
-
-### Boss Battles
-
-Every 10 waves, face a powerful elemental boss with unique attack patterns and mechanics!
+#### Web Application
+```bash
+python backend/app.py
+```
+Then open your browser and visit: `http://localhost:5000`
 
 ## Development Progress
 
 - [x] Project initialization and repository setup
 - [x] Project documentation and proposal
-- [ ] Week 1: Core game framework and particle system
-- [ ] Week 2: Combat system and visual effects
-- [ ] Week 3: Advanced features and polish
+- [ ] Week 1: Database design and backend API
+- [ ] Week 2: Desktop GUI implementation
+- [ ] Week 3: Web frontend and integration
 
 ## Development Timeline
 
-### Week 1 (Oct 10-16): Foundation
-- Game window and loop (60 FPS)
-- Particle system implementation
-- 5 elemental effects
-- Enemy spawning and movement
-- Basic combat and UI
+### Week 1 (Oct 10-16): Backend Development
+- Database schema design
+- Flask API development
+- User authentication system
+- Event and order management
 
-### Week 2 (Oct 17-23): Core Gameplay
-- Advanced particle effects (trails, glow)
-- Combo skill system
-- Level and progression system
-- Skill tree implementation
-- Enhanced visual effects
+### Week 2 (Oct 17-23): Desktop Application
+- PyQt5 GUI design
+- User interface implementation
+- Booking system integration
+- Admin panel development
 
-### Week 3 (Oct 24 - Nov 2): Polish & Complete
-- Boss battles
-- Advanced systems (talents, achievements)
-- Audio implementation
-- Performance optimization
+### Week 3 (Oct 24 - Nov 2): Web Frontend & Polish
+- Web interface development
+- Frontend-backend integration
+- Testing and debugging
 - Documentation and presentation
 
-## Technical Challenges
+## Database Schema
 
-### Particle System
-- Managing thousands of particles efficiently
-- Implementing physics simulation (velocity, acceleration, lifetime)
-- Creating diverse visual effects for each element
+The system uses the following main tables:
 
-### Combat System
-- Collision detection optimization (spatial partitioning)
-- Element interaction logic
-- Combo detection and triggering
+- **users**: User accounts and authentication
+- **events**: Event/show information
+- **orders**: Ticket orders and transactions
+- **seats**: Seat availability and pricing
 
-### Performance Optimization
-- Object pooling for particles
-- Spatial hashing for collision detection
-- Level of detail (LOD) for distant particles
+For detailed schema, see `database/schema.sql`
 
 ## Learning Outcomes
 
 This project demonstrates:
 
 **Python Programming:**
-- Object-oriented design (classes for particles, enemies, elements)
-- Data structures (managing collections of game objects)
-- Algorithms (collision detection, pathfinding)
-- Mathematical computations (vectors, trigonometry)
+- Object-oriented design (classes for users, events, orders)
+- Data structures (managing collections of objects)
+- Database operations (CRUD operations)
+- Web development (Flask framework)
 
 **GUI Development:**
 - PyQt5 advanced features
-- Custom painting and rendering
-- Event handling (mouse, keyboard)
-- Animation systems
+- Custom UI components
+- Event handling (user interactions)
+- Desktop application architecture
 
-**Game Development:**
-- Game loop architecture
-- Physics simulation
-- Particle systems
-- Visual effects
+**Database Management:**
+- Relational database design
+- SQL queries and operations
+- Data relationships and constraints
+- Database optimization
 
 **Software Engineering:**
 - Modular design
 - Code organization
-- Performance optimization
+- API development
 - Documentation
-
-## Screenshots
-
-(Screenshots will be added as development progresses)
-
-## Demo Video
-
-(Demo video will be added upon completion)
 
 ## Team Members
 
@@ -248,7 +201,7 @@ This project demonstrates:
 Special thanks to:
 - COMP9001 course instructors and tutors
 - University of Sydney for providing learning resources
-- PyQt5 and Python communities for documentation and support
+- Flask and PyQt5 communities for documentation and support
 
 ## License
 

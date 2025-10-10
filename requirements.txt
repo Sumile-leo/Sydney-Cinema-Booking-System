@@ -1,18 +1,30 @@
-# Elemental Magic Arena - Python Dependencies
-# 元素魔法大乱斗 - Python依赖包
+# Ticket Booking System - Python Dependencies
+# 购票系统 - Python依赖包
 
-# GUI Framework / GUI框架
+# Web Framework / Web框架
+Flask==3.0.0
+Flask-CORS==4.0.0
+
+# Database Driver / 数据库驱动
+PyMySQL==1.1.0
+mysql-connector-python==8.2.0
+
+# Desktop GUI / 桌面GUI
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
 PyQt5-sip==12.13.0
 
-# Mathematics and Array Operations / 数学和数组运算
-numpy==1.24.3
+# Utility Libraries / 工具库
+python-dotenv==1.0.0
+Pillow==10.1.0
 
-# Audio (Optional) / 音频（可选）
-pygame==2.5.2
+# Optional Dependencies / 可选依赖
+# Flask-SQLAlchemy==3.1.1  # ORM (可选)
+# Flask-Session==0.5.0     # Session管理
+# Werkzeug==3.0.1          # Flask依赖的工具库
 
-# Development Tools (Optional) / 开发工具（可选）
+# Development Tools / 开发工具 (可选)
 # pytest==7.4.3
+# pytest-flask==1.3.0
 # pylint==3.0.3
 # black==23.12.0
