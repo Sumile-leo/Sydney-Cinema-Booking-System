@@ -1,69 +1,87 @@
-# COMP9001 Final Project - Ticket Booking System
+# COMP9001 Final Project - Elemental Magic Arena
 
 English Version | [中文版](./README_CN.md)
 
 ## Project Overview
 
-This is the final project for COMP9001 course at the University of Sydney (USYD). The project is a **Ticket Booking System** with both desktop GUI and web interface, using MySQL database for data management.
+This is the final project for COMP9001 course at the University of Sydney (USYD). The project is an **Elemental Magic Arena** - a particle-based magic defense game where players use elemental spells to defend against waves of enemies.
 
 ## Course Information
 
 - **University**: University of Sydney (USYD)
 - **Course Code**: COMP9001
 - **Project Type**: Final Project
-- **Project Name**: Ticket Booking System
+- **Project Name**: Elemental Magic Arena (元素魔法大乱斗)
+- **Submission Deadline**: November 2, 2025
 
 ## Project Features
 
-### Core Functions
-- 🎫 **Ticket Management**: Browse and search events/shows
-- 👤 **User System**: User registration, login, and profile management
-- 🛒 **Booking System**: Select seats and purchase tickets
-- 📋 **Order Management**: View order history and ticket details
-- 🔐 **Admin Panel**: Event management and order statistics
+### 🎮 Game Concept
+Players act as a magic wizard, drawing elemental magic with the mouse to defeat enemies attacking from above. Different elements have strengths and weaknesses, and combining elements creates powerful combo spells!
+
+### Core Features
+- 🔥 **5 Elemental Magic**: Fire, Water, Thunder, Ice, Wind
+- 💫 **Particle Effects**: Stunning particle system with trails and glow effects
+- 👹 **Enemy System**: 5 enemy types with elemental attributes and weaknesses
+- ⚔️ **Combo Skills**: Combine elements to create 8+ powerful magic combos
+- 📈 **Progression System**: Level up, unlock skills, and upgrade attributes
+- 🎯 **Wave System**: Increasing difficulty with boss battles
+- ✨ **Visual Effects**: Explosions, screen shake, slow motion, and more
 
 ### Technical Highlights
-- 🖥️ **Desktop Application**: Built with PyQt5 (Modern and beautiful GUI)
-- 🌐 **Web Application**: Flask-based lightweight web application
-- 💾 **Database**: MySQL for data persistence
-- 🎨 **Modern UI**: Professional and user-friendly interface design
+- 🖥️ **Built with PyQt5**: Modern GUI with custom particle rendering
+- 🎨 **Advanced Particle System**: Thousands of particles with physics simulation
+- ⚡ **Real-time Combat**: 60 FPS gameplay with smooth animations
+- 🎮 **Game Mechanics**: Element interactions, collision detection, AI enemies
+- 🌟 **Visual Polish**: Bloom effects, motion blur, screen effects
 
 ## Project Structure
 
 ```
 Comp9001_finalproject/
-├── README.md              # Project documentation (English)
-├── README_CN.md           # Project documentation (Chinese)
-├── backend/               # Flask backend application
-│   └── routes/           # API routes and blueprints
-├── database/              # Database scripts and schema
-├── desktop/               # Desktop GUI application (PyQt5)
-└── web/                   # Web frontend
-    ├── static/           # Static resources (CSS, JS)
-    │   ├── css/         # Stylesheets
-    │   └── js/          # JavaScript files
-    └── templates/        # HTML templates
+├── README.md                  # Project documentation (English)
+├── README_CN.md               # Project documentation (Chinese)
+├── PROJECT_PROPOSAL.md        # Detailed project proposal (English)
+├── PROJECT_PROPOSAL_CN.md     # Detailed project proposal (Chinese)
+├── requirements.txt           # Python dependencies
+├── .gitignore                 # Git ignore file
+├── main.py                    # Game entry point
+├── game/                      # Game source code
+│   ├── __init__.py
+│   ├── window.py             # Main game window
+│   ├── particle.py           # Particle system
+│   ├── element.py            # Element types and properties
+│   ├── enemy.py              # Enemy classes
+│   ├── combat.py             # Combat logic
+│   ├── effects.py            # Visual effects
+│   ├── combo_system.py       # Combo skill system
+│   ├── level_system.py       # Leveling and progression
+│   ├── skill_tree.py         # Skill tree system
+│   ├── boss.py               # Boss enemies
+│   ├── ui.py                 # User interface
+│   ├── audio.py              # Sound effects and music
+│   └── manager.py            # Game state management
+├── assets/                    # Game assets (optional)
+│   ├── sounds/               # Sound effects
+│   ├── music/                # Background music
+│   └── images/               # Images and sprites
+└── docs/                      # Additional documentation
 ```
 
 ## Tech Stack
 
-- **Programming Language**: Python 3.x
-- **Web Framework**: Flask
-- **Desktop GUI**: PyQt5
-- **Database**: MySQL
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Additional Libraries**: 
-  - PyMySQL / mysql-connector-python (Database driver)
-  - Flask-SQLAlchemy (ORM, optional)
-  - PyQt5 Designer (GUI design tool)
-  - Other Python libraries as needed
+- **Programming Language**: Python 3.8+
+- **GUI Framework**: PyQt5
+- **Graphics**: QPainter with custom rendering
+- **Mathematics**: NumPy for particle physics
+- **Audio**: pygame.mixer (optional)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Python 3.8 or higher
-- MySQL Server 5.7 or higher
+- pip (Python package manager)
 - Git
 
 ### Installation
@@ -79,120 +97,158 @@ Comp9001_finalproject/
    pip install -r requirements.txt
    ```
 
-3. **Configure MySQL database**
-   - Start MySQL service
-   - Create database and import schema
-   - Update database configuration in config file
+### Running the Game
 
-4. **Initialize the database**
-   ```bash
-   python database/init_db.py
-   ```
-
-### Running the Application
-
-#### Desktop Application
 ```bash
-python desktop/main.py
+python main.py
 ```
 
-#### Web Application
-```bash
-python backend/app.py
-```
-Then open your browser and visit: `http://localhost:5000`
+## Game Controls
 
-## Development Guide
+### Mouse Controls
+- **Left Click + Drag**: Draw elemental magic
+- **Mouse Movement**: Aim magic spells
 
-### Branch Management
+### Keyboard Controls
+- **1 / Q**: Switch to Fire element 🔥
+- **2 / W**: Switch to Water element 💧
+- **3 / E**: Switch to Thunder element ⚡
+- **4 / R**: Switch to Ice element ❄️
+- **5 / T**: Switch to Wind element 🌪️
+- **Space**: Use combo skill (when ready)
+- **Shift**: Defensive stance
+- **Tab**: View skill tree
+- **Esc**: Pause menu
+- **[ / ]**: Adjust time speed (debug)
 
-- `main`: Main branch, stable production code
-- `dev`: Development branch for daily development
-- `feature/*`: Feature branches for new features
-- `bugfix/*`: Bug fix branches
+## Gameplay
 
-### Commit Convention
+### Objective
+Survive as many waves as possible by defeating enemies with elemental magic. Use the correct elements to exploit enemy weaknesses and combine elements for powerful combos!
 
-Follow the conventional commit format:
+### Element System
 
-```
-<type>: <subject>
+**Element Interactions:**
+- 🔥 Fire is strong against 💧 Water enemies (ice creatures)
+- 💧 Water is strong against 🔥 Fire enemies
+- ⚡ Thunder is strong against 💧 Water (electrocution)
+- ❄️ Ice freezes and slows enemies
+- 🌪️ Wind pushes and redirects enemies
 
-<body>
-```
+**Combo Magic:**
+- 🌋 Steam Explosion = Fire + Water
+- ⚡ Thunder Storm = Thunder + Water
+- 🌪️ Fire Tornado = Fire + Wind
+- 💎 Crystal Burst = Ice + Thunder
+- 🌈 Plasma Cannon = Fire + Thunder
+- ...and more to discover!
 
-**Types:**
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation update
-- `style`: Code formatting
-- `refactor`: Code refactoring
-- `test`: Testing
-- `chore`: Build/tool changes
+### Enemy Types
 
-### Coding Standards
+1. **🔥 Fire Slime** - Fast, weak to water
+2. **💧 Water Elemental** - Medium, weak to thunder
+3. **⚡ Thunder Spirit** - Very fast, weak to ice
+4. **❄️ Ice Giant** - Slow, high HP, weak to fire
+5. **🌪️ Wind Knight** - Fast, deflects weak spells
 
-- Follow PEP 8 style guide for Python code
-- Use meaningful variable and function names
-- Add comments for complex logic
-- Write docstrings for functions and classes
+### Boss Battles
 
-## Project Progress
+Every 10 waves, face a powerful elemental boss with unique attack patterns and mechanics!
+
+## Development Progress
 
 - [x] Project initialization and repository setup
-- [x] Project structure design
-- [ ] Database schema design
-- [ ] Backend API development
-- [ ] Desktop GUI implementation
-- [ ] Web frontend development
-- [ ] Testing and debugging
-- [ ] Documentation completion
-- [ ] Final deployment
+- [x] Project documentation and proposal
+- [ ] Week 1: Core game framework and particle system
+- [ ] Week 2: Combat system and visual effects
+- [ ] Week 3: Advanced features and polish
+
+## Development Timeline
+
+### Week 1 (Oct 10-16): Foundation
+- Game window and loop (60 FPS)
+- Particle system implementation
+- 5 elemental effects
+- Enemy spawning and movement
+- Basic combat and UI
+
+### Week 2 (Oct 17-23): Core Gameplay
+- Advanced particle effects (trails, glow)
+- Combo skill system
+- Level and progression system
+- Skill tree implementation
+- Enhanced visual effects
+
+### Week 3 (Oct 24 - Nov 2): Polish & Complete
+- Boss battles
+- Advanced systems (talents, achievements)
+- Audio implementation
+- Performance optimization
+- Documentation and presentation
+
+## Technical Challenges
+
+### Particle System
+- Managing thousands of particles efficiently
+- Implementing physics simulation (velocity, acceleration, lifetime)
+- Creating diverse visual effects for each element
+
+### Combat System
+- Collision detection optimization (spatial partitioning)
+- Element interaction logic
+- Combo detection and triggering
+
+### Performance Optimization
+- Object pooling for particles
+- Spatial hashing for collision detection
+- Level of detail (LOD) for distant particles
+
+## Learning Outcomes
+
+This project demonstrates:
+
+**Python Programming:**
+- Object-oriented design (classes for particles, enemies, elements)
+- Data structures (managing collections of game objects)
+- Algorithms (collision detection, pathfinding)
+- Mathematical computations (vectors, trigonometry)
+
+**GUI Development:**
+- PyQt5 advanced features
+- Custom painting and rendering
+- Event handling (mouse, keyboard)
+- Animation systems
+
+**Game Development:**
+- Game loop architecture
+- Physics simulation
+- Particle systems
+- Visual effects
+
+**Software Engineering:**
+- Modular design
+- Code organization
+- Performance optimization
+- Documentation
+
+## Screenshots
+
+(Screenshots will be added as development progresses)
+
+## Demo Video
+
+(Demo video will be added upon completion)
 
 ## Team Members
 
-- [Your Name](GitHub link)
+- Zhou Li - [GitHub](https://github.com/Sumile-leo)
 
-## Database Schema
+## Acknowledgments
 
-The system uses the following main tables:
-
-- **users**: User accounts and authentication
-- **events**: Event/show information
-- **orders**: Ticket orders and transactions
-- **seats**: Seat availability and pricing
-
-For detailed schema, see `database/schema.sql`
-
-## API Documentation
-
-(To be added as development progresses)
-
-## Testing
-
-```bash
-# Run unit tests
-python -m pytest tests/
-
-# Run with coverage
-python -m pytest --cov=backend tests/
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Database connection error**: Check MySQL service status and credentials
-2. **Module not found**: Ensure all dependencies are installed via `pip install -r requirements.txt`
-3. **Port already in use**: Change the port number in configuration
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'feat: Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Special thanks to:
+- COMP9001 course instructors and tutors
+- University of Sydney for providing learning resources
+- PyQt5 and Python communities for documentation and support
 
 ## License
 
@@ -200,22 +256,12 @@ This project is for academic purposes only and is part of the COMP9001 course re
 
 ## Contact
 
-- **GitHub Issues**: [Project Issues](https://github.com/Sumile-leo/Comp9001_finalproject/issues)
+- **GitHub Repository**: [Comp9001_finalproject](https://github.com/Sumile-leo/Comp9001_finalproject)
+- **GitHub Issues**: [Report Issues](https://github.com/Sumile-leo/Comp9001_finalproject/issues)
 - **Email**: your.email@university.edu.au
-
-## Acknowledgments
-
-Special thanks to:
-- COMP9001 course instructors and tutors
-- University of Sydney for providing learning resources
-- Open-source community for various tools and libraries
-
-## Screenshots
-
-(To be added upon completion)
 
 ---
 
-**Academic Integrity Notice**: This project is submitted as original work for COMP9001. All code is written by the project team. Please maintain academic integrity and do not plagiarize.
+**Academic Integrity Notice**: This project is submitted as original work for COMP9001. All code is written by the project author. Please maintain academic integrity.
 
 **Last Updated**: October 10, 2025
