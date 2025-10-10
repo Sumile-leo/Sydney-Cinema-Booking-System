@@ -1,5 +1,5 @@
 # COMP9001 Final Project Proposal
-# Elemental Magic Arena (元素魔法大乱斗)
+# Elemental Magic Arena
 
 **Student Name**: Zhou Li  
 **Student ID**: 550189305  
