@@ -39,15 +39,35 @@ env/
 *.qmlc
 *.jsc
 
-# Game specific
-saves/
-screenshots/
-replays/
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
 logs/
 *.log
+
+# Configuration
+config.ini
+.env
+secrets.json
+
+# Uploads
+uploads/
+media/
 
 # Temporary files
 *.tmp
 *.bak
 *.cache
+
+# Flask
+instance/
+.webassets-cache
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
 
