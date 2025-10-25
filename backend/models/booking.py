@@ -334,6 +334,57 @@ class Booking(BaseModel):
             'booking_date': self.booking_date.strftime('%Y-%m-%d %H:%M') if self.booking_date else 'Unknown'
         }
     
+    def get_seats(self) -> List[dict]:
+        """Get all seats for this booking"""
+        try:
+            from models.seat_booking import SeatBooking
+            from models.seat import Seat
+            
+            # Get all seat bookings for this booking
+            seat_bookings = SeatBooking.get_by_booking_id(self.booking_id)
+            
+            seats_info = []
+            for seat_booking in seat_bookings:
+                seat = seat_booking.get_seat()
+                if seat:
+                    seats_info.append({
+                        'seat_id': seat.seat_id,
+                        'seat_label': seat.get_seat_label(),
+                        'seat_type': seat.seat_type,
+                        'row_number': seat.row_number,
+                        'seat_number': seat.seat_number
+                    })
+            
+            return seats_info
+        except Exception as e:
+            print(f"Error getting seats for booking {self.booking_id}: {e}")
+            return []
+    
+    def get_seats_formatted(self) -> str:
+        """Get formatted seat information as string"""
+        seats = self.get_seats()
+        if not seats:
+            return "No seats assigned"
+        
+        # Sort seats by row and seat number
+        seats.sort(key=lambda x: (x['row_number'], x['seat_number']))
+        
+        # Group by row
+        rows = {}
+        for seat in seats:
+            row = seat['row_number']
+            if row not in rows:
+                rows[row] = []
+            rows[row].append(seat['seat_number'])
+        
+        # Format as "Row 1: A1, A2, A3"
+        formatted_rows = []
+        for row in sorted(rows.keys()):
+            seat_numbers = sorted(rows[row])
+            formatted_rows.append(f"Row {row}: {', '.join(map(str, seat_numbers))}")
+        
+        return "; ".join(formatted_rows)
+    
     def __str__(self):
         return f"Booking({self.booking_number}, {self.num_tickets} tickets, ${self.total_amount})"
     

@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Date:</strong> ${booking.screening_date || 'N/A'}</p>
                             <p><strong>Time:</strong> ${booking.start_time || 'N/A'}</p>
                             <p><strong>Tickets:</strong> ${booking.num_tickets}</p>
+                            <p><strong>Seats:</strong> ${booking.seats_formatted || 'No seats assigned'}</p>
                             <p><strong>Total:</strong> $${booking.total_amount}</p>
                             <p><strong>Status:</strong> <span class="status-${booking.booking_status}">${booking.booking_status}</span></p>
                         </div>
