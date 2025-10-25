@@ -14,21 +14,18 @@ class Screening(BaseModel):
     """Screening model with booking relationships"""
     
     def __init__(self, screening_id: int = None, movie_id: int = None, cinema_id: int = None,
-                 screen_number: int = None, screening_date: date = None, start_time: time = None,
-                 end_time: time = None, ticket_price: float = None, available_seats: int = None,
-                 total_seats: int = None, screening_type: str = 'standard', language: str = 'English',
-                 subtitles: str = None, created_at: datetime = None, updated_at: datetime = None,
-                 is_active: bool = True):
+                 hall_id: int = None, screening_date: date = None, start_time: time = None,
+                 end_time: time = None, ticket_price: float = None, screening_type: str = 'standard', 
+                 language: str = 'English', subtitles: str = None, created_at: datetime = None, 
+                 updated_at: datetime = None, is_active: bool = True):
         self.screening_id = screening_id
         self.movie_id = movie_id
         self.cinema_id = cinema_id
-        self.screen_number = screen_number
+        self.hall_id = hall_id
         self.screening_date = screening_date
         self.start_time = start_time
         self.end_time = end_time
         self.ticket_price = ticket_price
-        self.available_seats = available_seats
-        self.total_seats = total_seats
         self.screening_type = screening_type
         self.language = language
         self.subtitles = subtitles
@@ -50,19 +47,17 @@ class Screening(BaseModel):
             screening_id=row[0],
             movie_id=row[1],
             cinema_id=row[2],
-            screen_number=row[3],
+            hall_id=row[3],
             screening_date=row[4],
             start_time=row[5],
             end_time=row[6],
             ticket_price=row[7],
-            available_seats=row[8],
-            total_seats=row[9],
-            screening_type=row[10],
-            language=row[11],
-            subtitles=row[12],
-            created_at=row[13],
-            updated_at=row[14],
-            is_active=row[15]
+            screening_type=row[8],
+            language=row[9],
+            subtitles=row[10],
+            created_at=row[11],
+            updated_at=row[12],
+            is_active=row[13]
         )
     
     @classmethod
@@ -136,6 +131,13 @@ class Screening(BaseModel):
             self._cinema = Cinema.get_by_id('cinemas', self.cinema_id)
         return self._cinema
     
+    def get_hall(self):
+        """Get hall for this screening"""
+        if not hasattr(self, '_hall') or self._hall is None:
+            from .cinema_hall import CinemaHall
+            self._hall = CinemaHall.get_by_id('cinema_halls', self.hall_id)
+        return self._hall
+    
     def get_bookings(self) -> List:
         """Get bookings for this screening"""
         if self._bookings is None:
@@ -154,23 +156,36 @@ class Screening(BaseModel):
             self._total_bookings = result[0] if result else 0
         return self._total_bookings
     
+    def get_available_seats(self) -> int:
+        """Get number of available seats for this screening"""
+        from .seat import Seat
+        available_seats = Seat.get_available_for_screening(self.screening_id, self.hall_id)
+        return len(available_seats)
+    
+    def get_total_seats(self) -> int:
+        """Get total number of seats in the hall"""
+        hall = self.get_hall()
+        return hall.total_seats if hall else 0
+    
     def get_occupancy_rate(self) -> float:
         """Get occupancy rate as percentage"""
         if self._occupancy_rate is None:
-            if self.total_seats > 0:
-                occupied_seats = self.total_seats - self.available_seats
-                self._occupancy_rate = (occupied_seats / self.total_seats) * 100
+            total_seats = self.get_total_seats()
+            if total_seats > 0:
+                available_seats = self.get_available_seats()
+                occupied_seats = total_seats - available_seats
+                self._occupancy_rate = (occupied_seats / total_seats) * 100
             else:
                 self._occupancy_rate = 0.0
         return self._occupancy_rate
     
     def is_available(self) -> bool:
         """Check if screening has available seats"""
-        return self.available_seats > 0
+        return self.get_available_seats() > 0
     
     def is_full(self) -> bool:
         """Check if screening is full"""
-        return self.available_seats == 0
+        return self.get_available_seats() == 0
     
     def is_today(self) -> bool:
         """Check if screening is today"""
@@ -205,13 +220,13 @@ class Screening(BaseModel):
             'screening_id': self.screening_id,
             'movie_title': movie.title if movie else 'Unknown',
             'cinema_name': cinema.cinema_name if cinema else 'Unknown',
-            'screen_number': self.screen_number,
+            'hall_id': self.hall_id,
             'date': self.get_date_formatted(),
             'time': self.get_time_formatted(),
             'datetime': self.get_datetime_formatted(),
             'price': self.get_price_formatted(),
-            'available_seats': self.available_seats,
-            'total_seats': self.total_seats,
+            'available_seats': self.get_available_seats(),
+            'total_seats': self.get_total_seats(),
             'occupancy_rate': f"{self.get_occupancy_rate():.1f}%",
             'screening_type': self.screening_type,
             'language': self.language,
@@ -220,40 +235,11 @@ class Screening(BaseModel):
             'is_full': self.is_full()
         }
     
-    def book_seats(self, num_seats: int) -> bool:
-        """Book seats for this screening"""
-        if self.available_seats >= num_seats:
-            new_available = self.available_seats - num_seats
-            update_data = {
-                'available_seats': new_available,
-                'updated_at': datetime.now()
-            }
-            
-            result = self.update('screenings', self.screening_id, update_data)
-            if result:
-                self.available_seats = new_available
-                return True
-        return False
-    
-    def cancel_booking(self, num_seats: int) -> bool:
-        """Cancel booking and free up seats"""
-        new_available = min(self.available_seats + num_seats, self.total_seats)
-        update_data = {
-            'available_seats': new_available,
-            'updated_at': datetime.now()
-        }
-        
-        result = self.update('screenings', self.screening_id, update_data)
-        if result:
-            self.available_seats = new_available
-            return True
-        return False
     
     def update_screening(self, **kwargs):
         """Update screening information"""
-        allowed_fields = ['screen_number', 'screening_date', 'start_time', 'end_time',
-                         'ticket_price', 'available_seats', 'total_seats', 'screening_type',
-                         'language', 'subtitles']
+        allowed_fields = ['hall_id', 'screening_date', 'start_time', 'end_time',
+                         'ticket_price', 'screening_type', 'language', 'subtitles']
         update_data = {k: v for k, v in kwargs.items() if k in allowed_fields}
         
         if update_data:

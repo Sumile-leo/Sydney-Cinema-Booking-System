@@ -98,6 +98,50 @@ CREATE TABLE bookings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create cinema halls table - 创建影厅表
+CREATE TABLE cinema_halls (
+    hall_id SERIAL PRIMARY KEY,
+    cinema_id INTEGER NOT NULL REFERENCES cinemas(cinema_id) ON DELETE CASCADE,
+    hall_name VARCHAR(50) NOT NULL,
+    hall_type VARCHAR(20) DEFAULT 'standard' CHECK (hall_type IN ('standard', 'IMAX', 'Gold Class', 'VMAX')),
+    total_rows INTEGER NOT NULL DEFAULT 10,
+    seats_per_row INTEGER NOT NULL DEFAULT 15,
+    total_seats INTEGER NOT NULL,
+    screen_size VARCHAR(20) DEFAULT 'standard',
+    sound_system VARCHAR(30) DEFAULT 'standard',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Create seats table - 创建座位表
+CREATE TABLE seats (
+    seat_id SERIAL PRIMARY KEY,
+    hall_id INTEGER NOT NULL REFERENCES cinema_halls(hall_id) ON DELETE CASCADE,
+    row_number INTEGER NOT NULL,
+    seat_number INTEGER NOT NULL,
+    seat_type VARCHAR(20) DEFAULT 'standard' CHECK (seat_type IN ('standard', 'premium', 'vip', 'wheelchair')),
+    price_multiplier DECIMAL(3,2) DEFAULT 1.00,
+    is_active BOOLEAN DEFAULT TRUE,
+    UNIQUE(hall_id, row_number, seat_number)
+);
+
+-- Create seat bookings table - 创建座位预订表
+CREATE TABLE seat_bookings (
+    seat_booking_id SERIAL PRIMARY KEY,
+    booking_id INTEGER NOT NULL REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    seat_id INTEGER NOT NULL REFERENCES seats(seat_id) ON DELETE CASCADE,
+    screening_id INTEGER NOT NULL REFERENCES screenings(screening_id) ON DELETE CASCADE,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(seat_id, screening_id)
+);
+
+-- Update screenings table to reference halls - 更新场次表引用影厅
+ALTER TABLE screenings ADD COLUMN hall_id INTEGER REFERENCES cinema_halls(hall_id);
+ALTER TABLE screenings DROP COLUMN screen_number;
+ALTER TABLE screenings DROP COLUMN total_seats;
+ALTER TABLE screenings DROP COLUMN available_seats;
+
 -- Create indexes for better performance - 创建索引以提高性能
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
@@ -106,9 +150,14 @@ CREATE INDEX idx_movies_title ON movies(title);
 CREATE INDEX idx_movies_genre ON movies(genre);
 CREATE INDEX idx_screenings_date ON screenings(screening_date);
 CREATE INDEX idx_screenings_cinema_movie ON screenings(cinema_id, movie_id);
+CREATE INDEX idx_screenings_hall ON screenings(hall_id);
 CREATE INDEX idx_bookings_user ON bookings(user_id);
 CREATE INDEX idx_bookings_screening ON bookings(screening_id);
 CREATE INDEX idx_bookings_number ON bookings(booking_number);
+CREATE INDEX idx_cinema_halls_cinema ON cinema_halls(cinema_id);
+CREATE INDEX idx_seats_hall ON seats(hall_id);
+CREATE INDEX idx_seat_bookings_booking ON seat_bookings(booking_id);
+CREATE INDEX idx_seat_bookings_screening ON seat_bookings(screening_id);
 
 -- Create triggers for updated_at - 创建updated_at触发器
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -159,8 +208,36 @@ INSERT INTO movies (title, description, genre, duration_minutes, release_date, r
 ('Lightyear', 'While working to fix his ship, Buzz Lightyear accidentally launches himself into space and must find his way back home.', 'Animation', 105, '2022-06-17', 'PG', 'Angus MacLane', 'Chris Evans, Keke Palmer, Peter Sohn', 'English', 'Chinese, Korean', 'https://example.com/lightyear.jpg', 'https://youtube.com/lightyear'),
 ('Elvis', 'The life of American music icon Elvis Presley, from his childhood to becoming a rock and movie star.', 'Biography', 159, '2022-06-24', 'M', 'Baz Luhrmann', 'Austin Butler, Tom Hanks, Olivia DeJong', 'English', 'Chinese, Korean', 'https://example.com/elvis.jpg', 'https://youtube.com/elvis');
 
+-- Insert sample cinema halls - 插入示例影厅
+INSERT INTO cinema_halls (cinema_id, hall_name, hall_type, total_rows, seats_per_row, total_seats, screen_size, sound_system) VALUES
+-- Event Cinemas George Street halls
+(1, 'Hall 1', 'IMAX', 12, 20, 240, 'IMAX', 'IMAX Sound'),
+(1, 'Hall 2', 'standard', 10, 15, 150, 'standard', 'Dolby Digital'),
+(1, 'Hall 3', 'Gold Class', 8, 12, 96, 'large', 'Dolby Atmos'),
+-- Hoyts Broadway halls
+(2, 'Screen 1', 'standard', 10, 18, 180, 'standard', 'Dolby Digital'),
+(2, 'Screen 2', 'VMAX', 12, 22, 264, 'VMAX', 'Dolby Atmos'),
+(2, 'Screen 3', 'standard', 9, 16, 144, 'standard', 'Dolby Digital'),
+-- Village Cinemas Bondi Junction halls
+(3, 'Cinema 1', 'standard', 11, 17, 187, 'standard', 'Dolby Digital'),
+(3, 'Cinema 2', 'Gold Class', 7, 14, 98, 'large', 'Dolby Atmos'),
+(3, 'Cinema 3', 'standard', 10, 15, 150, 'standard', 'Dolby Digital');
+
+-- Insert sample seats - 插入示例座位
+INSERT INTO seats (hall_id, row_number, seat_number, seat_type, price_multiplier) VALUES
+-- Hall 1 (IMAX) seats
+(1, 1, 1, 'premium', 1.5), (1, 1, 2, 'premium', 1.5), (1, 1, 3, 'premium', 1.5), (1, 1, 4, 'premium', 1.5), (1, 1, 5, 'premium', 1.5),
+(1, 1, 6, 'premium', 1.5), (1, 1, 7, 'premium', 1.5), (1, 1, 8, 'premium', 1.5), (1, 1, 9, 'premium', 1.5), (1, 1, 10, 'premium', 1.5),
+(1, 1, 11, 'premium', 1.5), (1, 1, 12, 'premium', 1.5), (1, 1, 13, 'premium', 1.5), (1, 1, 14, 'premium', 1.5), (1, 1, 15, 'premium', 1.5),
+(1, 1, 16, 'premium', 1.5), (1, 1, 17, 'premium', 1.5), (1, 1, 18, 'premium', 1.5), (1, 1, 19, 'premium', 1.5), (1, 1, 20, 'premium', 1.5),
+-- Hall 1 rows 2-12 (standard seats)
+(1, 2, 1, 'standard', 1.0), (1, 2, 2, 'standard', 1.0), (1, 2, 3, 'standard', 1.0), (1, 2, 4, 'standard', 1.0), (1, 2, 5, 'standard', 1.0),
+(1, 2, 6, 'standard', 1.0), (1, 2, 7, 'standard', 1.0), (1, 2, 8, 'standard', 1.0), (1, 2, 9, 'standard', 1.0), (1, 2, 10, 'standard', 1.0),
+(1, 2, 11, 'standard', 1.0), (1, 2, 12, 'standard', 1.0), (1, 2, 13, 'standard', 1.0), (1, 2, 14, 'standard', 1.0), (1, 2, 15, 'standard', 1.0),
+(1, 2, 16, 'standard', 1.0), (1, 2, 17, 'standard', 1.0), (1, 2, 18, 'standard', 1.0), (1, 2, 19, 'standard', 1.0), (1, 2, 20, 'standard', 1.0);
+
 -- Insert sample screenings - 插入示例放映场次
-INSERT INTO screenings (movie_id, cinema_id, screen_number, screening_date, start_time, end_time, ticket_price, available_seats, total_seats, screening_type, language, subtitles) VALUES
+INSERT INTO screenings (movie_id, cinema_id, hall_id, screening_date, start_time, end_time, ticket_price, screening_type, language, subtitles) VALUES
 -- Event Cinemas George Street screenings
 (1, 1, 1, '2025-10-26', '10:00:00', '13:12:00', 25.00, 150, 200, 'IMAX', 'English', 'Chinese'),
 (1, 1, 1, '2025-10-26', '14:00:00', '17:12:00', 25.00, 180, 200, 'IMAX', 'English', 'Chinese'),

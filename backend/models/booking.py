@@ -110,7 +110,7 @@ class Booking(BaseModel):
             return None
         
         # Check if enough seats available
-        if screening.available_seats < num_tickets:
+        if screening.get_available_seats() < num_tickets:
             return None
         
         # Calculate total amount
@@ -127,7 +127,6 @@ class Booking(BaseModel):
             'num_tickets': num_tickets,
             'total_amount': total_amount,
             'booking_status': 'confirmed',
-            'payment_method': payment_method,
             'payment_status': 'pending',
             'booking_date': datetime.now()
         }
@@ -136,8 +135,8 @@ class Booking(BaseModel):
         booking = cls.create('bookings', data)
         
         if booking:
-            # Update screening available seats
-            screening.book_seats(num_tickets)
+            # Note: Seat booking is now handled separately via seat_bookings table
+            pass
         
         return booking
     
@@ -146,7 +145,7 @@ class Booking(BaseModel):
         """Generate unique booking number"""
         prefix = "BKG"
         year = datetime.now().year
-        random_part = ''.join(secrets.choices(string.digits, k=6))
+        random_part = ''.join(secrets.choice(string.digits) for _ in range(6))
         return f"{prefix}-{year}-{random_part}"
     
     def get_user(self):

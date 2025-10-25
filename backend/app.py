@@ -25,6 +25,9 @@ app = Flask(__name__,
 # Load configuration from config file
 flask_config = config.get_flask_config()
 app.secret_key = flask_config['secret_key']
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 CORS(app)
 
 # Database configuration is now handled by models
@@ -592,11 +595,13 @@ def book_ticket(screening_id):
         
         movie = screening.get_movie()
         cinema = screening.get_cinema()
+        hall = screening.get_hall()
         
-        return render_template('book_ticket.html', 
+        return render_template('seat_selection.html', 
                              screening=screening, 
                              movie=movie, 
-                             cinema=cinema)
+                             cinema=cinema,
+                             hall=hall)
     except Exception as e:
         flash('Error loading screening details.', 'error')
         return redirect(url_for('movies'))
@@ -701,13 +706,13 @@ def api_screenings():
                 
                 screening_dict = {
                     'screening_id': screening.screening_id,
-                    'screen_number': screening.screen_number,
+                    'hall_id': screening.hall_id,
                     'screening_date': screening.get_date_formatted(),
                     'start_time': screening.get_time_formatted(),
                     'end_time': screening.end_time.strftime('%H:%M') if screening.end_time else 'N/A',
                     'ticket_price': float(screening.ticket_price) if screening.ticket_price else 0.0,
-                    'available_seats': screening.available_seats,
-                    'total_seats': screening.total_seats,
+                    'available_seats': screening.get_available_seats(),
+                    'total_seats': screening.get_total_seats(),
                     'screening_type': screening.screening_type,
                     'language': screening.language,
                     'subtitles': screening.subtitles,
@@ -766,39 +771,65 @@ def api_bookings():
 @app.route('/api/book_ticket', methods=['POST'])
 @login_required
 def api_book_ticket():
-    """Book tickets for a screening"""
+    """Book tickets for a screening with seat selection"""
     try:
         screening_id = request.form.get('screening_id')
-        num_tickets = int(request.form.get('num_tickets', 0))
+        selected_seats_json = request.form.get('selected_seats')
+        total_amount = float(request.form.get('total_amount', 0))
         
-        if not screening_id or num_tickets <= 0:
+        if not screening_id or not selected_seats_json:
             return jsonify({'error': 'Invalid booking data'}), 400
+        
+        # Parse selected seats
+        import json
+        selected_seats = json.loads(selected_seats_json)
+        
+        if not selected_seats or len(selected_seats) == 0:
+            return jsonify({'error': 'No seats selected'}), 400
         
         # Get screening details
         screening = Screening.get_by_id('screenings', int(screening_id))
         if not screening:
             return jsonify({'error': 'Screening not found'}), 404
         
-        if screening.available_seats < num_tickets:
-            return jsonify({'error': 'Not enough seats available'}), 400
+        # Check if seats are still available
+        from models.seat import Seat
+        for seat_data in selected_seats:
+            seat_id = seat_data['seat_id']
+            if not Seat.is_available_for_screening(seat_id, int(screening_id)):
+                return jsonify({'error': f'Seat {seat_data.get("seat_label", seat_id)} is no longer available'}), 400
         
         # Create booking
         booking = Booking.create_booking(
             user_id=session['user_id'],
             screening_id=int(screening_id),
-            num_tickets=num_tickets,
-            total_amount=screening.ticket_price * num_tickets
+            num_tickets=len(selected_seats)
         )
         
         if booking:
-            return jsonify({
-                'success': True,
-                'booking_number': booking.booking_number,
-                'message': 'Booking created successfully'
-            })
+            # Book the selected seats
+            seat_bookings_created = 0
+            for seat_data in selected_seats:
+                seat_id = seat_data['seat_id']
+                if Seat.book_seat(seat_id, int(screening_id), booking.booking_id):
+                    seat_bookings_created += 1
+            
+            if seat_bookings_created == len(selected_seats):
+                return jsonify({
+                    'success': True,
+                    'booking_number': booking.booking_number,
+                    'message': f'Successfully booked {len(selected_seats)} seat(s)',
+                    'booking_id': booking.booking_id
+                })
+            else:
+                # Some seats failed to book, cancel the booking
+                booking.update('bookings', booking.booking_id, {'booking_status': 'cancelled'})
+                return jsonify({'error': 'Failed to book some seats'}), 500
         else:
             return jsonify({'error': 'Failed to create booking'}), 500
             
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid seat selection data'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -818,6 +849,36 @@ def cancel_booking(booking_id):
             return jsonify({'success': True, 'message': 'Booking cancelled successfully'})
         else:
             return jsonify({'error': 'Cannot cancel this booking'}), 400
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/seats/<int:screening_id>')
+def api_get_seat_map(screening_id):
+    """Get seat map for a screening"""
+    try:
+        screening = Screening.get_by_id('screenings', screening_id)
+        if not screening:
+            return jsonify({'error': 'Screening not found'}), 404
+        
+        hall = screening.get_hall()
+        if not hall:
+            return jsonify({'error': 'Hall not found'}), 404
+        
+        # Get seat map
+        seat_map = hall.get_seat_map(screening_id)
+        
+        return jsonify({
+            'success': True,
+            'seat_map': seat_map,
+            'hall_info': hall.get_hall_info(),
+            'screening_info': {
+                'screening_id': screening.screening_id,
+                'date': screening.get_date_formatted(),
+                'time': screening.get_time_formatted(),
+                'base_price': float(screening.ticket_price)
+            }
+        })
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
