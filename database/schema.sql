@@ -225,16 +225,67 @@ INSERT INTO cinema_halls (cinema_id, hall_name, hall_type, total_rows, seats_per
 
 -- Insert sample seats - 插入示例座位
 INSERT INTO seats (hall_id, row_number, seat_number, seat_type, price_multiplier) VALUES
--- Hall 1 (IMAX) seats
+-- Hall 1 (IMAX) seats - 240 seats total (12 rows x 20 seats)
+-- Row 1: Premium seats (20 seats)
 (1, 1, 1, 'premium', 1.5), (1, 1, 2, 'premium', 1.5), (1, 1, 3, 'premium', 1.5), (1, 1, 4, 'premium', 1.5), (1, 1, 5, 'premium', 1.5),
 (1, 1, 6, 'premium', 1.5), (1, 1, 7, 'premium', 1.5), (1, 1, 8, 'premium', 1.5), (1, 1, 9, 'premium', 1.5), (1, 1, 10, 'premium', 1.5),
 (1, 1, 11, 'premium', 1.5), (1, 1, 12, 'premium', 1.5), (1, 1, 13, 'premium', 1.5), (1, 1, 14, 'premium', 1.5), (1, 1, 15, 'premium', 1.5),
 (1, 1, 16, 'premium', 1.5), (1, 1, 17, 'premium', 1.5), (1, 1, 18, 'premium', 1.5), (1, 1, 19, 'premium', 1.5), (1, 1, 20, 'premium', 1.5),
--- Hall 1 rows 2-12 (standard seats)
+-- Row 2: Standard seats (20 seats)
 (1, 2, 1, 'standard', 1.0), (1, 2, 2, 'standard', 1.0), (1, 2, 3, 'standard', 1.0), (1, 2, 4, 'standard', 1.0), (1, 2, 5, 'standard', 1.0),
 (1, 2, 6, 'standard', 1.0), (1, 2, 7, 'standard', 1.0), (1, 2, 8, 'standard', 1.0), (1, 2, 9, 'standard', 1.0), (1, 2, 10, 'standard', 1.0),
 (1, 2, 11, 'standard', 1.0), (1, 2, 12, 'standard', 1.0), (1, 2, 13, 'standard', 1.0), (1, 2, 14, 'standard', 1.0), (1, 2, 15, 'standard', 1.0),
-(1, 2, 16, 'standard', 1.0), (1, 2, 17, 'standard', 1.0), (1, 2, 18, 'standard', 1.0), (1, 2, 19, 'standard', 1.0), (1, 2, 20, 'standard', 1.0);
+(1, 2, 16, 'standard', 1.0), (1, 2, 17, 'standard', 1.0), (1, 2, 18, 'standard', 1.0), (1, 2, 19, 'standard', 1.0), (1, 2, 20, 'standard', 1.0),
+-- Row 3: Standard seats (20 seats)
+(1, 3, 1, 'standard', 1.0), (1, 3, 2, 'standard', 1.0), (1, 3, 3, 'standard', 1.0), (1, 3, 4, 'standard', 1.0), (1, 3, 5, 'standard', 1.0),
+(1, 3, 6, 'standard', 1.0), (1, 3, 7, 'standard', 1.0), (1, 3, 8, 'standard', 1.0), (1, 3, 9, 'standard', 1.0), (1, 3, 10, 'standard', 1.0),
+(1, 3, 11, 'standard', 1.0), (1, 3, 12, 'standard', 1.0), (1, 3, 13, 'standard', 1.0), (1, 3, 14, 'standard', 1.0), (1, 3, 15, 'standard', 1.0),
+(1, 3, 16, 'standard', 1.0), (1, 3, 17, 'standard', 1.0), (1, 3, 18, 'standard', 1.0), (1, 3, 19, 'standard', 1.0), (1, 3, 20, 'standard', 1.0),
+-- Row 4: Standard seats (20 seats)
+(1, 4, 1, 'standard', 1.0), (1, 4, 2, 'standard', 1.0), (1, 4, 3, 'standard', 1.0), (1, 4, 4, 'standard', 1.0), (1, 4, 5, 'standard', 1.0),
+(1, 4, 6, 'standard', 1.0), (1, 4, 7, 'standard', 1.0), (1, 4, 8, 'standard', 1.0), (1, 4, 9, 'standard', 1.0), (1, 4, 10, 'standard', 1.0),
+(1, 4, 11, 'standard', 1.0), (1, 4, 12, 'standard', 1.0), (1, 4, 13, 'standard', 1.0), (1, 4, 14, 'standard', 1.0), (1, 4, 15, 'standard', 1.0),
+(1, 4, 16, 'standard', 1.0), (1, 4, 17, 'standard', 1.0), (1, 4, 18, 'standard', 1.0), (1, 4, 19, 'standard', 1.0), (1, 4, 20, 'standard', 1.0),
+-- Row 5: Standard seats (20 seats)
+(1, 5, 1, 'standard', 1.0), (1, 5, 2, 'standard', 1.0), (1, 5, 3, 'standard', 1.0), (1, 5, 4, 'standard', 1.0), (1, 5, 5, 'standard', 1.0),
+(1, 5, 6, 'standard', 1.0), (1, 5, 7, 'standard', 1.0), (1, 5, 8, 'standard', 1.0), (1, 5, 9, 'standard', 1.0), (1, 5, 10, 'standard', 1.0),
+(1, 5, 11, 'standard', 1.0), (1, 5, 12, 'standard', 1.0), (1, 5, 13, 'standard', 1.0), (1, 5, 14, 'standard', 1.0), (1, 5, 15, 'standard', 1.0),
+(1, 5, 16, 'standard', 1.0), (1, 5, 17, 'standard', 1.0), (1, 5, 18, 'standard', 1.0), (1, 5, 19, 'standard', 1.0), (1, 5, 20, 'standard', 1.0),
+-- Row 6: Standard seats (20 seats)
+(1, 6, 1, 'standard', 1.0), (1, 6, 2, 'standard', 1.0), (1, 6, 3, 'standard', 1.0), (1, 6, 4, 'standard', 1.0), (1, 6, 5, 'standard', 1.0),
+(1, 6, 6, 'standard', 1.0), (1, 6, 7, 'standard', 1.0), (1, 6, 8, 'standard', 1.0), (1, 6, 9, 'standard', 1.0), (1, 6, 10, 'standard', 1.0),
+(1, 6, 11, 'standard', 1.0), (1, 6, 12, 'standard', 1.0), (1, 6, 13, 'standard', 1.0), (1, 6, 14, 'standard', 1.0), (1, 6, 15, 'standard', 1.0),
+(1, 6, 16, 'standard', 1.0), (1, 6, 17, 'standard', 1.0), (1, 6, 18, 'standard', 1.0), (1, 6, 19, 'standard', 1.0), (1, 6, 20, 'standard', 1.0),
+-- Row 7: Standard seats (20 seats)
+(1, 7, 1, 'standard', 1.0), (1, 7, 2, 'standard', 1.0), (1, 7, 3, 'standard', 1.0), (1, 7, 4, 'standard', 1.0), (1, 7, 5, 'standard', 1.0),
+(1, 7, 6, 'standard', 1.0), (1, 7, 7, 'standard', 1.0), (1, 7, 8, 'standard', 1.0), (1, 7, 9, 'standard', 1.0), (1, 7, 10, 'standard', 1.0),
+(1, 7, 11, 'standard', 1.0), (1, 7, 12, 'standard', 1.0), (1, 7, 13, 'standard', 1.0), (1, 7, 14, 'standard', 1.0), (1, 7, 15, 'standard', 1.0),
+(1, 7, 16, 'standard', 1.0), (1, 7, 17, 'standard', 1.0), (1, 7, 18, 'standard', 1.0), (1, 7, 19, 'standard', 1.0), (1, 7, 20, 'standard', 1.0),
+-- Row 8: Standard seats (20 seats)
+(1, 8, 1, 'standard', 1.0), (1, 8, 2, 'standard', 1.0), (1, 8, 3, 'standard', 1.0), (1, 8, 4, 'standard', 1.0), (1, 8, 5, 'standard', 1.0),
+(1, 8, 6, 'standard', 1.0), (1, 8, 7, 'standard', 1.0), (1, 8, 8, 'standard', 1.0), (1, 8, 9, 'standard', 1.0), (1, 8, 10, 'standard', 1.0),
+(1, 8, 11, 'standard', 1.0), (1, 8, 12, 'standard', 1.0), (1, 8, 13, 'standard', 1.0), (1, 8, 14, 'standard', 1.0), (1, 8, 15, 'standard', 1.0),
+(1, 8, 16, 'standard', 1.0), (1, 8, 17, 'standard', 1.0), (1, 8, 18, 'standard', 1.0), (1, 8, 19, 'standard', 1.0), (1, 8, 20, 'standard', 1.0),
+-- Row 9: Standard seats (20 seats)
+(1, 9, 1, 'standard', 1.0), (1, 9, 2, 'standard', 1.0), (1, 9, 3, 'standard', 1.0), (1, 9, 4, 'standard', 1.0), (1, 9, 5, 'standard', 1.0),
+(1, 9, 6, 'standard', 1.0), (1, 9, 7, 'standard', 1.0), (1, 9, 8, 'standard', 1.0), (1, 9, 9, 'standard', 1.0), (1, 9, 10, 'standard', 1.0),
+(1, 9, 11, 'standard', 1.0), (1, 9, 12, 'standard', 1.0), (1, 9, 13, 'standard', 1.0), (1, 9, 14, 'standard', 1.0), (1, 9, 15, 'standard', 1.0),
+(1, 9, 16, 'standard', 1.0), (1, 9, 17, 'standard', 1.0), (1, 9, 18, 'standard', 1.0), (1, 9, 19, 'standard', 1.0), (1, 9, 20, 'standard', 1.0),
+-- Row 10: Standard seats (20 seats)
+(1, 10, 1, 'standard', 1.0), (1, 10, 2, 'standard', 1.0), (1, 10, 3, 'standard', 1.0), (1, 10, 4, 'standard', 1.0), (1, 10, 5, 'standard', 1.0),
+(1, 10, 6, 'standard', 1.0), (1, 10, 7, 'standard', 1.0), (1, 10, 8, 'standard', 1.0), (1, 10, 9, 'standard', 1.0), (1, 10, 10, 'standard', 1.0),
+(1, 10, 11, 'standard', 1.0), (1, 10, 12, 'standard', 1.0), (1, 10, 13, 'standard', 1.0), (1, 10, 14, 'standard', 1.0), (1, 10, 15, 'standard', 1.0),
+(1, 10, 16, 'standard', 1.0), (1, 10, 17, 'standard', 1.0), (1, 10, 18, 'standard', 1.0), (1, 10, 19, 'standard', 1.0), (1, 10, 20, 'standard', 1.0),
+-- Row 11: VIP seats (20 seats)
+(1, 11, 1, 'vip', 2.0), (1, 11, 2, 'vip', 2.0), (1, 11, 3, 'vip', 2.0), (1, 11, 4, 'vip', 2.0), (1, 11, 5, 'vip', 2.0),
+(1, 11, 6, 'vip', 2.0), (1, 11, 7, 'vip', 2.0), (1, 11, 8, 'vip', 2.0), (1, 11, 9, 'vip', 2.0), (1, 11, 10, 'vip', 2.0),
+(1, 11, 11, 'vip', 2.0), (1, 11, 12, 'vip', 2.0), (1, 11, 13, 'vip', 2.0), (1, 11, 14, 'vip', 2.0), (1, 11, 15, 'vip', 2.0),
+(1, 11, 16, 'vip', 2.0), (1, 11, 17, 'vip', 2.0), (1, 11, 18, 'vip', 2.0), (1, 11, 19, 'vip', 2.0), (1, 11, 20, 'vip', 2.0),
+-- Row 12: VIP seats (20 seats)
+(1, 12, 1, 'vip', 2.0), (1, 12, 2, 'vip', 2.0), (1, 12, 3, 'vip', 2.0), (1, 12, 4, 'vip', 2.0), (1, 12, 5, 'vip', 2.0),
+(1, 12, 6, 'vip', 2.0), (1, 12, 7, 'vip', 2.0), (1, 12, 8, 'vip', 2.0), (1, 12, 9, 'vip', 2.0), (1, 12, 10, 'vip', 2.0),
+(1, 12, 11, 'vip', 2.0), (1, 12, 12, 'vip', 2.0), (1, 12, 13, 'vip', 2.0), (1, 12, 14, 'vip', 2.0), (1, 12, 15, 'vip', 2.0),
+(1, 12, 16, 'vip', 2.0), (1, 12, 17, 'vip', 2.0), (1, 12, 18, 'vip', 2.0), (1, 12, 19, 'vip', 2.0), (1, 12, 20, 'vip', 2.0);
 
 -- Insert sample screenings - 插入示例放映场次
 INSERT INTO screenings (movie_id, cinema_id, hall_id, screening_date, start_time, end_time, ticket_price, screening_type, language, subtitles) VALUES

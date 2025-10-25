@@ -861,12 +861,43 @@ def api_get_seat_map(screening_id):
         if not hall:
             return jsonify({'error': 'Hall not found'}), 404
         
-        # Get seat map
-        seat_map = hall.get_seat_map(screening_id)
+        # Get all seats for this hall
+        seats = hall.get_seats()
+        seat_map = []
+        occupied_seats = []
+        
+        for seat in seats:
+            # Check if seat is available for this screening
+            from models.seat import Seat
+            is_available = Seat.is_available_for_screening(seat.seat_id, screening_id)
+            
+            # Calculate price based on seat type and base price
+            base_price = float(screening.ticket_price)
+            if seat.seat_type == 'premium':
+                price = base_price * 1.5
+            elif seat.seat_type == 'vip':
+                price = base_price * 2.0
+            else:  # standard
+                price = base_price
+            
+            seat_info = {
+                'seat_id': seat.seat_id,
+                'row_number': seat.row_number,
+                'seat_number': seat.seat_number,
+                'seat_type': seat.seat_type,
+                'price': price,
+                'is_available': is_available
+            }
+            
+            seat_map.append(seat_info)
+            
+            if not is_available:
+                occupied_seats.append(seat.seat_id)
         
         return jsonify({
             'success': True,
             'seat_map': seat_map,
+            'occupied_seats': occupied_seats,
             'hall_info': hall.get_hall_info(),
             'screening_info': {
                 'screening_id': screening.screening_id,
