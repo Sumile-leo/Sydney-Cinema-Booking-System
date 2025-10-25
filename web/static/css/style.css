@@ -1,0 +1,367 @@
+/* Sydney Cinema Booking System - Dark Theme CSS */
+
+/* Root Variables */
+:root {
+    --primary-dark: #1a1a1a;
+    --secondary-dark: #2d2d2d;
+    --accent-dark: #3a3a3a;
+    --text-light: #ffffff;
+    --text-muted: #b0b0b0;
+    --accent-gold: #ffd700;
+    --accent-red: #e74c3c;
+    --accent-blue: #3498db;
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+/* Navigation Bar */
+.navbar-dark {
+    background-color: var(--secondary-dark) !important;
+    box-shadow: 0 2px 10px var(--shadow-dark);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: var(--accent-gold) !important;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--text-light) !important;
+}
+
+.nav-link {
+    color: var(--text-muted) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-gold) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+    padding: 80px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.1;
+    animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-buttons {
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--primary-dark);
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #ffed4e;
+    border-color: #ffed4e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.btn-outline {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background-color: var(--accent-gold);
+    color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Sections */
+.features-section, .cinemas-section, .movies-section, .cta-section {
+    padding: 60px 0;
+    background-color: var(--secondary-dark);
+}
+
+.features-section:nth-child(even), .movies-section {
+    background-color: var(--accent-dark);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--text-light);
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-gold);
+    border-radius: 2px;
+}
+
+/* Cards */
+.feature-card, .cinema-card, .movie-card {
+    background-color: var(--primary-dark);
+    border: 1px solid var(--accent-dark);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--shadow-dark);
+    margin-bottom: 2rem;
+}
+
+.feature-card:hover, .cinema-card:hover, .movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow-dark);
+    border-color: var(--accent-gold);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.cinema-placeholder, .poster-placeholder {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(45deg, var(--accent-dark), var(--secondary-dark));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cinema-card:hover .cinema-placeholder,
+.movie-card:hover .poster-placeholder {
+    background: linear-gradient(45deg, var(--accent-gold), var(--secondary-dark));
+    color: var(--primary-dark);
+}
+
+/* Movie Cards */
+.movie-card h3 {
+    color: var(--accent-gold);
+    margin-bottom: 0.5rem;
+}
+
+.movie-genre {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.movie-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+/* Cinema Cards */
+.cinema-location {
+    color: var(--accent-blue);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.cinema-features {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-dark);
+    color: var(--text-muted);
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid var(--accent-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .feature-card, .cinema-card, .movie-card {
+        padding: 1.5rem;
+    }
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--accent-dark);
+    border-radius: 50%;
+    border-top-color: var(--accent-gold);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Form Styles */
+.form-control {
+    background-color: var(--accent-dark);
+    border-color: var(--secondary-dark);
+    color: var(--text-light);
+}
+
+.form-control:focus {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-gold);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    border-left: 4px solid #2ecc71;
+}
+
+.alert-danger {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border-left: 4px solid #e74c3c;
+}
+
+/* Grid Layout */
+.features-grid, .cinemas-grid, .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-gold);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ffed4e;
+}

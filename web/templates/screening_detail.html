@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - {{ cinema.cinema_name }} - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="screening-detail-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="screening-info-large">
+                    <div class="screening-header-large">
+                        <h1 class="screening-title">{{ movie.title }}</h1>
+                        <h2 class="cinema-title">{{ cinema.cinema_name }}</h2>
+                        <div class="screening-meta">
+                            <span class="badge bg-primary">{{ movie.genre }}</span>
+                            <span class="badge bg-secondary">{{ movie.duration_minutes }} min</span>
+                            <span class="badge bg-warning text-dark">{{ movie.rating }}</span>
+                            <span class="badge bg-info">{{ screening.screening_type }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="screening-details-large mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3><i class="fas fa-calendar-alt me-2"></i>Screening Details</h3>
+                                <div class="detail-item">
+                                    <strong>Date:</strong> {{ screening.get_date_formatted() }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Time:</strong> {{ screening.get_time_formatted() }} - {{ screening.end_time.strftime('%H:%M') }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Screen:</strong> Screen {{ screening.screen_number }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Type:</strong> {{ screening.screening_type }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Language:</strong> {{ screening.language }}
+                                </div>
+                                {% if screening.subtitles %}
+                                <div class="detail-item">
+                                    <strong>Subtitles:</strong> {{ screening.subtitles }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h3><i class="fas fa-building me-2"></i>Cinema Details</h3>
+                                <div class="detail-item">
+                                    <strong>Cinema:</strong> {{ cinema.cinema_name }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Address:</strong> {{ cinema.address }}
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Suburb:</strong> {{ cinema.suburb }} {{ cinema.postcode }}
+                                </div>
+                                {% if cinema.phone %}
+                                <div class="detail-item">
+                                    <strong>Phone:</strong> {{ cinema.phone }}
+                                </div>
+                                {% endif %}
+                                <div class="detail-item">
+                                    <strong>Screens:</strong> {{ cinema.total_screens }}
+                                </div>
+                                {% if cinema.facilities %}
+                                <div class="detail-item">
+                                    <strong>Facilities:</strong> {{ cinema.facilities }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-description-large mt-4">
+                        <h3><i class="fas fa-info-circle me-2"></i>Movie Synopsis</h3>
+                        <p>{{ movie.description or 'No description available.' }}</p>
+                        
+                        <div class="movie-crew mt-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Director:</strong> {{ movie.director or 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Cast:</strong> {{ movie.cast or 'N/A' }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Release Date:</strong> {{ movie.release_date.strftime('%B %d, %Y') if movie.release_date else 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Language:</strong> {{ movie.language }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="booking-card-large">
+                    <div class="booking-header-large">
+                        <h3><i class="fas fa-ticket-alt me-2"></i>Book Tickets</h3>
+                    </div>
+                    
+                    <div class="booking-body-large">
+                        <div class="price-info">
+                            <div class="price-display">
+                                <span class="price-label">Price per ticket:</span>
+                                <span class="price-amount">${{ "%.2f"|format(screening.ticket_price) }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="seats-info">
+                            <div class="seats-available">
+                                <i class="fas fa-chair me-2"></i>
+                                <span>{{ screening.available_seats }} seats available</span>
+                            </div>
+                            <div class="seats-total">
+                                <span>Total capacity: {{ screening.total_seats }} seats</span>
+                            </div>
+                        </div>
+                        
+                        {% if screening.available_seats > 0 %}
+                        <div class="booking-actions-large">
+                            <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" 
+                               class="btn btn-book-large">
+                                <i class="fas fa-ticket-alt me-2"></i>Book Now
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="booking-actions-large">
+                            <button class="btn btn-book-large" disabled>
+                                <i class="fas fa-times me-2"></i>Sold Out
+                            </button>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="booking-note">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                You will be redirected to the booking page to select the number of tickets.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if cinema.parking_info or cinema.public_transport %}
+                <div class="cinema-info-card mt-4">
+                    <div class="cinema-info-header">
+                        <h4><i class="fas fa-map-marker-alt me-2"></i>Getting There</h4>
+                    </div>
+                    <div class="cinema-info-body">
+                        {% if cinema.parking_info %}
+                        <div class="info-item">
+                            <strong><i class="fas fa-car me-1"></i>Parking:</strong>
+                            <p>{{ cinema.parking_info }}</p>
+                        </div>
+                        {% endif %}
+                        {% if cinema.public_transport %}
+                        <div class="info-item">
+                            <strong><i class="fas fa-bus me-1"></i>Public Transport:</strong>
+                            <p>{{ cinema.public_transport }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.screening-detail-section {
+    padding: 40px 0;
+    background-color: var(--primary-dark);
+    min-height: calc(100vh - 150px);
+}
+
+.screening-info-large {
+    color: var(--text-light);
+}
+
+.screening-header-large {
+    background: linear-gradient(135deg, var(--secondary-dark), var(--primary-dark));
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.screening-title {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+}
+
+.cinema-title {
+    font-size: 2rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+.screening-meta .badge {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    padding: 8px 12px;
+}
+
+.screening-details-large h3,
+.movie-description-large h3 {
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+.detail-item strong {
+    color: var(--accent-gold);
+    margin-right: 10px;
+}
+
+.movie-description-large p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.movie-crew p {
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.movie-crew strong {
+    color: var(--accent-gold);
+}
+
+.booking-card-large {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.booking-header-large {
+    background: linear-gradient(90deg, var(--accent-gold), #e6b800);
+    color: var(--primary-dark);
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.booking-body-large {
+    padding: 30px;
+    color: var(--text-light);
+}
+
+.price-info {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.price-display {
+    background-color: var(--secondary-dark);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.price-label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.price-amount {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+}
+
+.seats-info {
+    background-color: var(--secondary-dark);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 25px;
+}
+
+.seats-available {
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.seats-total {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.booking-actions-large {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.btn-book-large {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-book-large:hover {
+    background-color: #e6b800;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+.btn-book-large:disabled {
+    background-color: var(--text-muted);
+    color: var(--primary-dark);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.booking-note {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--secondary-dark);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.cinema-info-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.cinema-info-header {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: var(--text-light);
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.cinema-info-body {
+    padding: 25px;
+    color: var(--text-light);
+}
+
+.info-item {
+    margin-bottom: 20px;
+}
+
+.info-item strong {
+    color: var(--accent-gold);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.info-item p {
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+</style>
+{% endblock %}

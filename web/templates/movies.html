@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Movies - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">🎬 Now Showing</h1>
+            <p class="hero-subtitle">Discover the latest movies and book your tickets</p>
+        </div>
+    </div>
+</div>
+
+<div class="movies-section">
+    <div class="container">
+        <h2 class="section-title">Current Movies</h2>
+        <div class="movies-grid" id="movies-grid">
+            <!-- Movies will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load movies from API
+    fetch('/api/movies')
+        .then(response => response.json())
+        .then(data => {
+            const moviesGrid = document.getElementById('movies-grid');
+            moviesGrid.innerHTML = '';
+            
+            data.movies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                movieCard.innerHTML = `
+                    <div class="movie-poster">
+                        <div class="poster-placeholder">🎬</div>
+                    </div>
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <p class="movie-genre">${movie.genre} • ${movie.duration_minutes} min • ${movie.rating}</p>
+                        <p class="movie-description">${movie.description.substring(0, 100)}...</p>
+                        <p class="movie-director"><strong>Director:</strong> ${movie.director}</p>
+                        <p class="movie-cast"><strong>Cast:</strong> ${movie.cast}</p>
+                                               <a href="/movie/${movie.movie_id}" class="btn btn-primary">View Details</a>
+                    </div>
+                `;
+                moviesGrid.appendChild(movieCard);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading movies:', error);
+            document.getElementById('movies-grid').innerHTML = 
+                '<div class="alert alert-danger">Error loading movies. Please try again later.</div>';
+        });
+});
+</script>
+{% endblock %}

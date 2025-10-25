@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Login
+                        </h4>
+                    </div>
+                    <div class="login-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Username
+                                </label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       placeholder="Enter your username" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Enter your password" required>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember">
+                                <label class="form-check-label" for="remember">
+                                    Remember me
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="login-footer">
+                        <p class="mb-0">
+                            Don't have an account? 
+                            <a href="{{ url_for('register') }}" class="register-link">
+                                <i class="fas fa-user-plus me-1"></i>Register here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo Credentials -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="demo-card">
+                    <div class="demo-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Demo Credentials
+                        </h6>
+                    </div>
+                    <div class="demo-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <strong>Admin:</strong><br>
+                                <small class="demo-text">admin / admin123</small>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <strong>Customer:</strong><br>
+                                <small class="demo-text">john_doe / customer123</small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline btn-sm me-2" onclick="fillDemo('admin', 'admin123')">
+                                <i class="fas fa-user-shield me-1"></i>Admin Demo
+                            </button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="fillDemo('john_doe', 'customer123')">
+                                <i class="fas fa-user me-1"></i>Customer Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.login-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+    min-height: 100vh;
+}
+
+.login-card {
+    background-color: var(--secondary-dark);
+    border: 1px solid var(--accent-dark);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px var(--shadow-dark);
+}
+
+.login-header {
+    background: linear-gradient(135deg, var(--accent-gold), #ffed4e);
+    color: var(--primary-dark);
+    padding: 2rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.login-body {
+    padding: 2rem;
+}
+
+.login-footer {
+    background-color: var(--accent-dark);
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 1px solid var(--secondary-dark);
+}
+
+.login-footer p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.register-link {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+.demo-card {
+    background-color: var(--secondary-dark);
+    border: 1px solid var(--accent-dark);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.demo-card:hover {
+    border-color: var(--accent-gold);
+}
+
+.demo-header {
+    background: linear-gradient(135deg, var(--accent-blue), #5dade2);
+    color: var(--text-light);
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.demo-body {
+    padding: 1.5rem;
+}
+
+.demo-text {
+    color: var(--text-muted);
+}
+
+.form-label {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    background-color: var(--primary-dark);
+    border: 2px solid var(--accent-dark);
+    color: var(--text-light);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--accent-gold);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-check-input {
+    background-color: var(--primary-dark);
+    border: 2px solid var(--accent-dark);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.form-check-label {
+    color: var(--text-light);
+    margin-left: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!username || !password) {
+            e.preventDefault();
+            alert('Please fill in all fields.');
+            return false;
+        }
+        
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long.');
+            return false;
+        }
+    });
+});
+
+function fillDemo(username, password) {
+    document.getElementById('username').value = username;
+    document.getElementById('password').value = password;
+}
+</script>
+{% endblock %}

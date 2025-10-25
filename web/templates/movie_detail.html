@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="movie-detail-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="movie-poster-large">
+                    <img src="{{ movie.poster_url or 'https://via.placeholder.com/300x450?text=No+Poster' }}" 
+                         alt="{{ movie.title }} Poster" class="img-fluid rounded">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="movie-info-large">
+                    <h1 class="movie-title">{{ movie.title }}</h1>
+                    <div class="movie-meta">
+                        <span class="badge bg-primary">{{ movie.genre }}</span>
+                        <span class="badge bg-secondary">{{ movie.duration_minutes }} min</span>
+                        <span class="badge bg-warning text-dark">{{ movie.rating }}</span>
+                        <span class="badge bg-info">{{ movie.language }}</span>
+                    </div>
+                    
+                    <div class="movie-details mt-4">
+                        <h3>Details</h3>
+                        <p><strong>Director:</strong> {{ movie.director or 'N/A' }}</p>
+                        <p><strong>Cast:</strong> {{ movie.cast or 'N/A' }}</p>
+                        <p><strong>Release Date:</strong> {{ movie.release_date.strftime('%B %d, %Y') if movie.release_date else 'N/A' }}</p>
+                        <p><strong>Subtitles:</strong> {{ movie.subtitles or 'N/A' }}</p>
+                    </div>
+                    
+                    <div class="movie-description mt-4">
+                        <h3>Synopsis</h3>
+                        <p>{{ movie.description or 'No description available.' }}</p>
+                    </div>
+                    
+                    {% if movie.trailer_url %}
+                    <div class="movie-trailer mt-4">
+                        <h3>Trailer</h3>
+                        <a href="{{ movie.trailer_url }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="fas fa-play me-2"></i>Watch Trailer
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2 class="section-title">Available Screenings</h2>
+                {% if screenings %}
+                <div class="screenings-list">
+                    {% for screening in screenings %}
+                    <div class="screening-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5>{{ screening.get_cinema().cinema_name }}</h5>
+                                <p class="text-muted">{{ screening.get_cinema().suburb }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>{{ screening.get_date_formatted() }}</strong></p>
+                                <p>{{ screening.get_time_formatted() }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>Screen {{ screening.screen_number }}</strong></p>
+                                <p class="text-muted">{{ screening.screening_type }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>${{ "%.2f"|format(screening.ticket_price) }}</strong></p>
+                                <p class="text-muted">{{ screening.available_seats }} seats left</p>
+                            </div>
+                            <div class="col-md-3">
+                                {% if screening.available_seats > 0 %}
+                                <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-ticket-alt me-2"></i>Book Now
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-times me-2"></i>Sold Out
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <p class="lead text-muted">No screenings available for this movie.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.movie-detail-section {
+    padding: 40px 0;
+    background-color: var(--primary-dark);
+    min-height: calc(100vh - 150px);
+}
+
+.movie-poster-large img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.movie-info-large {
+    color: var(--text-light);
+}
+
+.movie-title {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.movie-meta .badge {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    padding: 8px 12px;
+}
+
+.movie-details h3,
+.movie-description h3,
+.movie-trailer h3 {
+    color: var(--accent-gold);
+    margin-bottom: 15px;
+}
+
+.screening-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.screening-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.screening-card h5 {
+    color: var(--accent-gold);
+    margin-bottom: 5px;
+}
+
+.screening-card p {
+    margin-bottom: 5px;
+    color: var(--text-light);
+}
+
+.screening-card .text-muted {
+    color: var(--text-muted) !important;
+}
+</style>
+{% endblock %}

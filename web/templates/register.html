@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="register-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="register-card">
+                    <div class="register-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Create Account
+                        </h4>
+                    </div>
+                    <div class="register-body">
+                        <form method="POST" id="registerForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>First Name *
+                                    </label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           placeholder="Enter your first name" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Last Name *
+                                    </label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           placeholder="Enter your last name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-at me-2"></i>Username *
+                                </label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       placeholder="Choose a username" required>
+                                <div class="form-text">Must be unique and at least 3 characters long</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email Address *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       placeholder="Enter your email address" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>Phone Number
+                                </label>
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                       placeholder="Enter your phone number (optional)">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Password *
+                                </label>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Create a password" required>
+                                <div class="form-text">Must be at least 6 characters long</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>Confirm Password *
+                                </label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                       placeholder="Confirm your password" required>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="terms-link">Terms and Conditions</a> *
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="register-footer">
+                        <p class="mb-0">
+                            Already have an account? 
+                            <a href="{{ url_for('login') }}" class="login-link">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.register-section {
+    padding: 60px 0;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+    min-height: 100vh;
+}
+
+.register-card {
+    background-color: var(--secondary-dark);
+    border: 1px solid var(--accent-dark);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.register-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px var(--shadow-dark);
+}
+
+.register-header {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: var(--text-light);
+    padding: 2rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.register-body {
+    padding: 2rem;
+}
+
+.register-footer {
+    background-color: var(--accent-dark);
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 1px solid var(--secondary-dark);
+}
+
+.register-footer p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.login-link {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+.terms-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+    color: var(--accent-gold);
+    text-decoration: underline;
+}
+
+.form-label {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    background-color: var(--primary-dark);
+    border: 2px solid var(--accent-dark);
+    color: var(--text-light);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--accent-gold);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-text {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-check-input {
+    background-color: var(--primary-dark);
+    border: 2px solid var(--accent-dark);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.form-check-label {
+    color: var(--text-light);
+    margin-left: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registerForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    
+    // Password confirmation validation
+    confirmPassword.addEventListener('input', function() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const confirmPassword = document.getElementById('confirm_password').value.trim();
+        const terms = document.getElementById('terms').checked;
+        
+        if (!username || !email || !password || !confirmPassword) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return false;
+        }
+        
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long.');
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match.');
+            return false;
+        }
+        
+        if (!terms) {
+            e.preventDefault();
+            alert('Please agree to the Terms and Conditions.');
+            return false;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            alert('Please enter a valid email address.');
+            return false;
+        }
+    });
+    
+    // Real-time password strength indicator
+    password.addEventListener('input', function() {
+        const strength = getPasswordStrength(this.value);
+        const strengthText = document.createElement('div');
+        strengthText.className = 'password-strength';
+        strengthText.style.color = strength.color;
+        strengthText.style.fontSize = '0.875rem';
+        strengthText.style.marginTop = '0.25rem';
+        strengthText.textContent = strength.text;
+        
+        // Remove existing strength indicator
+        const existing = document.querySelector('.password-strength');
+        if (existing) {
+            existing.remove();
+        }
+        
+        // Add new strength indicator
+        if (this.value.length > 0) {
+            this.parentNode.appendChild(strengthText);
+        }
+    });
+});
+
+function getPasswordStrength(password) {
+    if (password.length < 6) {
+        return { color: '#e74c3c', text: 'Weak - At least 6 characters required' };
+    } else if (password.length < 8) {
+        return { color: '#f39c12', text: 'Medium - Consider adding more characters' };
+    } else if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+        return { color: '#2ecc71', text: 'Strong password!' };
+    } else {
+        return { color: '#f39c12', text: 'Good - Consider adding numbers and uppercase letters' };
+    }
+}
+</script>
+{% endblock %}

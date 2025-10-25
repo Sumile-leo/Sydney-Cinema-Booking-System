@@ -1,30 +1,23 @@
-# 购票系统 - Python依赖包
-# Ticket Booking System - Python Dependencies
+# Sydney Ticket Booking System - Python Dependencies
+# 悉尼票务预订系统 - Python依赖包
 
-# Web框架 / Web Framework
-Flask==3.0.0
+# Web Framework / Web框架
+Flask==2.3.3
 Flask-CORS==4.0.0
 
-# 数据库驱动 / Database Driver
-PyMySQL==1.1.0
-mysql-connector-python==8.2.0
+# Database / 数据库
+psycopg[binary]==3.1.18
 
-# 桌面GUI / Desktop GUI
-PyQt5==5.15.10
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.13.0
+# HTTP Requests / HTTP请求
+requests==2.31.0
 
-# 工具库 / Utility Libraries
-python-dotenv==1.0.0
-Pillow==10.1.0
+# Password Hashing / 密码哈希
+bcrypt==4.0.1
 
-# 可选依赖 / Optional Dependencies
-# Flask-SQLAlchemy==3.1.1  # ORM (可选)
-# Flask-Session==0.5.0     # Session管理
-# Werkzeug==3.0.1          # Flask依赖的工具库
+# Date and Time / 日期和时间
+python-dateutil==2.8.2
 
-# 开发工具 / Development Tools (可选)
+# Development Tools (Optional) / 开发工具（可选）
 # pytest==7.4.3
-# pytest-flask==1.3.0
 # pylint==3.0.3
 # black==23.12.0

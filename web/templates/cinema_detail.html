@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cinema.cinema_name }} - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="cinema-detail-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="cinema-info-large">
+                    <h1 class="cinema-title">{{ cinema.cinema_name }}</h1>
+                    
+                    <div class="cinema-location mt-4">
+                        <h3><i class="fas fa-map-marker-alt me-2"></i>Location</h3>
+                        <p><strong>Address:</strong> {{ cinema.address }}</p>
+                        <p><strong>Suburb:</strong> {{ cinema.suburb }}</p>
+                        <p><strong>Postcode:</strong> {{ cinema.postcode }}</p>
+                        {% if cinema.phone %}
+                        <p><strong>Phone:</strong> {{ cinema.phone }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="cinema-facilities mt-4">
+                        <h3><i class="fas fa-star me-2"></i>Facilities</h3>
+                        <p><strong>Screens:</strong> {{ cinema.total_screens }}</p>
+                        {% if cinema.facilities %}
+                        <p><strong>Amenities:</strong> {{ cinema.facilities }}</p>
+                        {% endif %}
+                        {% if cinema.parking_info %}
+                        <p><strong>Parking:</strong> {{ cinema.parking_info }}</p>
+                        {% endif %}
+                        {% if cinema.public_transport %}
+                        <p><strong>Public Transport:</strong> {{ cinema.public_transport }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cinema-image-large">
+                    <div class="cinema-placeholder-large">
+                        <i class="fas fa-film"></i>
+                        <p>{{ cinema.cinema_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2 class="section-title">Current Screenings</h2>
+                {% if screenings %}
+                <div class="screenings-list">
+                    {% for screening in screenings %}
+                    <div class="screening-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5>{{ screening.get_movie().title }}</h5>
+                                <p class="text-muted">{{ screening.get_movie().genre }} • {{ screening.get_movie().duration_minutes }} min</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>{{ screening.get_date_formatted() }}</strong></p>
+                                <p>{{ screening.get_time_formatted() }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>Screen {{ screening.screen_number }}</strong></p>
+                                <p class="text-muted">{{ screening.screening_type }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p><strong>${{ "%.2f"|format(screening.ticket_price) }}</strong></p>
+                                <p class="text-muted">{{ screening.available_seats }} seats left</p>
+                            </div>
+                            <div class="col-md-3">
+                                {% if screening.available_seats > 0 %}
+                                <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-ticket-alt me-2"></i>Book Now
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-times me-2"></i>Sold Out
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <p class="lead text-muted">No screenings available at this cinema.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.cinema-detail-section {
+    padding: 40px 0;
+    background-color: var(--primary-dark);
+    min-height: calc(100vh - 150px);
+}
+
+.cinema-info-large {
+    color: var(--text-light);
+}
+
+.cinema-title {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.cinema-location h3,
+.cinema-facilities h3 {
+    color: var(--accent-gold);
+    margin-bottom: 15px;
+}
+
+.cinema-image-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.cinema-placeholder-large {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.cinema-placeholder-large i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: var(--accent-gold);
+}
+
+.cinema-placeholder-large p {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.screening-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.screening-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.screening-card h5 {
+    color: var(--accent-gold);
+    margin-bottom: 5px;
+}
+
+.screening-card p {
+    margin-bottom: 5px;
+    color: var(--text-light);
+}
+
+.screening-card .text-muted {
+    color: var(--text-muted) !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Book Tickets - {{ movie.title }} - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="booking-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h2><i class="fas fa-ticket-alt me-2"></i>Book Tickets</h2>
+                    </div>
+                    
+                    <div class="booking-body">
+                        <div class="movie-info-booking">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="{{ movie.poster_url or 'https://via.placeholder.com/150x225?text=No+Poster' }}" 
+                                         alt="{{ movie.title }} Poster" class="img-fluid rounded">
+                                </div>
+                                <div class="col-md-9">
+                                    <h3>{{ movie.title }}</h3>
+                                    <p><strong>{{ cinema.cinema_name }}</strong></p>
+                                    <p>{{ cinema.suburb }}</p>
+                                    <p><strong>{{ screening.get_date_formatted() }}</strong> at <strong>{{ screening.get_time_formatted() }}</strong></p>
+                                    <p>Screen {{ screening.screen_number }} • {{ screening.screening_type }}</p>
+                                    <p><strong>Price:</strong> ${{ "%.2f"|format(screening.ticket_price) }} per ticket</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <form id="bookingForm" method="POST" action="{{ url_for('api_book_ticket') }}">
+                            <input type="hidden" name="screening_id" value="{{ screening.screening_id }}">
+                            
+                            <div class="ticket-selection">
+                                <h4>Select Number of Tickets</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="num_tickets" class="form-label">Number of Tickets</label>
+                                        <select class="form-control" id="num_tickets" name="num_tickets" required>
+                                            <option value="">Select tickets</option>
+                                            {% for i in range(1, min(screening.available_seats + 1, 11)) %}
+                                            <option value="{{ i }}">{{ i }} ticket{{ 's' if i > 1 else '' }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Total Price</label>
+                                        <div class="total-price-display">
+                                            <span id="totalPrice">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="booking-actions mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="bookButton" disabled>
+                                    <i class="fas fa-credit-card me-2"></i>Complete Booking
+                                </button>
+                                <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Movie
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.booking-section {
+    padding: 40px 0;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #000 100%);
+    min-height: calc(100vh - 150px);
+}
+
+.booking-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.booking-header {
+    background: linear-gradient(90deg, var(--accent-gold), #e6b800);
+    color: var(--primary-dark);
+    padding: 25px;
+    text-align: center;
+}
+
+.booking-header h2 {
+    margin: 0;
+    font-weight: bold;
+}
+
+.booking-body {
+    padding: 40px;
+    color: var(--text-light);
+}
+
+.movie-info-booking {
+    background-color: var(--secondary-dark);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.movie-info-booking h3 {
+    color: var(--accent-gold);
+    margin-bottom: 10px;
+}
+
+.movie-info-booking p {
+    margin-bottom: 5px;
+    color: var(--text-light);
+}
+
+.ticket-selection h4 {
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.form-control {
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    border: 1px solid var(--input-border);
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
+}
+
+.total-price-display {
+    background-color: var(--secondary-dark);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+    text-align: center;
+}
+
+.booking-actions .btn {
+    margin: 10px;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+}
+
+.btn-primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+.btn-primary:disabled {
+    background-color: var(--text-muted);
+    color: var(--primary-dark);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const numTicketsSelect = document.getElementById('num_tickets');
+    const totalPriceDisplay = document.getElementById('totalPrice');
+    const bookButton = document.getElementById('bookButton');
+    const ticketPrice = {{ screening.ticket_price }};
+    
+    numTicketsSelect.addEventListener('change', function() {
+        const numTickets = parseInt(this.value);
+        if (numTickets > 0) {
+            const totalPrice = ticketPrice * numTickets;
+            totalPriceDisplay.textContent = '$' + totalPrice.toFixed(2);
+            bookButton.disabled = false;
+        } else {
+            totalPriceDisplay.textContent = '$0.00';
+            bookButton.disabled = true;
+        }
+    });
+    
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('{{ url_for("api_book_ticket") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Booking successful! Your booking number is: ' + data.booking_number);
+                window.location.href = '{{ url_for("bookings") }}';
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to complete booking. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %}

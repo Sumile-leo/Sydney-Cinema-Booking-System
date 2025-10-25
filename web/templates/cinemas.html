@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Cinemas - Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">🎭 Our Cinemas</h1>
+            <p class="hero-subtitle">Discover our premium cinema locations across Sydney</p>
+        </div>
+    </div>
+</div>
+
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title">Cinema Locations</h2>
+        <div class="cinemas-grid" id="cinemas-grid">
+            <!-- Cinemas will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load cinemas from API
+    fetch('/api/cinemas')
+        .then(response => response.json())
+        .then(data => {
+            const cinemasGrid = document.getElementById('cinemas-grid');
+            cinemasGrid.innerHTML = '';
+            
+            data.cinemas.forEach(cinema => {
+                const cinemaCard = document.createElement('div');
+                cinemaCard.className = 'cinema-card';
+                cinemaCard.innerHTML = `
+                    <div class="cinema-image">
+                        <div class="cinema-placeholder">🎬</div>
+                    </div>
+                    <div class="cinema-info">
+                        <h3>${cinema.cinema_name}</h3>
+                        <p class="cinema-location">📍 ${cinema.suburb}</p>
+                        <p class="cinema-address">${cinema.address}</p>
+                        <p class="cinema-features">${cinema.facilities}</p>
+                        <p class="cinema-screens">${cinema.total_screens} Screens</p>
+                        <a href="/cinema/${cinema.cinema_id}" class="btn btn-outline">View Details</a>
+                    </div>
+                `;
+                cinemasGrid.appendChild(cinemaCard);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading cinemas:', error);
+            document.getElementById('cinemas-grid').innerHTML = 
+                '<div class="alert alert-danger">Error loading cinemas. Please try again later.</div>';
+        });
+});
+</script>
+{% endblock %}

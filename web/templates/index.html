@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Sydney Cinema Booking System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">🎬 Sydney Cinema Booking System</h1>
+            <p class="hero-subtitle">Discover the latest movies, book your seats, and enjoy an amazing cinema experience</p>
+            <div class="hero-buttons">
+                <a href="/movies" class="btn btn-primary btn-lg">Browse Movies</a>
+                <a href="/cinemas" class="btn btn-outline btn-lg">View Cinemas</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Us?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <h3>Latest Movies</h3>
+                <p>First-run releases including Hollywood blockbusters, independent films, and art house cinema</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3>Multiple Locations</h3>
+                <p>Covering all areas of Sydney, from CBD to suburbs, there's always a cinema near you</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💺</div>
+                <h3>Seat Booking</h3>
+                <p>Online seat selection supporting IMAX, Gold Class, VIP and other premium experiences</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Great Prices</h3>
+                <p>Student tickets, member discounts, early bird specials - enjoy movies at the best prices</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title">Popular Cinemas</h2>
+        <div class="cinemas-grid">
+            <div class="cinema-card">
+                <div class="cinema-image">
+                    <div class="cinema-placeholder">🎭</div>
+                </div>
+                <div class="cinema-info">
+                    <h3>Event Cinemas George Street</h3>
+                    <p class="cinema-location">📍 Sydney CBD</p>
+                    <p class="cinema-features">IMAX • Gold Class • VMAX</p>
+                    <a href="/cinema/1" class="btn btn-outline">View Details</a>
+                </div>
+            </div>
+            <div class="cinema-card">
+                <div class="cinema-image">
+                    <div class="cinema-placeholder">🎪</div>
+                </div>
+                <div class="cinema-info">
+                    <h3>Hoyts Broadway</h3>
+                    <p class="cinema-location">📍 Chippendale</p>
+                    <p class="cinema-features">IMAX • Xtremescreen • 8 Screens</p>
+                    <a href="/cinema/2" class="btn btn-outline">View Details</a>
+                </div>
+            </div>
+            <div class="cinema-card">
+                <div class="cinema-image">
+                    <div class="cinema-placeholder">🏖️</div>
+                </div>
+                <div class="cinema-info">
+                    <h3>Village Cinemas Bondi Junction</h3>
+                    <p class="cinema-location">📍 Bondi Junction</p>
+                    <p class="cinema-features">Gold Class • VMAX • 6 Screens</p>
+                    <a href="/cinema/3" class="btn btn-outline">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="movies-section">
+    <div class="container">
+        <h2 class="section-title">Now Showing</h2>
+        <div class="movies-grid">
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <div class="poster-placeholder">🎬</div>
+                </div>
+                <div class="movie-info">
+                    <h3>Avatar: The Way of Water</h3>
+                    <p class="movie-genre">Sci-Fi • 192 min • M</p>
+                    <p class="movie-description">Explore the underwater world of Pandora...</p>
+                    <a href="/movie/1" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <div class="poster-placeholder">✈️</div>
+                </div>
+                <div class="movie-info">
+                    <h3>Top Gun: Maverick</h3>
+                    <p class="movie-genre">Action • 131 min • M</p>
+                    <p class="movie-description">Tom Cruise returns to the iconic role...</p>
+                    <a href="/movie/2" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">
+                    <div class="poster-placeholder">🦸</div>
+                </div>
+                <div class="movie-info">
+                    <h3>Black Panther: Wakanda Forever</h3>
+                    <p class="movie-genre">Action • 161 min • M</p>
+                    <p class="movie-description">Wakanda faces new challenges...</p>
+                    <a href="/movie/3" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Start Your Cinema Journey?</h2>
+            <p>Register now to enjoy more discounts and personalized recommendations</p>
+            <div class="cta-buttons">
+                <a href="/register" class="btn btn-primary btn-lg">Register Free</a>
+                <a href="/login" class="btn btn-outline btn-lg">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
