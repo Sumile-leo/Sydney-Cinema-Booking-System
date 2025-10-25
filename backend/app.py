@@ -850,6 +850,7 @@ def cancel_booking(booking_id):
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/seats/<int:screening_id>')
+@login_required
 def api_get_seat_map(screening_id):
     """Get seat map for a screening"""
     try:

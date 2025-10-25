@@ -435,6 +435,28 @@
     color: var(--accent-gold);
     font-weight: bold;
 }
+
+.seat-map-error {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+}
+
+.seat-map-error i {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.seat-map-error p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.seat-map-error .btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+}
 </style>
 {% endblock %}
 
@@ -449,18 +471,52 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSeatMap();
     
     function loadSeatMap() {
-        fetch(`/api/seats/${screeningId}`)
-            .then(response => response.json())
+        fetch(`/api/seats/${screeningId}`, {
+            credentials: 'include'
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    showSeatMapError('Please login to view seat map.');
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.success) {
+                if (data && data.success) {
                     renderSeatMap(data.seat_map, data.occupied_seats);
                 } else {
-                    console.error('Failed to load seat map:', data.error);
+                    console.error('Failed to load seat map:', data ? data.error : 'No data');
+                    showSeatMapError('Failed to load seat map: ' + (data ? data.error : 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Error loading seat map:', error);
+                // Check if response is HTML (login page)
+                if (error.message.includes('Unexpected token')) {
+                    showSeatMapError('Please login to view seat map.');
+                } else {
+                    showSeatMapError('Failed to load seat map. Please try again.');
+                }
             });
+    }
+    
+    function showSeatMapError(message) {
+        const seatMapContainer = document.getElementById('seatMap');
+        const isLoginError = message.includes('login');
+        
+        seatMapContainer.innerHTML = `
+            <div class="seat-map-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${message}</p>
+                ${isLoginError ? 
+                    '<a href="/login" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>' :
+                    '<button onclick="loadSeatMap()" class="btn btn-outline-primary"><i class="fas fa-refresh"></i> Retry</button>'
+                }
+            </div>
+        `;
     }
     
     function renderSeatMap(seatMap, occupiedSeats) {
