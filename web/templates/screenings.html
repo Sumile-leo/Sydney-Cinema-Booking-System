@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p><strong>Screen:</strong> Screen ${screening.screen_number} (${screening.screening_type})</p>
                         <p><strong>Price:</strong> $${screening.ticket_price.toFixed(2)}</p>
                         <p><strong>Seats:</strong> ${screening.available_seats} / ${screening.total_seats} available</p>
-                        <p><strong>Duration:</strong> ${screening.start_time} - ${screening.end_time}</p>
+                        <p><strong>Duration:</strong> ${screening.duration_minutes} min</p>
                     </div>
                     <div class="screening-actions mt-3">
                         <a href="/screening/${screening.screening_id}" class="btn btn-outline-primary me-2">
