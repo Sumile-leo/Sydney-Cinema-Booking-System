@@ -755,7 +755,8 @@ def api_bookings():
                 'start_time': booking.get_screening().get_time_formatted() if booking.get_screening() else None,
                 'end_time': booking.get_screening().end_time.strftime('%H:%M') if booking.get_screening() else None,
                 'title': booking.get_movie().title if booking.get_movie() else 'Unknown',
-                'cinema_name': booking.get_cinema().cinema_name if booking.get_cinema() else 'Unknown'
+                'cinema_name': booking.get_cinema().cinema_name if booking.get_cinema() else 'Unknown',
+                'can_cancel': booking.can_cancel()
             }
             booking_list.append(booking_dict)
         

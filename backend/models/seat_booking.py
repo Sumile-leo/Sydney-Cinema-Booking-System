@@ -141,6 +141,27 @@ class SeatBooking(BaseModel):
             'booking_date': self.booking_date.strftime('%Y-%m-%d %H:%M') if self.booking_date else 'Unknown'
         }
     
+    @classmethod
+    def delete_by_booking_id(cls, booking_id: int) -> bool:
+        """Delete all seat bookings for a given booking ID"""
+        try:
+            connection = cls.get_connection()
+            cursor = connection.cursor()
+            
+            cursor.execute(
+                "DELETE FROM seat_bookings WHERE booking_id = %s",
+                (booking_id,)
+            )
+            
+            connection.commit()
+            cursor.close()
+            connection.close()
+            
+            return True
+        except Exception as e:
+            print(f"Error deleting seat bookings: {e}")
+            return False
+    
     def __str__(self):
         seat = self.get_seat()
         booking = self.get_booking()

@@ -65,7 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Status:</strong> <span class="status-${booking.booking_status}">${booking.booking_status}</span></p>
                         </div>
                         <div class="booking-actions">
-                            <button class="btn btn-outline" onclick="cancelBooking('${booking.booking_id}')">Cancel</button>
+                            ${booking.can_cancel ? 
+                                '<button class="btn btn-outline-danger" onclick="cancelBooking(\'' + booking.booking_id + '\')">Cancel</button>' :
+                                '<span class="text-muted">Cannot cancel (less than 2 hours before screening)</span>'
+                            }
                         </div>
                     `;
                     bookingsContainer.appendChild(bookingCard);

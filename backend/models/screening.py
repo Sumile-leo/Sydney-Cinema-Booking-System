@@ -247,6 +247,17 @@ class Screening(BaseModel):
             return self.update('screenings', self.screening_id, update_data)
         return None
     
+    def cancel_booking(self, num_tickets: int) -> bool:
+        """Cancel a booking and free up seats"""
+        try:
+            # This method is called when a booking is cancelled
+            # In the new seat-based system, seats are freed automatically
+            # when seat_bookings are deleted, so this is mainly for compatibility
+            return True
+        except Exception as e:
+            print(f"Error in cancel_booking: {e}")
+            return False
+    
     def __str__(self):
         movie = self.get_movie()
         cinema = self.get_cinema()

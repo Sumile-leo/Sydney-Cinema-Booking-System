@@ -243,10 +243,21 @@ class Booking(BaseModel):
         if not screening:
             return False
         
-        # Can cancel if screening is not today and booking is confirmed
-        from datetime import date
+        # Can cancel if booking is confirmed and screening is more than 2 hours away
+        from datetime import datetime, timedelta
+        
+        # Get current time
+        now = datetime.now()
+        
+        # Create datetime object for screening start time
+        screening_datetime = datetime.combine(screening.screening_date, screening.start_time)
+        
+        # Calculate time difference
+        time_diff = screening_datetime - now
+        
+        # Can cancel if booking is confirmed and screening is more than 2 hours away
         return (self.booking_status == 'confirmed' and 
-                screening.screening_date > date.today())
+                time_diff > timedelta(hours=2))
     
     def cancel_booking(self) -> bool:
         """Cancel this booking"""
@@ -264,10 +275,12 @@ class Booking(BaseModel):
         if result:
             self.booking_status = 'cancelled'
             
-            # Free up seats in screening
-            screening = self.get_screening()
-            if screening:
-                screening.cancel_booking(self.num_tickets)
+            # Free up seats by deleting seat_bookings
+            try:
+                from models.seat_booking import SeatBooking
+                SeatBooking.delete_by_booking_id(self.booking_id)
+            except Exception as e:
+                print(f"Error freeing seats: {e}")
             
             return True
         
