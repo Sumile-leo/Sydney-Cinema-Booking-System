@@ -136,57 +136,41 @@ def logout():
 @login_required
 def dashboard():
     """User dashboard - 用户仪表板"""
-    connection = get_db_connection()
-    if not connection:
-        flash('Database connection error.', 'error')
-        return render_template('dashboard.html')
-    
     try:
-        cursor = connection.cursor(dictionary=True)
+        # Get user's recent bookings
+        bookings = Booking.get_by_user_id(session['user_id'])
         
-        # Get upcoming events
-        cursor.execute("""
-            SELECT e.event_id, e.event_name, e.start_datetime, e.base_price, v.venue_name, v.city
-            FROM events e
-            JOIN venues v ON e.venue_id = v.venue_id
-            WHERE e.status = 'upcoming' AND e.start_datetime > NOW()
-            ORDER BY e.start_datetime
-            LIMIT 10
-        """)
-        upcoming_events = cursor.fetchall()
+        # Get upcoming screenings (next 10)
+        from datetime import date
+        upcoming_screenings = Screening.get_all('screenings', 
+                                              'screening_date >= %s AND is_active = TRUE', 
+                                              (date.today(),))
+        upcoming_screenings = upcoming_screenings[:10]
         
-        # Get user's recent orders
-        cursor.execute("""
-            SELECT o.order_id, o.order_number, o.total_amount, o.order_status, o.order_date,
-                   e.event_name, e.start_datetime, v.venue_name
-            FROM orders o
-            JOIN events e ON o.event_id = e.event_id
-            JOIN venues v ON e.venue_id = v.venue_id
-            WHERE o.user_id = %s
-            ORDER BY o.order_date DESC
-            LIMIT 5
-        """, (session['user_id'],))
-        recent_orders = cursor.fetchall()
+        # Get user statistics
+        total_bookings = len(bookings)
+        confirmed_bookings = len([b for b in bookings if b.booking_status == 'confirmed'])
+        cancelled_bookings = len([b for b in bookings if b.booking_status == 'cancelled'])
         
-        # Format datetime for display
-        for event in upcoming_events:
-            event['start_datetime'] = event['start_datetime'].strftime('%Y-%m-%d %H:%M')
+        # Get recent bookings (last 5)
+        recent_bookings = bookings[:5] if bookings else []
         
-        for order in recent_orders:
-            order['order_date'] = order['order_date'].strftime('%Y-%m-%d %H:%M')
-            order['start_datetime'] = order['start_datetime'].strftime('%Y-%m-%d %H:%M')
+        return render_template('dashboard.html', 
+                             recent_bookings=recent_bookings,
+                             upcoming_screenings=upcoming_screenings,
+                             total_bookings=total_bookings,
+                             confirmed_bookings=confirmed_bookings,
+                             cancelled_bookings=cancelled_bookings)
         
-    except Error as e:
+    except Exception as e:
+        print(f"Error loading dashboard: {e}")
         flash('Error loading dashboard data.', 'error')
-        upcoming_events = []
-        recent_orders = []
-    finally:
-        cursor.close()
-        connection.close()
-    
-    return render_template('dashboard.html', 
-                         upcoming_events=upcoming_events, 
-                         recent_orders=recent_orders)
+        return render_template('dashboard.html', 
+                             recent_bookings=[],
+                             upcoming_screenings=[],
+                             total_bookings=0,
+                             confirmed_bookings=0,
+                             cancelled_bookings=0)
 
 @app.route('/events')
 def events():
