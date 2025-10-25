@@ -52,12 +52,12 @@ class Booking(BaseModel):
             num_tickets=row[4],
             total_amount=row[5],
             booking_status=row[6],
-            payment_method=row[7],
-            payment_status=row[8],
-            payment_date=row[9],
-            booking_date=row[10],
-            created_at=row[11],
-            updated_at=row[12]
+            payment_method=None,  # Not in actual table
+            payment_status=row[7],
+            payment_date=None,   # Not in actual table
+            booking_date=row[8],
+            created_at=row[9],
+            updated_at=row[10]
         )
     
     @classmethod

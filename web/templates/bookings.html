@@ -23,27 +23,31 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is logged in
-    const userId = '{{ session.user_id if session.user_id else "" }}';
-    
-    if (!userId) {
-        document.getElementById('bookings-container').innerHTML = `
-            <div class="alert alert-danger">
-                <h4>Please Login</h4>
-                <p>You need to be logged in to view your bookings.</p>
-                <a href="/login" class="btn btn-primary">Login</a>
-            </div>
-        `;
-        return;
-    }
+    // Load user bookings directly - let the API handle authentication
     
     // Load user bookings
     fetch('/api/bookings')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                // User not logged in
+                document.getElementById('bookings-container').innerHTML = `
+                    <div class="alert alert-danger">
+                        <h4>Please Login</h4>
+                        <p>You need to be logged in to view your bookings.</p>
+                        <a href="/login" class="btn btn-primary">Login</a>
+                    </div>
+                `;
+                return;
+            }
+            return response.json();
+        })
         .then(data => {
+            if (!data) return; // Skip if we handled 401 above
+            console.log('Bookings data received:', data);
             const bookingsContainer = document.getElementById('bookings-container');
             
             if (data.bookings && data.bookings.length > 0) {
+                console.log('Found', data.bookings.length, 'bookings');
                 bookingsContainer.innerHTML = '';
                 
                 data.bookings.forEach(booking => {
@@ -67,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     bookingsContainer.appendChild(bookingCard);
                 });
             } else {
+                console.log('No bookings found or empty bookings array');
                 bookingsContainer.innerHTML = `
                     <div class="alert alert-info">
                         <h4>No Bookings Found</h4>
