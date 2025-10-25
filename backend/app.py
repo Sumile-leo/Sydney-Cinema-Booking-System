@@ -28,7 +28,7 @@ app.secret_key = flask_config['secret_key']
 app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Database configuration is now handled by models
 # No need for direct database connection functions
@@ -587,24 +587,20 @@ def screening_detail(screening_id):
 @login_required
 def book_ticket(screening_id):
     """Book ticket page"""
-    try:
-        screening = Screening.get_by_id('screenings', screening_id)
-        if not screening:
-            flash('Screening not found.', 'error')
-            return redirect(url_for('movies'))
-        
-        movie = screening.get_movie()
-        cinema = screening.get_cinema()
-        hall = screening.get_hall()
-        
-        return render_template('seat_selection.html', 
-                             screening=screening, 
-                             movie=movie, 
-                             cinema=cinema,
-                             hall=hall)
-    except Exception as e:
-        flash('Error loading screening details.', 'error')
+    screening = Screening.get_by_id('screenings', screening_id)
+    if not screening:
+        flash('Screening not found.', 'error')
         return redirect(url_for('movies'))
+    
+    movie = screening.get_movie()
+    cinema = screening.get_cinema()
+    hall = screening.get_hall()
+    
+    return render_template('seat_selection.html', 
+                         screening=screening, 
+                         movie=movie, 
+                         cinema=cinema,
+                         hall=hall)
 
 # API routes - API路由
 

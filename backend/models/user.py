@@ -104,12 +104,14 @@ class User(BaseModel):
     
     @staticmethod
     def hash_password(password: str) -> str:
-        """Hash password using SHA-256"""
-        return hashlib.sha256(password.encode()).hexdigest()
+        """Hash password using bcrypt"""
+        import bcrypt
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
     def check_password(self, password: str) -> bool:
         """Check if provided password matches hash"""
-        return self.password_hash == self.hash_password(password)
+        import bcrypt
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
     
     def get_bookings(self) -> List:
         """Get all bookings for this user"""

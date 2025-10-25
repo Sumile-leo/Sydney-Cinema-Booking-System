@@ -32,19 +32,19 @@
                         
                         <div class="price-info">
                             <h5>Pricing</h5>
-                            <p><strong>Base Price:</strong> ${{ "%.2f"|format(screening.ticket_price) }}</p>
+                            <p><strong>Base Price:</strong> ${{ "%.2f"|format(screening.ticket_price|float) }}</p>
                             <div class="seat-types">
                                 <div class="seat-type-item">
                                     <span class="seat-icon standard"></span>
-                                    <span>Standard: ${{ "%.2f"|format(screening.ticket_price) }}</span>
+                                    <span>Standard: ${{ "%.2f"|format(screening.ticket_price|float) }}</span>
                                 </div>
                                 <div class="seat-type-item">
                                     <span class="seat-icon premium"></span>
-                                    <span>Premium: ${{ "%.2f"|format(screening.ticket_price * 1.5) }}</span>
+                                    <span>Premium: ${{ "%.2f"|format((screening.ticket_price|float) * 1.5) }}</span>
                                 </div>
                                 <div class="seat-type-item">
                                     <span class="seat-icon vip"></span>
-                                    <span>VIP: ${{ "%.2f"|format(screening.ticket_price * 2.0) }}</span>
+                                    <span>VIP: ${{ "%.2f"|format((screening.ticket_price|float) * 2.0) }}</span>
                                 </div>
                             </div>
                         </div>

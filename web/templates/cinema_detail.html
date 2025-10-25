@@ -62,15 +62,15 @@
                                 <p>{{ screening.get_time_formatted() }}</p>
                             </div>
                             <div class="col-md-2">
-                                <p><strong>Screen {{ screening.screen_number }}</strong></p>
+                                <p><strong>Hall {{ screening.hall_id }}</strong></p>
                                 <p class="text-muted">{{ screening.screening_type }}</p>
                             </div>
                             <div class="col-md-2">
                                 <p><strong>${{ "%.2f"|format(screening.ticket_price) }}</strong></p>
-                                <p class="text-muted">{{ screening.available_seats }} seats left</p>
+                                <p class="text-muted">{{ screening.get_available_seats() }} seats left</p>
                             </div>
                             <div class="col-md-3">
-                                {% if screening.available_seats > 0 %}
+                                {% if screening.get_available_seats() > 0 %}
                                 <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" 
                                    class="btn btn-primary">
                                     <i class="fas fa-ticket-alt me-2"></i>Book Now

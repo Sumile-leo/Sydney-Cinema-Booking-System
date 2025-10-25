@@ -115,14 +115,14 @@
                         <div class="seats-info">
                             <div class="seats-available">
                                 <i class="fas fa-chair me-2"></i>
-                                <span>{{ screening.available_seats }} seats available</span>
+                                <span>{{ screening.get_available_seats() }} seats available</span>
                             </div>
                             <div class="seats-total">
-                                <span>Total capacity: {{ screening.total_seats }} seats</span>
+                                <span>Total capacity: {{ screening.get_total_seats() }} seats</span>
                             </div>
                         </div>
                         
-                        {% if screening.available_seats > 0 %}
+                        {% if screening.get_available_seats() > 0 %}
                         <div class="booking-actions-large">
                             <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" 
                                class="btn btn-book-large">
