@@ -537,8 +537,8 @@ document.addEventListener('DOMContentLoaded', function() {
             rows[seat.row_number].push(seat);
         });
         
-        // Sort rows and render
-        Object.keys(rows).sort().forEach(rowNumber => {
+        // Sort rows numerically and render
+        Object.keys(rows).sort((a, b) => parseInt(a) - parseInt(b)).forEach(rowNumber => {
             const rowDiv = document.createElement('div');
             rowDiv.className = 'seat-row';
             
