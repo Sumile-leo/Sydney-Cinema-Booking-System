@@ -521,6 +521,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function renderSeatMap(seatMap, occupiedSeats) {
         const seatMapContainer = document.getElementById('seatMap');
+        if (!seatMapContainer) {
+            console.error('Seat map container not found!');
+            return;
+        }
+        
         seatMapContainer.innerHTML = '';
         
         // Group seats by row

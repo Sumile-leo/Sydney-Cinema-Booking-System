@@ -596,7 +596,7 @@ def book_ticket(screening_id):
     cinema = screening.get_cinema()
     hall = screening.get_hall()
     
-    return render_template('seat_selection.html', 
+    return render_template('book_ticket.html', 
                          screening=screening, 
                          movie=movie, 
                          cinema=cinema,
