@@ -13,8 +13,8 @@ class Movie:
                  genre: str = None, duration_minutes: int = None,
                  release_date: date = None, director: str = None,
                  cast: str = None, language: str = None, subtitles: str = None,
-                 created_at: datetime = None, updated_at: datetime = None,
-                 is_active: bool = True):
+                 poster_url: str = None, created_at: datetime = None, 
+                 updated_at: datetime = None, is_active: bool = True):
         self.movie_id = movie_id
         self.title = title
         self.description = description
@@ -25,6 +25,7 @@ class Movie:
         self.cast = cast
         self.language = language
         self.subtitles = subtitles
+        self.poster_url = poster_url
         self.created_at = created_at
         self.updated_at = updated_at
         self.is_active = is_active
@@ -34,7 +35,7 @@ class Movie:
         """
         Create Movie instance from database row tuple
         db_row: (movie_id, title, description, genre, duration_minutes, release_date, 
-                 director, cast, language, subtitles, created_at, updated_at, is_active)
+                 director, cast, language, subtitles, poster_url, created_at, updated_at, is_active)
         """
         return cls(
             movie_id=db_row[0],
@@ -47,9 +48,10 @@ class Movie:
             cast=db_row[7] if len(db_row) > 7 and db_row[7] else None,
             language=db_row[8] if len(db_row) > 8 and db_row[8] else None,
             subtitles=db_row[9] if len(db_row) > 9 and db_row[9] else None,
-            created_at=db_row[10] if len(db_row) > 10 else None,
-            updated_at=db_row[11] if len(db_row) > 11 else None,
-            is_active=db_row[12] if len(db_row) > 12 else True
+            poster_url=db_row[10] if len(db_row) > 10 and db_row[10] else None,
+            created_at=db_row[11] if len(db_row) > 11 else None,
+            updated_at=db_row[12] if len(db_row) > 12 else None,
+            is_active=db_row[13] if len(db_row) > 13 else True
         )
     
     def to_dict(self) -> dict:
