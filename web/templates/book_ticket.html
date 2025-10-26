@@ -144,11 +144,42 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Booking Summary -->
+                    <div class="booking-summary-box mt-4">
+                        <div class="summary-header">
+                            <h5>Booking Summary</h5>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-item">
+                                <span>Seats Selected: <span id="selected-count">0</span>/5</span>
+                                <span id="selected-seats">None</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Price per ticket:</span>
+                                <span>${{ "%.2f"|format(screening.ticket_price) }}</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span><strong>Total:</strong></span>
+                                <strong id="total-price">$0.00</strong>
+                            </div>
+                        </div>
+                        <button id="confirm-btn" class="btn btn-primary btn-lg w-100 mt-3" disabled>
+                            <i class="bi bi-check-circle"></i> Confirm Booking
+                        </button>
+                        <div id="error-message" class="text-danger mt-2 text-center" style="display: none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Hidden form for submitting booking -->
+<form id="booking-form" method="POST" action="{{ url_for('create_booking') }}" style="display: none;">
+    <input type="hidden" name="screening_id" value="{{ screening.screening_id }}">
+    <input type="hidden" name="seat_ids" id="seat-ids-input">
+</form>
 
 <style>
 .movie-info-card {
@@ -307,6 +338,40 @@
     height: 30px;
 }
 
+.booking-summary-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.summary-header h5 {
+    color: #ffc107;
+    margin-bottom: 1rem;
+}
+
+.summary-content {
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-item.total {
+    border-bottom: none;
+    font-size: 1.2rem;
+    color: #ffc107;
+}
+
+#confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .movie-info-card {
@@ -319,6 +384,43 @@
 <script>
 // JavaScript for seat selection
 let selectedSeats = [];
+const ticketPrice = {{ screening.ticket_price|float }};
+const maxSeats = 5;
+
+function updateBookingSummary() {
+    const count = selectedSeats.length;
+    const totalPrice = count * ticketPrice;
+    
+    // Update count
+    document.getElementById('selected-count').textContent = count;
+    
+    // Update seats display
+    const seatsDisplay = selectedSeats.map(seatId => {
+        const btn = document.querySelector(`[data-seat-id="${seatId}"]`);
+        return btn ? `R${btn.getAttribute('data-row')}-S${btn.getAttribute('data-seat')}` : '';
+    }).join(', ');
+    
+    document.getElementById('selected-seats').textContent = seatsDisplay || 'None';
+    
+    // Update total price
+    document.getElementById('total-price').textContent = '$' + totalPrice.toFixed(2);
+    
+    // Enable/disable confirm button
+    const confirmBtn = document.getElementById('confirm-btn');
+    const errorMsg = document.getElementById('error-message');
+    
+    if (count === 0) {
+        confirmBtn.disabled = true;
+        errorMsg.style.display = 'none';
+    } else if (count > maxSeats) {
+        confirmBtn.disabled = true;
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = 'You can select up to ' + maxSeats + ' seats only';
+    } else {
+        confirmBtn.disabled = false;
+        errorMsg.style.display = 'none';
+    }
+}
 
 document.querySelectorAll('.seat-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -331,14 +433,41 @@ document.querySelectorAll('.seat-btn').forEach(btn => {
             selectedSeats = selectedSeats.filter(id => id !== seatId);
             this.classList.remove('selected');
         } else {
+            // Check if already at max
+            if (selectedSeats.length >= maxSeats) {
+                alert('You can select up to ' + maxSeats + ' seats only');
+                return;
+            }
             // Select
             selectedSeats.push(seatId);
             this.classList.add('selected');
         }
         
-        console.log('Selected seats:', selectedSeats);
+        updateBookingSummary();
     });
 });
+
+// Handle confirm button click
+document.getElementById('confirm-btn').addEventListener('click', function() {
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat');
+        return;
+    }
+    
+    if (selectedSeats.length > maxSeats) {
+        alert('You can select up to ' + maxSeats + ' seats only');
+        return;
+    }
+    
+    // Set seat IDs in hidden form
+    document.getElementById('seat-ids-input').value = selectedSeats.join(',');
+    
+    // Submit form
+    document.getElementById('booking-form').submit();
+});
+
+// Initialize summary
+updateBookingSummary();
 </script>
 {% endblock %}
 

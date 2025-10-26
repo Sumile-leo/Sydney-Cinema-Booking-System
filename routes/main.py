@@ -142,6 +142,87 @@ def register_main_routes(app):
                               seats=seats,
                               booked_seats=booked_seats)
     
+    @app.route('/create_booking', methods=['POST'])
+    def create_booking():
+        """Create a new booking"""
+        if 'user_id' not in session:
+            flash('Please login to create bookings', 'error')
+            return redirect(url_for('login'))
+        
+        screening_id = request.form.get('screening_id')
+        seat_ids_str = request.form.get('seat_ids')
+        
+        if not screening_id or not seat_ids_str:
+            flash('Invalid booking data', 'error')
+            return redirect(url_for('bookings'))
+        
+        # Parse seat IDs
+        seat_ids = [int(sid) for sid in seat_ids_str.split(',') if sid.strip()]
+        
+        if not seat_ids:
+            flash('Please select at least one seat', 'error')
+            return redirect(url_for('book_ticket', screening_id=screening_id))
+        
+        if len(seat_ids) > 5:
+            flash('You can only book up to 5 seats', 'error')
+            return redirect(url_for('book_ticket', screening_id=screening_id))
+        
+        # Create booking in database
+        from database.db import get_db_connection
+        import time
+        import random
+        
+        conn = get_db_connection()
+        if not conn:
+            flash('Database connection failed', 'error')
+            return redirect(url_for('book_ticket', screening_id=screening_id))
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Get screening price
+            cursor.execute("SELECT ticket_price FROM screenings WHERE screening_id = %s", (screening_id,))
+            ticket_price = cursor.fetchone()[0]
+            
+            # Calculate total amount
+            total_amount = len(seat_ids) * float(ticket_price)
+            
+            # Generate booking number
+            booking_number = f"BK{int(time.time() * 1000) % 1000000}{random.randint(100, 999)}"
+            
+            # Create booking
+            cursor.execute("""
+                INSERT INTO bookings (user_id, screening_id, booking_number, num_tickets,
+                                    total_amount, booking_status, payment_status)
+                VALUES (%s, %s, %s, %s, %s, 'confirmed', 'paid')
+                RETURNING booking_id
+            """, (session['user_id'], screening_id, booking_number, len(seat_ids), total_amount))
+            
+            booking_id = cursor.fetchone()[0]
+            
+            # Create seat bookings
+            for seat_id in seat_ids:
+                cursor.execute("""
+                    INSERT INTO seat_bookings (booking_id, seat_id)
+                    VALUES (%s, %s)
+                """, (booking_id, seat_id))
+            
+            conn.commit()
+            flash(f'Booking confirmed! Your booking number is {booking_number}', 'success')
+            
+            cursor.close()
+            conn.close()
+            
+            return redirect(url_for('bookings'))
+            
+        except Exception as e:
+            print(f"Error creating booking: {e}")
+            if conn:
+                conn.rollback()
+                conn.close()
+            flash('Failed to create booking. Please try again.', 'error')
+            return redirect(url_for('book_ticket', screening_id=screening_id))
+    
     @app.route('/admin_dashboard')
     def admin_dashboard():
         """Admin dashboard (placeholder)"""
