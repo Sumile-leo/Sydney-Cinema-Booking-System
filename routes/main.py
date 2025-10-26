@@ -11,16 +11,12 @@ def register_main_routes(app):
     
     @app.route('/')
     def index():
-        """Homepage with latest movies and cinemas"""
+        """Homepage with latest movies"""
         # Get latest movies (limit to 3 for homepage)
         all_movies = MovieService.get_all_movies()
         latest_movies = [m for m in all_movies if m.is_active][:3]
         
-        # Get top cinemas (limit to 3 for homepage)
-        all_cinemas = CinemaService.get_all_cinemas()
-        popular_cinemas = [c for c in all_cinemas if c.is_active][:3]
-        
-        return render_template('index.html', movies=latest_movies, cinemas=popular_cinemas)
+        return render_template('index.html', movies=latest_movies)
 
     @app.route('/screenings')
     def screenings():

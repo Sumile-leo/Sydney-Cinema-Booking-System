@@ -44,33 +44,6 @@
     </div>
 </div>
 
-<div class="cinemas-section">
-    <div class="container">
-        <h2 class="section-title">Popular Cinemas</h2>
-        <div class="cinemas-grid">
-            {% if cinemas %}
-                {% for cinema in cinemas %}
-                <div class="cinema-card">
-                    <div class="cinema-image">
-                        <div class="cinema-placeholder">🎭</div>
-                    </div>
-                    <div class="cinema-info">
-                        <h3>{{ cinema.cinema_name }}</h3>
-                        <p class="cinema-location">📍 {{ cinema.suburb }}</p>
-                        {% if cinema.facilities %}
-                        <p class="cinema-features">{{ cinema.facilities }}</p>
-                        {% endif %}
-                        <a href="{{ url_for('cinema_detail', cinema_id=cinema.cinema_id) }}" class="btn btn-outline">View Details</a>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No cinemas available at the moment.</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
 <div class="movies-section">
     <div class="container">
         <h2 class="section-title">Now Showing</h2>
