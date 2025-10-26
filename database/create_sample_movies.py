@@ -49,25 +49,26 @@ DESCRIPTIONS = [
 # Languages can be single or multiple languages separated by "/"
 LANGUAGES = [
     "English",
-    "English/Chinese", 
-    "English/Chinese",
+    "English/Mandarin", 
+    "English/Cantonese",
     "Mandarin",
+    "Mandarin/Cantonese",
     "Japanese",
     "English/Japanese",
-    "Chinese",
+    "Cantonese",
     "English/Spanish"
 ]
 
 # Subtitles can be single or multiple languages separated by ","
 SUBTITLES = [
     "English",
-    "English, Chinese",
-    "Chinese",
-    "English, Chinese",
+    "English, Mandarin",
+    "English, Cantonese",
+    "Mandarin, Cantonese",
     "English, Korean",
     "Japanese",
     "Spanish",
-    "English, Japanese, Chinese"
+    "English, Japanese, Mandarin"
 ]
 
 
