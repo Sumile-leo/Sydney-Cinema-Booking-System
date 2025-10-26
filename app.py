@@ -65,16 +65,20 @@ def login():
                 (username,)
             )
             user = cursor.fetchone()
-            cursor.close()
-            conn.close()
             
+            # Check password
             if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
                 session['user_id'] = user[0]
                 session['username'] = user[1]
                 flash('Login successful!', 'success')
+                cursor.close()
+                conn.close()
                 return redirect(url_for('index'))
             else:
                 flash('Invalid username or password', 'error')
+            
+            cursor.close()
+            conn.close()
         except Exception as e:
             print(f"Login error: {e}")
             flash('Login error. Please try again.', 'error')
