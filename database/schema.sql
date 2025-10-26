@@ -1,6 +1,6 @@
 -- Cinema Booking System Database Schema
 -- Author: Zhou Li
--- Date: 2025-10-12
+-- Date: 2025-10-11
 
 -- Drop all existing tables (in reverse dependency order)
 DROP TABLE IF EXISTS seat_bookings CASCADE;

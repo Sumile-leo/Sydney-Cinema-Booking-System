@@ -4,7 +4,7 @@ A comprehensive cinema booking system for managing movies, cinemas, screenings, 
 
 **Author**: Zhou Li  
 **Email**: lizhouxx0126@gmail.com  
-**Date**: October 10-29, 2025  
+**Date**: October 10-26, 2025  
 **Course**: COMP9001 - The University of Sydney
 
 ## Important Notice

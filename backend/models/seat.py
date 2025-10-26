@@ -1,7 +1,7 @@
 """
 Seat model
 Author: Zhou Li
-Date: 2025-10-17
+Date: 2025-10-15
 """
 
 from typing import Optional, Tuple

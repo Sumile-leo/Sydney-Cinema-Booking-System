@@ -1,7 +1,7 @@
 """
 Database configuration and connection
 Author: Zhou Li
-Date: 2025-10-12
+Date: 2025-10-11
 """
 
 import psycopg

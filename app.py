@@ -2,7 +2,7 @@
 Sydney Cinema Booking System - Flask App
 Main application file
 Author: Zhou Li
-Date: 2025-10-20
+Date: 2025-10-10
 """
 
 from flask import Flask
