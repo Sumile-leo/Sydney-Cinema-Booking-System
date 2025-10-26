@@ -79,12 +79,6 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # Debug: Print received data
-        print(f"=== LOGIN ATTEMPT ===")
-        print(f"Username: {username}")
-        print(f"Password: {password}")
-        print(f"Password length: {len(password) if password else 0}")
-        
         if not username or not password:
             flash('Please enter username and password', 'error')
             return render_template('login.html')
@@ -102,24 +96,19 @@ def login():
             )
             user = cursor.fetchone()
             cursor.close()
-            
-            # Check password
-            if user:
-                stored_hash = user[2]
-                if bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8')):
-                    session['user_id'] = user[0]
-                    session['username'] = user[1]
-                    conn.close()
-                    flash('Login successful!', 'success')
-                    return redirect(url_for('index'))
-            
             conn.close()
-            flash('Invalid username or password', 'error')
+            
+            # Simple password comparison (plain text)
+            if user and user[2] == password:
+                session['user_id'] = user[0]
+                session['username'] = user[1]
+                flash('Login successful!', 'success')
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid username or password', 'error')
             
         except Exception as e:
             print(f"Login error: {e}")
-            import traceback
-            traceback.print_exc()
             flash('Login error. Please try again.', 'error')
     
     return render_template('login.html')
@@ -160,14 +149,11 @@ def register():
                 conn.close()
                 return render_template('register.html')
             
-            # Hash password
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            
-            # Insert user
+            # Insert user (plain text password)
             cursor.execute(
                 """INSERT INTO users (username, email, password, first_name, last_name, phone, user_type)
                    VALUES (%s, %s, %s, %s, %s, %s, 'customer')""",
-                (username, email, hashed_password, first_name, last_name, phone)
+                (username, email, password, first_name, last_name, phone)
             )
             conn.commit()
             cursor.close()
