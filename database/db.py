@@ -3,14 +3,23 @@ Database configuration and connection
 """
 
 import psycopg
+import configparser
+import os
+
+# Get the project root directory (where config.ini is located)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Read database configuration from config.ini
+config = configparser.ConfigParser()
+config.read(os.path.join(PROJECT_ROOT, 'config.ini'))
 
 # Database configuration
 DB_CONFIG = {
-    'host': 'localhost',
-    'port': 5432,
-    'dbname': 'cinema_db',
-    'user': 'postgres',
-    'password': 'postgres'
+    'host': config.get('database', 'host'),
+    'port': config.getint('database', 'port'),
+    'dbname': config.get('database', 'dbname'),
+    'user': config.get('database', 'user'),
+    'password': config.get('database', 'password')
 }
 
 
