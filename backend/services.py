@@ -136,10 +136,8 @@ class BookingService:
                     'seat_type': seat_row[3] if len(seat_row) > 3 else 'standard'
                 })
             
-            # Format seat numbers for display
-            seat_display = []
-            for seat in seats:
-                seat_display.append(f"Row {seat['row_number']}, Seat {seat['seat_number']}")
+            # Format seat numbers for display - one ticket per line
+            seat_display = '<br>'.join([f"Row {seat['row_number']}, Seat {seat['seat_number']}" for seat in seats])
             
             # Create booking dictionary with screening details
             booking_dict = {
@@ -158,7 +156,7 @@ class BookingService:
                 'cinema_name': booking_row[15] if len(booking_row) > 15 else 'Unknown Cinema',
                 'cinema_address': f"{booking_row[16] if len(booking_row) > 16 else ''}, {booking_row[17] if len(booking_row) > 17 else ''}",
                 'seats': seats,
-                'seats_display': ', '.join(seat_display) if seat_display else 'No seats assigned'
+                'seats_display': seat_display if seat_display else 'No seats assigned'
             }
             
             result.append(booking_dict)

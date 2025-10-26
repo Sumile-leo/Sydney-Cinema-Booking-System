@@ -91,7 +91,7 @@
                                         <i class="bi bi-ticket-perforated"></i>
                                         <div>
                                             <strong>Seats</strong>
-                                            <p class="seats-list">{{ booking.seats_display }}</p>
+                                            <p class="seats-list">{{ booking.seats_display|safe }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -278,6 +278,11 @@
 .seats-list {
     color: #ffc107 !important;
     font-weight: 500;
+    line-height: 1.8;
+}
+
+.seats-list br {
+    display: block;
 }
 
 .cinema-location {
