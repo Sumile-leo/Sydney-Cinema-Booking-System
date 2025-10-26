@@ -186,5 +186,5 @@ This project is developed for educational purposes as part of COMP9001 coursewor
 ## Contact
 
 **Author**: Zhou Li  
-**Email**: your.email@example.com  
+**Email**: lizhouxx0126@gmail.com  
 **Institution**: The University of Sydney

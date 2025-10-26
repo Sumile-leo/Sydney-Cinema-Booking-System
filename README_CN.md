@@ -186,5 +186,5 @@ python app.py
 ## 联系方式
 
 **作者**: 周立  
-**邮箱**: your.email@example.com  
+**邮箱**: lizhouxx0126@gmail.com  
 **机构**: 悉尼大学
