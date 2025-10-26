@@ -29,6 +29,7 @@
                         {% if hall.total_rows and hall.seats_per_row %}
                         <p class="cinema-detail">Layout: {{ hall.total_rows }} rows × {{ hall.seats_per_row }} seats</p>
                         {% endif %}
+                        <a href="{{ url_for('hall_detail', cinema_id=cinema.cinema_id, hall_id=hall.hall_id) }}" class="btn btn-primary btn-sm w-100 mt-3">View Detail</a>
                     </div>
                 </div>
             </div>

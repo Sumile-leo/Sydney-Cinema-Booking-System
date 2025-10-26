@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cinema.cinema_name }} - {{ hall.hall_name }}{% endblock %}
+
+{% block content %}
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title mb-4">{{ cinema.cinema_name }} - {{ hall.hall_name }}</h2>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="cinema-card mb-4">
+                    <div class="cinema-info">
+                        {% if hall.hall_type %}
+                        <h3>{{ hall.hall_name }} ({{ hall.hall_type }})</h3>
+                        {% else %}
+                        <h3>{{ hall.hall_name }}</h3>
+                        {% endif %}
+                        
+                        {% if hall.screen_size %}
+                        <p class="cinema-detail">Screen: {{ hall.screen_size }}</p>
+                        {% endif %}
+                        {% if hall.sound_system %}
+                        <p class="cinema-detail">Sound System: {{ hall.sound_system }}</p>
+                        {% endif %}
+                        {% if hall.total_seats %}
+                        <p class="cinema-detail">Total Seats: {{ hall.total_seats }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Seat Map -->
+                {% if hall.total_rows and hall.seats_per_row %}
+                <div class="seat-map-container">
+                    <!-- Screen -->
+                    <div class="screen-display text-center mb-4">
+                        <div class="screen-box">
+                            <h4>🎬 SCREEN 🎬</h4>
+                        </div>
+                    </div>
+                    
+                    <!-- Seats -->
+                    <div class="seat-map">
+                        {% for row_num in range(1, hall.total_rows + 1) %}
+                        <div class="seat-row d-flex justify-content-center mb-2">
+                            <div class="row-label me-3">{{ row_num }}</div>
+                            <div class="seats-container">
+                                {% for seat_num in range(1, hall.seats_per_row + 1) %}
+                                <span class="seat-inactive">●</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Legend -->
+                    <div class="seat-legend text-center mt-4">
+                        <p class="text-muted">
+                            <span class="seat-inactive me-3">● Available</span>
+                            <span class="seat-occupied me-3">● Occupied</span>
+                            <span class="seat-selected me-3">● Selected</span>
+                        </p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-center">Seat information not available.</p>
+                {% endif %}
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('cinema_halls', cinema_id=cinema.cinema_id) }}" class="btn btn-outline">Back to Halls</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.screen-display {
+    margin: 20px 0;
+}
+
+.screen-box {
+    background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+    padding: 30px 60px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: inline-block;
+    min-width: 300px;
+}
+
+.screen-box h4 {
+    color: #ffd700;
+    font-weight: bold;
+    margin: 0;
+}
+
+.seat-map-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.row-label {
+    min-width: 30px;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.seats-container {
+    display: flex;
+    gap: 4px;
+}
+
+.seat-inactive {
+    color: #28a745;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.seat-inactive:hover {
+    transform: scale(1.3);
+}
+
+.seat-occupied {
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+.seat-selected {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.seat-legend {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .seat-inactive, .seat-occupied, .seat-selected {
+        font-size: 0.9rem;
+    }
+    
+    .seats-container {
+        gap: 2px;
+    }
+    
+    .screen-box {
+        padding: 20px 40px;
+        min-width: 200px;
+    }
+}
+</style>
+{% endblock %}
+

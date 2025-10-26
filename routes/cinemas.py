@@ -47,3 +47,28 @@ def register_cinemas_routes(app):
         halls = [CinemaHall.from_db_row(hall) for hall in halls_data]
         
         return render_template('cinema_halls.html', cinema=cinema, halls=halls)
+    
+    @app.route('/cinema/<int:cinema_id>/hall/<int:hall_id>')
+    def hall_detail(cinema_id, hall_id):
+        """Cinema hall detail page with seat map"""
+        from flask import abort
+        from database.db import get_cinema_hall_by_id
+        
+        # Get cinema
+        cinema = CinemaService.get_cinema_by_id(cinema_id)
+        if not cinema:
+            abort(404)
+        
+        # Get hall
+        hall_data = get_cinema_hall_by_id(hall_id)
+        if not hall_data:
+            abort(404)
+        
+        from backend.models.cinema_hall import CinemaHall
+        hall = CinemaHall.from_db_row(hall_data)
+        
+        # Verify hall belongs to this cinema
+        if hall.cinema_id != cinema_id:
+            abort(404)
+        
+        return render_template('hall_detail.html', cinema=cinema, hall=hall)
