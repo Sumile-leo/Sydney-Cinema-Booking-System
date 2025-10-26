@@ -250,3 +250,82 @@ def create_movie(title, description, genre, duration_minutes, release_date, dire
         if conn:
             conn.close()
         return False
+
+
+# Cinema Hall-related database operations
+def get_cinema_halls_by_cinema(cinema_id):
+    """Get all cinema halls for a specific cinema"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT hall_id, cinema_id, hall_name, hall_type, total_rows, seats_per_row, 
+                      total_seats, screen_size, sound_system, created_at, updated_at 
+               FROM cinema_halls WHERE cinema_id = %s ORDER BY hall_name""",
+            (cinema_id,)
+        )
+        halls = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return halls
+    except Exception as e:
+        print(f"Error getting cinema halls: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_cinema_hall_by_id(hall_id):
+    """Get cinema hall by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT hall_id, cinema_id, hall_name, hall_type, total_rows, seats_per_row, 
+                      total_seats, screen_size, sound_system, created_at, updated_at 
+               FROM cinema_halls WHERE hall_id = %s""",
+            (hall_id,)
+        )
+        hall = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return hall
+    except Exception as e:
+        print(f"Error getting cinema hall: {e}")
+        if conn:
+            conn.close()
+        return None
+
+
+def create_cinema_hall(cinema_id, hall_name, hall_type=None, total_rows=None,
+                        seats_per_row=None, total_seats=None, screen_size=None,
+                        sound_system=None):
+    """Create a new cinema hall"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """INSERT INTO cinema_halls (cinema_id, hall_name, hall_type, total_rows, seats_per_row, 
+                                       total_seats, screen_size, sound_system)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+            (cinema_id, hall_name, hall_type, total_rows, seats_per_row,
+             total_seats, screen_size, sound_system)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error creating cinema hall: {e}")
+        if conn:
+            conn.close()
+        return False

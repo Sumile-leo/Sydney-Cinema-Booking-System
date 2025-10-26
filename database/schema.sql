@@ -42,7 +42,24 @@ CREATE TABLE IF NOT EXISTS movies (
     "cast" TEXT,
     language VARCHAR(50),
     subtitles VARCHAR(50),
+    poster_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Cinema Halls table
+CREATE TABLE IF NOT EXISTS cinema_halls (
+    hall_id SERIAL PRIMARY KEY,
+    cinema_id INTEGER NOT NULL,
+    hall_name VARCHAR(50) NOT NULL,
+    hall_type VARCHAR(50),
+    total_rows INTEGER,
+    seats_per_row INTEGER,
+    total_seats INTEGER,
+    screen_size VARCHAR(50),
+    sound_system VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cinema_id) REFERENCES cinemas(cinema_id) ON DELETE CASCADE
 );
