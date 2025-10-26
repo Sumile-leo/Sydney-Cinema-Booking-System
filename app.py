@@ -41,6 +41,36 @@ def index():
     """Homepage"""
     return render_template('index.html')
 
+@app.route('/test-login')
+def test_login():
+    """Test login endpoint"""
+    import bcrypt
+    import psycopg
+    
+    try:
+        conn = psycopg.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, password FROM users WHERE username = 'admin'")
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        if user:
+            password = 'admin123'
+            result = bcrypt.checkpw(password.encode('utf-8'), user[1].encode('utf-8'))
+            return f'''
+            <h1>Login Test Result</h1>
+            <p>Username: {user[0]}</p>
+            <p>Password check: {result}</p>
+            <p>Hash stored: {user[1][:30]}...</p>
+            <hr>
+            <p>If result is True, password verification WORKS!</p>
+            '''
+        else:
+            return 'User not found'
+    except Exception as e:
+        return f'Error: {str(e)}'
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
