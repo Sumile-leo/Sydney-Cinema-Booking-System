@@ -419,3 +419,109 @@ def create_seats_for_hall(hall_id, total_rows, seats_per_row, seat_types=None):
         if conn:
             conn.close()
         return False
+
+
+# Screening-related database operations
+def get_all_screenings():
+    """Get all screenings"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
+                      start_time, end_time, ticket_price, screening_type,
+                      language, subtitles, created_at, updated_at
+               FROM screenings ORDER BY screening_date, start_time"""
+        )
+        screenings = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return screenings
+    except Exception as e:
+        print(f"Error getting screenings: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_screenings_by_movie(movie_id):
+    """Get screenings for a specific movie"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
+                      start_time, end_time, ticket_price, screening_type,
+                      language, subtitles, created_at, updated_at
+               FROM screenings WHERE movie_id = %s 
+               ORDER BY screening_date, start_time""",
+            (movie_id,)
+        )
+        screenings = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return screenings
+    except Exception as e:
+        print(f"Error getting screenings for movie: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_screenings_by_cinema(cinema_id):
+    """Get screenings for a specific cinema"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
+                      start_time, end_time, ticket_price, screening_type,
+                      language, subtitles, created_at, updated_at
+               FROM screenings WHERE cinema_id = %s 
+               ORDER BY screening_date, start_time""",
+            (cinema_id,)
+        )
+        screenings = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return screenings
+    except Exception as e:
+        print(f"Error getting screenings for cinema: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_screening_by_id(screening_id):
+    """Get screening by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
+                      start_time, end_time, ticket_price, screening_type,
+                      language, subtitles, created_at, updated_at
+               FROM screenings WHERE screening_id = %s""",
+            (screening_id,)
+        )
+        screening = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return screening
+    except Exception as e:
+        print(f"Error getting screening: {e}")
+        if conn:
+            conn.close()
+        return None
