@@ -3,6 +3,7 @@ Business logic services
 """
 
 from database.db import get_user_by_username, create_user, check_username_or_email_exists
+from backend.models.user import User
 
 
 class UserService:
@@ -12,15 +13,15 @@ class UserService:
     def authenticate_user(username, password):
         """
         Authenticate a user
-        Returns user data if successful, None otherwise
+        Returns User object if successful, None otherwise
         """
-        user = get_user_by_username(username)
-        if not user:
+        user_row = get_user_by_username(username)
+        if not user_row:
             return None
         
         # Plain text password comparison
-        if user[2] == password:  # user[2] is password field
-            return user
+        if user_row[2] == password:  # user_row[2] is password field
+            return User.from_db_row(user_row)
         return None
     
     @staticmethod

@@ -24,11 +24,12 @@ def register_auth_routes(app):
             user = UserService.authenticate_user(username, password)
             
             if user:
-                session['user_id'] = user[0]
-                session['username'] = user[1]
-                session['first_name'] = user[4] if len(user) > 4 else ''
-                session['last_name'] = user[5] if len(user) > 5 else ''
-                session['user_type'] = user[7] if len(user) > 7 else 'customer'
+                # Store user info in session using User object attributes
+                session['user_id'] = user.user_id
+                session['username'] = user.username
+                session['first_name'] = user.first_name or ''
+                session['last_name'] = user.last_name or ''
+                session['user_type'] = user.user_type
                 flash('Login successful!', 'success')
                 return redirect(url_for('index'))
             else:
