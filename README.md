@@ -3,8 +3,19 @@
 A comprehensive cinema booking system for managing movies, cinemas, screenings, and user bookings.
 
 **Author**: Zhou Li  
+**Email**: lizhouxx0126@gmail.com  
 **Date**: October 10-29, 2025  
 **Course**: COMP9001 - The University of Sydney
+
+## Important Notice
+
+This project acknowledges the use of AI assistance in its development:
+
+- **Frontend Pages & README**: The HTML templates, CSS styling, and README documentation were generated with the assistance of ChatGPT.
+- **Python Business Logic**: All Python backend code including routes, services, database functions, and models were written by the author (Zhou Li).
+- **Database Schema**: Designed by the author.
+
+For any inquiries or questions, please contact the author via email.
 
 ## Features
 
