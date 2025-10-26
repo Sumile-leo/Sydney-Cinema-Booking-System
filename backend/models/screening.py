@@ -13,7 +13,7 @@ class Screening:
                  screening_date: date, start_time: time, end_time: time,
                  ticket_price: float, screening_type: str = None,
                  language: str = None, subtitles: str = None,
-                 created_at: datetime = None, updated_at: datetime = None):
+                 is_active: bool = True, created_at: datetime = None, updated_at: datetime = None):
         self.screening_id = screening_id
         self.movie_id = movie_id
         self.cinema_id = cinema_id
@@ -25,6 +25,7 @@ class Screening:
         self.screening_type = screening_type
         self.language = language
         self.subtitles = subtitles
+        self.is_active = is_active
         self.created_at = created_at
         self.updated_at = updated_at
     
@@ -34,7 +35,7 @@ class Screening:
         Create Screening instance from database row tuple
         db_row: (screening_id, movie_id, cinema_id, hall_id, screening_date,
                  start_time, end_time, ticket_price, screening_type, language,
-                 subtitles, created_at, updated_at)
+                 subtitles, is_active, created_at, updated_at)
         """
         return cls(
             screening_id=db_row[0],
@@ -48,8 +49,9 @@ class Screening:
             screening_type=db_row[8] if len(db_row) > 8 and db_row[8] else None,
             language=db_row[9] if len(db_row) > 9 and db_row[9] else None,
             subtitles=db_row[10] if len(db_row) > 10 and db_row[10] else None,
-            created_at=db_row[11] if len(db_row) > 11 else None,
-            updated_at=db_row[12] if len(db_row) > 12 else None
+            is_active=db_row[11] if len(db_row) > 11 else True,
+            created_at=db_row[12] if len(db_row) > 12 else None,
+            updated_at=db_row[13] if len(db_row) > 13 else None
         )
     
     def to_dict(self) -> dict:
@@ -66,6 +68,7 @@ class Screening:
             'screening_type': self.screening_type,
             'language': self.language,
             'subtitles': self.subtitles,
+            'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }

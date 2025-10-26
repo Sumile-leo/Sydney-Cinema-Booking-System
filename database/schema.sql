@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS screenings (
     screening_type VARCHAR(20),
     language VARCHAR(50),
     subtitles VARCHAR(100),
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
@@ -124,3 +125,24 @@ CREATE TABLE IF NOT EXISTS seat_bookings (
     FOREIGN KEY (seat_id) REFERENCES seats(seat_id) ON DELETE CASCADE,
     UNIQUE(booking_id, seat_id)
 );
+
+-- Function to automatically deactivate screenings that have passed
+CREATE OR REPLACE FUNCTION deactivate_past_screenings()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE screenings
+    SET is_active = FALSE
+    WHERE (screening_date < CURRENT_DATE 
+           OR (screening_date = CURRENT_DATE AND start_time < CURRENT_TIME))
+      AND is_active = TRUE;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to run the deactivation function on schedule
+-- Note: This creates a trigger that runs on every INSERT/UPDATE to screenings table
+-- For a periodic background job, use pg_cron or a scheduled task
+CREATE TRIGGER check_screening_status
+AFTER INSERT OR UPDATE ON screenings
+FOR EACH ROW
+EXECUTE FUNCTION deactivate_past_screenings();

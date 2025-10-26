@@ -433,8 +433,9 @@ def get_all_screenings():
         cursor.execute(
             """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
                       start_time, end_time, ticket_price, screening_type,
-                      language, subtitles, created_at, updated_at
-               FROM screenings ORDER BY screening_date, start_time"""
+                      language, subtitles, is_active, created_at, updated_at
+               FROM screenings WHERE is_active = TRUE 
+               ORDER BY screening_date, start_time"""
         )
         screenings = cursor.fetchall()
         cursor.close()
@@ -458,8 +459,8 @@ def get_screenings_by_movie(movie_id):
         cursor.execute(
             """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
                       start_time, end_time, ticket_price, screening_type,
-                      language, subtitles, created_at, updated_at
-               FROM screenings WHERE movie_id = %s 
+                      language, subtitles, is_active, created_at, updated_at
+               FROM screenings WHERE movie_id = %s AND is_active = TRUE
                ORDER BY screening_date, start_time""",
             (movie_id,)
         )
@@ -485,8 +486,8 @@ def get_screenings_by_cinema(cinema_id):
         cursor.execute(
             """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
                       start_time, end_time, ticket_price, screening_type,
-                      language, subtitles, created_at, updated_at
-               FROM screenings WHERE cinema_id = %s 
+                      language, subtitles, is_active, created_at, updated_at
+               FROM screenings WHERE cinema_id = %s AND is_active = TRUE
                ORDER BY screening_date, start_time""",
             (cinema_id,)
         )
@@ -512,7 +513,7 @@ def get_screening_by_id(screening_id):
         cursor.execute(
             """SELECT screening_id, movie_id, cinema_id, hall_id, screening_date,
                       start_time, end_time, ticket_price, screening_type,
-                      language, subtitles, created_at, updated_at
+                      language, subtitles, is_active, created_at, updated_at
                FROM screenings WHERE screening_id = %s""",
             (screening_id,)
         )
