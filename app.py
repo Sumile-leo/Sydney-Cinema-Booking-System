@@ -6,7 +6,6 @@ Simple and clean implementation
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_cors import CORS
 import psycopg
-import bcrypt
 from datetime import datetime
 
 app = Flask(__name__, 
@@ -41,36 +40,6 @@ def index():
     """Homepage"""
     return render_template('index.html')
 
-@app.route('/test-login')
-def test_login():
-    """Test login endpoint"""
-    import bcrypt
-    import psycopg
-    
-    try:
-        conn = psycopg.connect(**DB_CONFIG)
-        cursor = conn.cursor()
-        cursor.execute("SELECT username, password FROM users WHERE username = 'admin'")
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if user:
-            password = 'admin123'
-            result = bcrypt.checkpw(password.encode('utf-8'), user[1].encode('utf-8'))
-            return f'''
-            <h1>Login Test Result</h1>
-            <p>Username: {user[0]}</p>
-            <p>Password check: {result}</p>
-            <p>Hash stored: {user[1][:30]}...</p>
-            <hr>
-            <p>If result is True, password verification WORKS!</p>
-            '''
-        else:
-            return 'User not found'
-    except Exception as e:
-        return f'Error: {str(e)}'
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,6 +66,18 @@ def login():
             user = cursor.fetchone()
             cursor.close()
             conn.close()
+            
+            # Debug print
+            print(f"DEBUG - Username received: {username}")
+            print(f"DEBUG - Password received: {password}")
+            if user:
+                print(f"DEBUG - User found: {user[1]}")
+                print(f"DEBUG - Stored password: {user[2]}")
+                print(f"DEBUG - Password match: {user[2] == password}")
+                print(f"DEBUG - Password type: {type(user[2])}, {type(password)}")
+                print(f"DEBUG - Password repr: {repr(user[2])}, {repr(password)}")
+            else:
+                print(f"DEBUG - User NOT found in database")
             
             # Simple password comparison (plain text)
             if user and user[2] == password:
