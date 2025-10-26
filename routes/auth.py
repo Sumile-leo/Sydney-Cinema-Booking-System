@@ -3,7 +3,7 @@ Authentication routes
 """
 
 from flask import render_template, request, redirect, url_for, session, flash
-from database.db import get_user_by_username, check_username_or_email_exists, create_user, verify_password
+from backend.services import UserService
 
 
 def register_auth_routes(app):
@@ -20,8 +20,8 @@ def register_auth_routes(app):
                 flash('Please enter username and password', 'error')
                 return render_template('login.html')
             
-            # Verify password using database function
-            user = verify_password(username, password)
+            # Authenticate user using service layer
+            user = UserService.authenticate_user(username, password)
             
             if user:
                 session['user_id'] = user[0]
@@ -52,19 +52,14 @@ def register_auth_routes(app):
                 flash('Please fill in all required fields', 'error')
                 return render_template('register.html')
             
-            # Check if username or email already exists
-            if check_username_or_email_exists(username, email):
-                flash('Username or email already exists', 'error')
-                return render_template('register.html')
-            
-            # Create user using database function
-            success = create_user(username, email, password, first_name, last_name, phone)
+            # Register user using service layer
+            success = UserService.register_user(username, email, password, first_name, last_name, phone)
             
             if success:
                 flash('Registration successful! Please login.', 'success')
                 return redirect(url_for('login'))
             else:
-                flash('Registration error. Please try again.', 'error')
+                flash('Username or email already exists, or registration failed.', 'error')
         
         return render_template('register.html')
 
