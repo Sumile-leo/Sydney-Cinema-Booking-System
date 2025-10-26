@@ -4,13 +4,6 @@
 
 {% block content %}
 <div class="container mt-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-dark rounded px-3 py-2">
-            <li class="breadcrumb-item"><a href="/" class="text-warning text-decoration-none">Home</a></li>
-            <li class="breadcrumb-item active text-white">Dashboard</li>
-        </ol>
-    </nav>
-    
     <div class="row mb-4">
         <div class="col-12">
             <div class="welcome-banner p-4 rounded mb-4">
@@ -72,8 +65,8 @@
                             <a href="/cinemas" class="btn btn-primary btn-lg fw-bold">
                                 <i class="fas fa-building me-2"></i>Find Cinemas
                             </a>
-                            <a href="/screenings" class="btn btn-success btn-lg fw-bold">
-                                <i class="fas fa-calendar-alt me-2"></i>View Screenings
+                            <a href="/bookings" class="btn btn-success btn-lg fw-bold">
+                                <i class="fas fa-ticket-alt me-2"></i>My Bookings
                             </a>
                         </div>
                     </div>
@@ -91,7 +84,7 @@
                         <div class="stat-icon-wrapper">
                             <i class="fas fa-film stat-icon"></i>
                         </div>
-                        <h2 class="text-white mb-1 fw-bold">0</h2>
+                        <h2 class="text-white mb-1 fw-bold">{{ movies_watched }}</h2>
                         <p class="text-white-50 mb-0">Movies Watched</p>
                     </div>
                 </div>
@@ -104,7 +97,7 @@
                         <div class="stat-icon-wrapper">
                             <i class="fas fa-ticket-alt stat-icon"></i>
                         </div>
-                        <h2 class="text-white mb-1 fw-bold">0</h2>
+                        <h2 class="text-white mb-1 fw-bold">{{ total_bookings }}</h2>
                         <p class="text-white-50 mb-0">Total Bookings</p>
                     </div>
                 </div>
@@ -117,7 +110,7 @@
                         <div class="stat-icon-wrapper">
                             <i class="fas fa-calendar-check stat-icon"></i>
                         </div>
-                        <h2 class="text-white mb-1 fw-bold">0</h2>
+                        <h2 class="text-white mb-1 fw-bold">{{ upcoming }}</h2>
                         <p class="text-white-50 mb-0">Upcoming</p>
                     </div>
                 </div>
@@ -130,7 +123,7 @@
                         <div class="stat-icon-wrapper">
                             <i class="fas fa-clock stat-icon"></i>
                         </div>
-                        <h2 class="text-white mb-1 fw-bold">0</h2>
+                        <h2 class="text-white mb-1 fw-bold">{{ cancelled }}</h2>
                         <p class="text-white-50 mb-0">Cancelled</p>
                     </div>
                 </div>
@@ -147,10 +140,41 @@
                         <h5 class="text-white mb-4">
                             <i class="fas fa-history me-2 text-warning"></i>Recent Activity
                         </h5>
+                        {% if recent_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Booking #</th>
+                                        <th>Movie</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td class="text-warning fw-bold">{{ booking.booking_number }}</td>
+                                        <td>{{ booking.movie_title }}</td>
+                                        <td>{% if booking.screening_date %}{{ booking.screening_date }}{% if booking.start_time %}<br>{{ booking.start_time }}{% endif %}{% else %}N/A{% endif %}</td>
+                                        <td>
+                                            <span class="badge bg-{% if booking.status == 'confirmed' %}success{% elif booking.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                                {{ booking.status|title }}
+                                            </span>
+                                        </td>
+                                        <td class="text-success fw-bold">${{ booking.total_amount }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
                         <div class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-white-50 mb-3"></i>
                             <p class="text-white-50">No recent activity</p>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -261,6 +285,28 @@ h1 {
 h2.text-white {
     font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.table-dark {
+    background-color: transparent !important;
+}
+
+.table-dark thead th {
+    border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.table-dark tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-dark td, .table-dark th {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 </style>
 {% endblock %}

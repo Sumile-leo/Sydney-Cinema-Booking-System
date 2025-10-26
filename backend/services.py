@@ -148,24 +148,33 @@ class BookingService:
             # Check if booking can be cancelled
             can_cancel, cancel_message = can_cancel_booking(booking.booking_id)
             
+            # Format times for display
+            start_time_str = None
+            if len(booking_row) > 12 and booking_row[12]:
+                start_time_str = booking_row[12].strftime("%H:%M") if hasattr(booking_row[12], 'strftime') else str(booking_row[12])[:5]
+            
             # Create booking dictionary with screening details
             booking_dict = {
                 'booking_id': booking.booking_id,
                 'booking_number': booking.booking_number,
                 'num_tickets': booking.num_tickets,
                 'total_amount': float(booking.total_amount),
+                'status': booking.booking_status,  # Add 'status' field
                 'booking_status': booking.booking_status,
                 'payment_status': booking.payment_status,
                 'booking_date': booking.booking_date,
                 'can_cancel': can_cancel,
                 'cancel_message': cancel_message,
                 # Screening details
+                'screening_id': booking.screening_id,  # Add screening_id
                 'screening_date': booking_row[11] if len(booking_row) > 11 else None,
-                'start_time': booking_row[12] if len(booking_row) > 12 else None,
+                'screening_time': booking_row[12] if len(booking_row) > 12 else None,
+                'start_time': start_time_str,  # Format as string
                 'end_time': booking_row[13] if len(booking_row) > 13 else None,
-                'movie_title': booking_row[14] if len(booking_row) > 14 else 'Unknown Movie',
-                'cinema_name': booking_row[15] if len(booking_row) > 15 else 'Unknown Cinema',
-                'cinema_address': f"{booking_row[16] if len(booking_row) > 16 else ''}, {booking_row[17] if len(booking_row) > 17 else ''}",
+                'movie_id': booking_row[14] if len(booking_row) > 14 else None,
+                'movie_title': booking_row[15] if len(booking_row) > 15 else 'Unknown Movie',
+                'cinema_name': booking_row[16] if len(booking_row) > 16 else 'Unknown Cinema',
+                'cinema_address': f"{booking_row[17] if len(booking_row) > 17 else ''}, {booking_row[18] if len(booking_row) > 18 else ''}",
                 'seats': seats,
                 'seats_display': seat_display if seat_display else 'No seats assigned'
             }

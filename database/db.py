@@ -631,7 +631,7 @@ def get_bookings_with_details(user_id):
                       b.num_tickets, b.total_amount, b.booking_status, b.payment_status,
                       b.booking_date, b.created_at, b.updated_at,
                       s.screening_date, s.start_time, s.end_time,
-                      m.title as movie_title,
+                      m.movie_id, m.title as movie_title,
                       c.cinema_name, c.address, c.suburb
                FROM bookings b
                JOIN screenings s ON b.screening_id = s.screening_id
