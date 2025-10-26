@@ -48,16 +48,9 @@
             <div class="col-lg-4 mt-4 mt-lg-0">
                 <div class="movie-card">
                     <div class="movie-info text-center">
-                        {% if movie.is_active %}
-                        <h4 class="mb-3">Book Your Tickets</h4>
-                        <p class="mb-4">View available screenings for this movie</p>
-                        <a href="{{ url_for('screenings') }}" class="btn btn-primary btn-lg w-100">View Screenings</a>
-                        {% else %}
-                        <h4 class="mb-3">Not Available</h4>
-                        <p class="mb-4">This movie is no longer available for booking.</p>
-                        <button class="btn btn-secondary btn-lg w-100" disabled>No Longer Available</button>
-                        {% endif %}
-                        <a href="{{ url_for('movies') }}" class="btn btn-outline btn-lg w-100 mt-3">Back to Movies</a>
+                        <h4 class="mb-3">Movie Details</h4>
+                        <p class="mb-4">View more information about this movie</p>
+                        <a href="{{ url_for('movies') }}" class="btn btn-primary btn-lg w-100">Back to Movies</a>
                     </div>
                 </div>
             </div>
