@@ -1,5 +1,7 @@
 """
 Main routes
+Author: Zhou Li
+Date: 2025-10-15
 """
 
 from flask import render_template, redirect, url_for, session, flash, request, abort
@@ -103,9 +105,8 @@ def register_main_routes(app):
     
     @app.route('/admin_dashboard')
     def admin_dashboard():
-        """Admin dashboard (placeholder)"""
+        """Admin dashboard - redirect to admin panel"""
         if 'user_id' not in session:
             flash('Please login to access admin panel', 'error')
             return redirect(url_for('login'))
-        flash('Admin dashboard coming soon!', 'info')
-        return redirect(url_for('index'))
+        return redirect(url_for('admin_panel'))

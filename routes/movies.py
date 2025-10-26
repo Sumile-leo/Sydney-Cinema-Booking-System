@@ -1,3 +1,9 @@
+"""
+Movies routes
+Author: Zhou Li
+Date: 2025-10-16
+"""
+
 from flask import render_template, redirect, url_for, session, flash, abort
 from backend.services import MovieService
 

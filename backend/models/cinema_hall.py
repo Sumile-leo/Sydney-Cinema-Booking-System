@@ -1,5 +1,7 @@
 """
 Cinema Hall model
+Author: Zhou Li
+Date: 2025-10-16
 """
 
 from typing import Optional, Tuple

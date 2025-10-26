@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Halls - {{ cinema.cinema_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-white mb-2">
+                <i class="fas fa-door-open me-2 text-warning"></i>Manage Halls
+            </h2>
+            <p class="text-white-50 mb-0">{{ cinema.cinema_name }}</p>
+        </div>
+        <div>
+            <a href="/admin/cinemas" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+            <a href="/admin/cinemas/{{ cinema.cinema_id }}/halls/add" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Add Hall
+            </a>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow-lg">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hall Name</th>
+                            <th>Type</th>
+                            <th>Total Seats</th>
+                            <th>Screen Size</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if halls %}
+                            {% for hall in halls %}
+                            <tr>
+                                <td>{{ hall.hall_id }}</td>
+                                <td>{{ hall.hall_name }}</td>
+                                <td>{{ hall.hall_type }}</td>
+                                <td>{{ hall.total_seats }}</td>
+                                <td>{{ hall.screen_size }}</td>
+                                <td>
+                                    <span class="text-white-50">No actions</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <i class="fas fa-inbox fa-3x text-white-50 mb-3"></i>
+                                    <p class="text-white-50">No halls found for this cinema</p>
+                                    <button class="btn btn-success mt-2">
+                                        <i class="fas fa-plus me-2"></i>Add First Hall
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-dark td, .table-dark th {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn {
+    border-radius: 8px;
+}
+</style>
+{% endblock %}
+

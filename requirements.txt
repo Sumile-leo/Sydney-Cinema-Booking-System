@@ -1,23 +1,19 @@
-# Sydney Ticket Booking System - Python Dependencies
-# 悉尼票务预订系统 - Python依赖包
+# Sydney Cinema Booking System - Python Dependencies
+# Author: Zhou Li
+# Date: 2025-10-10 to 2025-10-29
 
-# Web Framework / Web框架
+# Web Framework
 Flask==2.3.3
 Flask-CORS==4.0.0
 
-# Database / 数据库
+# Database
 psycopg[binary]==3.2.11
 
-# HTTP Requests / HTTP请求
+# HTTP Requests
 requests==2.31.0
 
-# Password Hashing / 密码哈希
+# Password Hashing
 bcrypt==4.0.1
 
-# Date and Time / 日期和时间
+# Date and Time
 python-dateutil==2.8.2
-
-# Development Tools (Optional) / 开发工具（可选）
-# pytest==7.4.3
-# pylint==3.0.3
-# black==23.12.0

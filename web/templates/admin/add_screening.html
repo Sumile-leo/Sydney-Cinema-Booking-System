@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Add Screening - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white">
+            <i class="fas fa-plus me-2 text-warning"></i>Add New Screening
+        </h2>
+        <div>
+            <a href="/admin/screenings" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow-lg">
+        <div class="card-body p-4">
+            <form method="POST" action="/admin/screenings/add">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="cinema_id" class="form-label text-white">Cinema <span class="text-danger">*</span></label>
+                        <select class="form-select bg-dark text-white border-secondary" id="cinema_id" name="cinema_id" required>
+                            <option value="">Select Cinema</option>
+                            {% for cinema in cinemas %}
+                            <option value="{{ cinema.cinema_id }}">{{ cinema.cinema_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="movie_id" class="form-label text-white">Movie <span class="text-danger">*</span></label>
+                        <select class="form-select bg-dark text-white border-secondary" id="movie_id" name="movie_id" required>
+                            <option value="">Select Movie</option>
+                            {% for movie in movies %}
+                            <option value="{{ movie.movie_id }}">{{ movie.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3" id="halls-container">
+                        <label for="hall_id" class="form-label text-white">Hall <span class="text-danger">*</span></label>
+                        <select class="form-select bg-dark text-white border-secondary" id="hall_id" name="hall_id" required>
+                            <option value="">Please select a cinema first</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="screening_date" class="form-label text-white">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control bg-dark text-white border-secondary" id="screening_date" name="screening_date" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="start_time" class="form-label text-white">Start Time <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control bg-dark text-white border-secondary" id="start_time" name="start_time" required>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="ticket_price" class="form-label text-white">Ticket Price <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-white border-secondary">$</span>
+                            <input type="number" step="0.01" class="form-control bg-dark text-white border-secondary" id="ticket_price" name="ticket_price" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="screening_type" class="form-label text-white">Screening Type</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="screening_type" name="screening_type">
+                            <option value="">Standard</option>
+                            <option value="3D">3D</option>
+                            <option value="IMAX">IMAX</option>
+                            <option value="Gold Class">Gold Class</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="language" class="form-label text-white">Language</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="language" name="language">
+                            <option value="">English</option>
+                            <option value="English">English</option>
+                            <option value="Mandarin">Mandarin</option>
+                            <option value="Cantonese">Cantonese</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="subtitles" class="form-label text-white">Subtitles</label>
+                    <select class="form-select bg-dark text-white border-secondary" id="subtitles" name="subtitles">
+                        <option value="">None</option>
+                        <option value="English">English</option>
+                        <option value="Mandarin">Mandarin</option>
+                        <option value="Cantonese">Cantonese</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="/admin/screenings" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-2"></i>Add Screening
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+}
+</style>
+
+<script>
+// Load halls when cinema is selected
+document.getElementById('cinema_id').addEventListener('change', function() {
+    const cinemaId = this.value;
+    const hallSelect = document.getElementById('hall_id');
+    
+    if (cinemaId) {
+        // Fetch halls for this cinema
+        fetch(`/api/cinemas/${cinemaId}/halls`)
+            .then(response => response.json())
+            .then(data => {
+                hallSelect.innerHTML = '<option value="">Select Hall</option>';
+                data.halls.forEach(hall => {
+                    const option = document.createElement('option');
+                    option.value = hall.hall_id;
+                    option.textContent = hall.hall_name;
+                    hallSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading halls:', error);
+                hallSelect.innerHTML = '<option value="">Error loading halls</option>';
+            });
+    } else {
+        hallSelect.innerHTML = '<option value="">Please select a cinema first</option>';
+    }
+});
+</script>
+{% endblock %}
+

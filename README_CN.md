@@ -1,174 +1,179 @@
-# COMP9001 期末项目 - 悉尼电影院购票系统
+# 悉尼电影院预订系统
 
-[English Version](./README.md) | 中文版
+一个全面的电影院预订系统，用于管理电影、影院、场次和用户预订。
 
-## 项目概述
+**作者**: 周立  
+**日期**: 2025年10月10日-29日  
+**课程**: COMP9001 - 悉尼大学
 
-这是悉尼大学（USYD）COMP9001课程的期末项目。该项目是一个**悉尼电影院购票系统**，具有Web界面，使用PostgreSQL数据库进行数据管理。
+## 功能特性
 
-## 课程信息
+- 🎬 **电影管理**: 浏览电影海报、详情和类型
+- 🏛️ **影院管理**: 查看影院位置、设施和影厅布局
+- 🎫 **票务预订**: 实时座位选择和票价计算
+- 👤 **用户仪表板**: 追踪预订记录、观影历史和账户状态
+- 🔧 **管理面板**: 管理影院、电影、场次和影厅
+- 🎨 **现代界面**: 暗色主题，流畅动画，响应式设计
 
-- **大学**: 悉尼大学（USYD）
-- **课程代码**: COMP9001
-- **项目类型**: 期末项目
-- **项目名称**: 悉尼电影院购票系统
+## 快速开始
 
-## 项目功能
+### 系统要求
 
-### 核心功能
-- 🎬 **电影管理**: 浏览和搜索正在上映的电影
-- 👤 **用户系统**: 用户注册、登录和个人资料管理
-- 🏢 **电影院管理**: 悉尼多个电影院位置
-- 🎫 **预订系统**: 座位选择和票务预订
-- 💳 **支付处理**: 安全支付处理
-- 📱 **响应式设计**: 移动友好的Web界面
+- Python 3.10 或更高版本
+- PostgreSQL 14 或更高版本
+- pip (Python 包管理器)
 
-### 用户角色
-- **客户**: 浏览电影、预订票务、管理预订
-- **员工**: 管理放映、查看预订、客户服务
-- **管理员**: 完整系统管理、用户管理、电影院管理
+### 安装步骤
 
-## 技术栈
+1. **克隆仓库**
 
-### 后端
-- **框架**: Flask (Python)
-- **数据库**: PostgreSQL
-- **认证**: 基于会话的密码哈希
-- **API**: RESTful API设计
+```bash
+git clone https://github.com/yourusername/Comp9001_finalproject.git
+cd Comp9001_finalproject
+```
 
-### 前端
-- **HTML5**: 语义标记
-- **CSS3**: Bootstrap 5响应式设计
-- **JavaScript**: 交互式用户界面
-- **Font Awesome**: 图标和视觉元素
+2. **安装依赖**
 
-### 数据库
-- **PostgreSQL**: 关系数据库管理
-- **表**: 用户、电影院、电影、放映、预订
-- **功能**: 外键、索引、触发器
+```bash
+pip install -r requirements.txt
+```
+
+3. **配置数据库**
+
+编辑 `config.ini` 文件，填写数据库凭据：
+
+```ini
+[database]
+host = localhost
+port = 5432
+dbname = cinema_db
+user = your_username
+password = your_password
+```
+
+4. **初始化数据库**
+
+创建数据库并导入架构：
+
+```bash
+psql -U your_username -d cinema_db -f database/schema.sql
+```
+
+5. **填充测试数据**
+
+运行初始化脚本：
+
+```bash
+python init_database.py
+```
+
+6. **启动应用**
+
+```bash
+python app.py
+```
+
+7. **访问应用**
+
+- Web界面: http://localhost:5000
+- 默认测试账号:
+  - 管理员: `admin` / `admin123`
+  - 用户: `john_doe` / `customer123`
 
 ## 项目结构
 
 ```
 Comp9001_finalproject/
-├── README.md              # 项目文档（英文）
-├── README_CN.md           # 项目文档（中文）
-├── backend/               # Flask后端应用
-│   ├── app.py            # 主Flask应用
-│   └── routes/           # API路由和蓝图
-├── database/              # 数据库脚本和模式
-│   ├── schema.sql        # 数据库模式
-│   └── init_db.py        # 数据库初始化脚本
-├── web/                   # Web前端
-│   ├── static/           # 静态资源（CSS、JS）
-│   │   ├── css/         # 样式表
-│   │   └── js/          # JavaScript文件
-│   └── templates/        # HTML模板
-└── requirements.txt       # Python依赖
+├── app.py                      # Flask主应用
+├── init_database.py           # 数据库初始化脚本
+├── config.ini                 # 数据库配置
+├── requirements.txt           # Python依赖
+├── backend/                   # 后端业务逻辑
+│   ├── models/               # 数据库模型类
+│   │   ├── user.py
+│   │   ├── cinema.py
+│   │   ├── movie.py
+│   │   ├── screening.py
+│   │   ├── cinema_hall.py
+│   │   ├── seat.py
+│   │   └── booking.py
+│   └── services.py           # 业务逻辑服务
+├── routes/                    # Flask路由处理器
+│   ├── main.py              # 主路由
+│   ├── auth.py              # 认证路由
+│   ├── cinemas.py           # 影院路由
+│   ├── movies.py            # 电影路由
+│   ├── screenings.py        # 场次路由
+│   ├── dashboard.py         # 用户仪表板路由
+│   └── admin.py             # 管理面板路由
+├── database/                # 数据库脚本
+│   ├── schema.sql           # 数据库架构
+│   └── db.py               # 数据库连接和查询
+└── web/                     # 前端
+    ├── templates/           # HTML模板
+    │   ├── admin/          # 管理面板模板
+    │   └── errors/         # 错误页面
+    └── static/             # CSS和JavaScript
 ```
 
-## 安装和设置
+## 技术栈
 
-### 先决条件
-- Python 3.8+
-- PostgreSQL 12+
-- pip (Python包管理器)
+- **后端**: Python 3.10+, Flask 2.3.3
+- **数据库**: PostgreSQL with psycopg 3
+- **前端**: HTML5, CSS3, JavaScript, Bootstrap 5
+- **架构**: MVC模式，带服务层
 
-### 数据库设置
-1. 安装PostgreSQL并创建名为`booking_system`的数据库
-2. 在`database/init_db.py`和`backend/app.py`中更新数据库凭据
-3. 运行数据库初始化脚本：
+## 主要功能
+
+### 用户功能
+
+- 浏览活跃电影，查看海报和详情
+- 查看影院位置和设施
+- 实时座位选择
+- 追踪预订历史和取消状态
+- 个人仪表板统计
+
+### 管理员功能
+
+- 管理影院激活/停用
+- 添加新影院和影厅
+- 管理电影库和激活状态
+- 场次排期和筛选
+- 查看所有预订和系统统计
+
+## 数据库架构
+
+- **users**: 用户账户和认证
+- **cinemas**: 影院位置和设施
+- **movies**: 电影信息和元数据
+- **cinema_halls**: 每个影院的影厅配置
+- **seats**: 座位布局和按座位类型定价
+- **screenings**: 电影场次和排期
+- **bookings**: 用户购票
+- **seat_bookings**: 预订-座位关系连接表
+
+## 开发
+
+### 开发模式运行
+
 ```bash
-python database/init_db.py
+export FLASK_ENV=development
+export FLASK_DEBUG=1
+python app.py
 ```
 
-### 应用设置
-1. 安装Python依赖：
-```bash
-pip install -r requirements.txt
-```
+### 数据库管理
 
-2. 启动Flask应用：
-```bash
-python backend/app.py
-```
-
-3. 访问Web界面：`http://localhost:5001`
-
-## 默认登录凭据
-
-- **管理员**: `admin` / `admin123`
-- **员工**: `staff1` / `staff123`
-- **客户**: `john_doe` / `customer123`
-
-## 数据库模式
-
-### 核心表
-- **users**: 用户账户和个人资料
-- **cinemas**: 电影院位置和信息
-- **movies**: 电影详情和元数据
-- **screenings**: 电影放映时间和可用性
-- **bookings**: 票务预订和支付
-
-### 主要功能
-- 用户认证和基于角色的访问
-- 悉尼各位置电影院管理
-- 带评级和类型的电影目录
-- 带座位可用性的放映时间表
-- 带支付跟踪的预订系统
-
-## API端点
-
-### 认证
-- `POST /api/login` - 用户登录
-- `POST /api/register` - 用户注册
-- `POST /api/logout` - 用户登出
-
-### 电影
-- `GET /api/movies` - 列出所有电影
-- `GET /api/movies/{id}` - 获取电影详情
-- `GET /api/movies/search` - 搜索电影
-
-### 电影院
-- `GET /api/cinemas` - 列出所有电影院
-- `GET /api/cinemas/{id}` - 获取电影院详情
-
-### 放映
-- `GET /api/screenings` - 列出放映
-- `GET /api/screenings/movie/{movie_id}` - 获取电影的放映
-- `GET /api/screenings/cinema/{cinema_id}` - 获取电影院的放映
-
-### 预订
-- `GET /api/bookings` - 列出用户预订
-- `POST /api/bookings` - 创建新预订
-- `PUT /api/bookings/{id}` - 更新预订
-- `DELETE /api/bookings/{id}` - 取消预订
-
-## 开发说明
-
-### 数据库配置
-在以下文件中更新数据库连接设置：
-- `backend/app.py` - 主应用数据库配置
-- `database/init_db.py` - 数据库初始化配置
-
-### 添加新功能
-1. 在`database/schema.sql`中更新数据库模式
-2. 在`backend/routes/api.py`中添加API路由
-3. 在`web/templates/`中创建前端模板
-4. 在`web/static/`中更新静态文件
-
-## 贡献
-
-这是COMP9001的大学项目。仅用于学术目的。
+- **架构**: 参见 `database/schema.sql`
+- **测试数据**: 运行 `python init_database.py`
+- **连接**: 在 `config.ini` 中配置
 
 ## 许可证
 
-此项目是为教育目的而创建的，作为悉尼大学COMP9001课程作业的一部分。
+本项目为教育用途开发，作为悉尼大学 COMP9001 课程作业。
 
-## 联系
+## 联系方式
 
-有关此项目的问题，请联系课程讲师或参考课程材料。
-
----
-
-**注意**: 这是一个为学术目的创建的演示项目。它包含示例数据，不适用于生产使用。
+**作者**: 周立  
+**邮箱**: your.email@example.com  
+**机构**: 悉尼大学

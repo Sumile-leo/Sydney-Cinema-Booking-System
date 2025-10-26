@@ -1,6 +1,8 @@
 """
 Sydney Cinema Booking System - Flask App
 Main application file
+Author: Zhou Li
+Date: 2025-10-20
 """
 
 from flask import Flask
@@ -11,6 +13,7 @@ from routes.cinemas import register_cinemas_routes
 from routes.dashboard import register_dashboard_routes
 from routes.movies import register_movies_routes
 from routes.screenings import register_screenings_routes
+from routes.admin import register_admin_routes
 
 
 def create_app():
@@ -34,6 +37,7 @@ def create_app():
     register_dashboard_routes(app)
     register_movies_routes(app)
     register_screenings_routes(app)
+    register_admin_routes(app)
     
     # Register error handlers
     from flask import render_template

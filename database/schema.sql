@@ -1,5 +1,20 @@
 -- Cinema Booking System Database Schema
--- Created: October 26, 2025
+-- Author: Zhou Li
+-- Date: 2025-10-12
+
+-- Drop all existing tables (in reverse dependency order)
+DROP TABLE IF EXISTS seat_bookings CASCADE;
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS screenings CASCADE;
+DROP TABLE IF EXISTS seats CASCADE;
+DROP TABLE IF EXISTS cinema_halls CASCADE;
+DROP TABLE IF EXISTS movies CASCADE;
+DROP TABLE IF EXISTS cinemas CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- Drop trigger and function
+DROP TRIGGER IF EXISTS check_screening_status ON screenings CASCADE;
+DROP FUNCTION IF EXISTS deactivate_past_screenings() CASCADE;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
@@ -145,3 +160,17 @@ CREATE TRIGGER check_screening_status
 AFTER INSERT OR UPDATE ON screenings
 FOR EACH ROW
 EXECUTE FUNCTION deactivate_past_screenings();
+
+-- Sample Data
+-- Insert sample users
+INSERT INTO users (username, email, password, first_name, last_name, phone, user_type) VALUES
+('admin', 'admin@cinema.com', 'admin123', 'Admin', 'User', '0412345678', 'admin'),
+('john_doe', 'john@example.com', 'customer123', 'John', 'Doe', '0487654321', 'customer');
+
+-- Insert sample cinemas
+INSERT INTO cinemas (cinema_name, address, suburb, postcode, phone, email, facilities, is_active) VALUES
+('Event Cinemas George Street', '505 George St', 'Sydney', '2000', '02 9273 7300', 'info@eventcinemas.com.au', 'IMAX, 3D, Dolby Atmos', true),
+('Hoyts Broadway', 'Bay St Broadway', 'Sydney', '2007', '02 9211 6688', 'info@hoyts.com.au', 'VIP Lounges, 3D', true),
+('Palace Cinema', '22 Oxford St', 'Paddington', '2021', '02 9361 5399', 'info@palacecinemas.com.au', 'Luxury Seating', true),
+('Cinema Renaissance', '261 King St', 'Newtown', '2042', '02 9550 3666', 'info@renaissancecinema.com.au', 'Art House Films', true),
+('Randwick Ritz', '45 Saint Pauls St', 'Randwick', '2031', '02 9398 1617', 'info@ritzcinema.com.au', 'Dolby Vision', true);

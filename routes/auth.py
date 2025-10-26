@@ -1,5 +1,7 @@
 """
 Authentication routes
+Author: Zhou Li
+Date: 2025-10-11
 """
 
 from flask import render_template, request, redirect, url_for, session, flash

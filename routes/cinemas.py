@@ -1,5 +1,7 @@
 """
 Cinemas routes
+Author: Zhou Li
+Date: 2025-10-16
 """
 
 from flask import render_template
@@ -72,3 +74,21 @@ def register_cinemas_routes(app):
             abort(404)
         
         return render_template('hall_detail.html', cinema=cinema, hall=hall)
+    
+    @app.route('/api/cinemas/<int:cinema_id>/halls')
+    def api_cinema_halls(cinema_id):
+        """API: Get halls for a cinema"""
+        from flask import jsonify
+        from database.db import get_cinema_halls_by_cinema
+        
+        halls_data = get_cinema_halls_by_cinema(cinema_id)
+        halls = []
+        for hall_row in halls_data:
+            halls.append({
+                'hall_id': hall_row[0],
+                'hall_name': hall_row[2],
+                'hall_type': hall_row[3],
+                'total_seats': hall_row[6]
+            })
+        
+        return jsonify({'halls': halls})

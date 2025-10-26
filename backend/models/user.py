@@ -1,5 +1,7 @@
 """
 User model
+Author: Zhou Li
+Date: 2025-10-11
 """
 
 from typing import Optional, Tuple

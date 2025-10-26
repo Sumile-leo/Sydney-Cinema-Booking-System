@@ -1,5 +1,7 @@
 """
 Database configuration and connection
+Author: Zhou Li
+Date: 2025-10-12
 """
 
 import psycopg
@@ -126,7 +128,7 @@ def get_all_cinemas():
     try:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT cinema_id, cinema_name, address, suburb, postcode, phone, email, facilities, created_at, updated_at, is_active FROM cinemas ORDER BY cinema_name"
+            "SELECT cinema_id, cinema_name, address, suburb, postcode, phone, email, facilities, created_at, updated_at, is_active FROM cinemas ORDER BY cinema_id"
         )
         cinemas = cursor.fetchall()
         cursor.close()

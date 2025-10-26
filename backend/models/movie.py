@@ -1,5 +1,7 @@
 """
 Movie model
+Author: Zhou Li
+Date: 2025-10-14
 """
 
 from typing import Optional, Tuple

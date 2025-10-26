@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Screening Management - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white">
+            <i class="fas fa-calendar-alt me-2 text-warning"></i>Screening Management
+        </h2>
+        <div>
+            <a href="/admin" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+            <a href="/admin/screenings/add" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Add Screening
+            </a>
+        </div>
+    </div>
+    
+    <!-- Search Filters -->
+    <div class="card border-0 shadow-lg mb-4">
+        <div class="card-body p-4">
+            <form method="GET" action="/admin/screenings" id="search-form">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="cinema_filter" class="form-label text-white">Cinema</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="cinema_filter" name="cinema_id">
+                            <option value="">All Cinemas</option>
+                            {% for cinema in cinemas %}
+                            <option value="{{ cinema.cinema_id }}" {% if request.args.get('cinema_id') == cinema.cinema_id|string %}selected{% endif %}>
+                                {{ cinema.cinema_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="movie_filter" class="form-label text-white">Movie</label>
+                        <select class="form-select bg-dark text-white border-secondary" id="movie_filter" name="movie_id">
+                            <option value="">All Movies</option>
+                            {% for movie in movies %}
+                            <option value="{{ movie.movie_id }}" {% if request.args.get('movie_id') == movie.movie_id|string %}selected{% endif %}>
+                                {{ movie.title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="date_filter" class="form-label text-white">Date</label>
+                        <input type="date" class="form-control bg-dark text-white border-secondary" id="date_filter" name="screening_date" value="{{ request.args.get('screening_date', '') }}">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow-lg">
+        <div class="card-body">
+            <div class="table-responsive">
+                {% if screenings %}
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Movie ID</th>
+                            <th>Cinema ID</th>
+                            <th>Hall ID</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for screening in screenings %}
+                        <tr>
+                            <td>{{ screening.screening_id }}</td>
+                            <td>{{ screening.movie_id }}</td>
+                            <td>{{ screening.cinema_id }}</td>
+                            <td>{{ screening.hall_id }}</td>
+                            <td>{{ screening.screening_date }}</td>
+                            <td>{{ screening.start_time }}</td>
+                            <td>${{ screening.ticket_price }}</td>
+                            <td>
+                                <span class="badge bg-{% if screening.is_active %}success{% else %}danger{% endif %}">
+                                    {% if screening.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <form method="POST" action="/admin/screenings/{{ screening.screening_id }}/toggle?{{ request.query_string.decode() }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-{% if screening.is_active %}danger{% else %}success{% endif %}">
+                                        <i class="fas fa-{% if screening.is_active %}ban{% else %}check{% endif %}"></i>
+                                        {% if screening.is_active %}Deactivate{% else %}Activate{% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-white-50 mb-3"></i>
+                    <p class="text-white-50">No screenings found. Try adjusting your filters.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+}
+
+.table-dark tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-dark td, .table-dark th {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn {
+    border-radius: 8px;
+}
+</style>
+{% endblock %}
+

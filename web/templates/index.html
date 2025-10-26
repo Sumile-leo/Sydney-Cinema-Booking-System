@@ -25,7 +25,7 @@
                 <div class="movie-card">
                     <div class="movie-poster">
                         {% if movie.poster_url %}
-                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster-img">
+                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster-img" onerror="this.src='https://via.placeholder.com/300x450?text=No+Image';this.onerror=null;">
                         {% else %}
                         <div class="poster-placeholder">🎬</div>
                         {% endif %}

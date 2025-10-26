@@ -1,5 +1,7 @@
 """
 Seat model
+Author: Zhou Li
+Date: 2025-10-17
 """
 
 from typing import Optional, Tuple

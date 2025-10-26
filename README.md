@@ -1,82 +1,179 @@
 # Sydney Cinema Booking System
 
+A comprehensive cinema booking system for managing movies, cinemas, screenings, and user bookings.
+
+**Author**: Zhou Li  
+**Date**: October 10-29, 2025  
+**Course**: COMP9001 - The University of Sydney
+
+## Features
+
+- 🎬 **Movie Management**: Browse movies with posters, details, and genres
+- 🏛️ **Cinema Management**: View cinema locations, facilities, and hall layouts
+- 🎫 **Ticket Booking**: Select seats with real-time availability and pricing
+- 👤 **User Dashboard**: Track bookings, past screenings, and account status
+- 🔧 **Admin Panel**: Manage cinemas, movies, screenings, and cinema halls
+- 🎨 **Modern UI**: Dark theme with smooth animations and responsive design
+
 ## Quick Start
 
-### Configuration
+### Prerequisites
 
-First, edit the configuration file to match your environment:
+- Python 3.10 or higher
+- PostgreSQL 14 or higher
+- pip (Python package manager)
+
+### Installation
+
+1. **Clone the repository**
 
 ```bash
-# Edit config.ini
-nano config.ini
+git clone https://github.com/yourusername/Comp9001_finalproject.git
+cd Comp9001_finalproject
 ```
 
-Update the database settings if needed:
+2. **Install dependencies**
+
+```bash
+pip install -r requirements.txt
+```
+
+3. **Configure database**
+
+Edit `config.ini` with your database credentials:
+
 ```ini
 [database]
 host = localhost
 port = 5432
-user = postgres
+dbname = cinema_db
+user = your_username
 password = your_password
-dbname = booking_system
 ```
 
-### Start the Application
+4. **Initialize database**
+
+Create the database and schema:
 
 ```bash
-# Initialize database (first time only)
-python3 database/init_db.py
-
-# Start web server
-python3 backend/app.py
+psql -U your_username -d cinema_db -f database/schema.sql
 ```
 
-## Access the Application
+5. **Populate sample data**
 
-- **Web Interface**: http://localhost:5001
-- **API Endpoints**: http://localhost:5001/api/
+Run the initialization script:
 
-## Default Login Credentials
+```bash
+python init_database.py
+```
 
-- **Admin**: `admin` / `admin123`
-- **Staff**: `staff1` / `staff123`
-- **Customer**: `john_doe` / `customer123`
+6. **Start the application**
 
-## Features
+```bash
+python app.py
+```
 
-- 🎬 Movie browsing and search
-- 🎭 Cinema location management
-- 🎫 Online ticket booking
-- 👤 User registration and authentication
-- 📊 Booking management
-- 🎨 Dark theme UI with animations
+7. **Access the application**
 
-## Technical Stack
-
-- **Backend**: Python 3.x, Flask
-- **Database**: PostgreSQL
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap
-- **Models**: Object-Oriented Database Models
+- Web Interface: http://localhost:5000
+- Default demo credentials:
+  - Admin: `admin` / `admin123`
+  - User: `john_doe` / `customer123`
 
 ## Project Structure
 
 ```
 Comp9001_finalproject/
-├── main.py              # Main interface (START HERE!)
-├── backend/             # Flask application and models
-│   ├── app.py          # Main Flask application
-│   └── models/         # Database model classes
-├── database/            # Database scripts
-│   ├── schema.sql      # Database schema
-│   └── init_db.py      # Database initialization
-└── web/                 # Frontend
-    ├── templates/      # HTML templates
-    └── static/         # CSS, JS, images
+├── app.py                      # Main Flask application
+├── init_database.py           # Database initialization script
+├── config.ini                 # Database configuration
+├── requirements.txt           # Python dependencies
+├── backend/                   # Backend business logic
+│   ├── models/               # Database model classes
+│   │   ├── user.py
+│   │   ├── cinema.py
+│   │   ├── movie.py
+│   │   ├── screening.py
+│   │   ├── cinema_hall.py
+│   │   ├── seat.py
+│   │   └── booking.py
+│   └── services.py           # Business logic services
+├── routes/                    # Flask route handlers
+│   ├── main.py              # Main routes (index, bookings)
+│   ├── auth.py              # Authentication routes
+│   ├── cinemas.py           # Cinema routes
+│   ├── movies.py            # Movie routes
+│   ├── screenings.py        # Screening routes
+│   ├── dashboard.py         # User dashboard routes
+│   └── admin.py             # Admin panel routes
+├── database/                # Database scripts
+│   ├── schema.sql           # Database schema
+│   └── db.py               # Database connection and queries
+└── web/                     # Frontend
+    ├── templates/           # HTML templates
+    │   ├── admin/          # Admin panel templates
+    │   └── errors/         # Error pages
+    └── static/             # CSS and JavaScript
 ```
 
-## Course Information
+## Technical Stack
 
-- **University**: University of Sydney (USYD)
-- **Course**: COMP9001
-- **Author**: Zhou Li
-- **Project**: Final Project - Sydney Cinema Booking System
+- **Backend**: Python 3.10+, Flask 2.3.3
+- **Database**: PostgreSQL with psycopg 3
+- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
+- **Architecture**: MVC pattern with service layer
+
+## Key Features
+
+### User Features
+
+- Browse active movies with posters and details
+- View cinema locations and facilities
+- Select seats with real-time availability
+- Track booking history and cancellation status
+- Personal dashboard with statistics
+
+### Admin Features
+
+- Manage cinema activation/deactivation
+- Add new cinemas and halls
+- Manage movie library and activation
+- Schedule screenings with filtering
+- View all bookings and system statistics
+
+## Database Schema
+
+- **users**: User accounts and authentication
+- **cinemas**: Cinema locations and facilities
+- **movies**: Movie information and metadata
+- **cinema_halls**: Hall configurations per cinema
+- **seats**: Seat layout and pricing by seat type
+- **screenings**: Movie showtimes and scheduling
+- **bookings**: User ticket purchases
+- **seat_bookings**: Junction table for booking-seat relationships
+
+## Development
+
+### Running in Development Mode
+
+```bash
+export FLASK_ENV=development
+export FLASK_DEBUG=1
+python app.py
+```
+
+### Database Management
+
+- **Schema**: See `database/schema.sql`
+- **Sample Data**: Run `python init_database.py`
+- **Connection**: Configure in `config.ini`
+
+## License
+
+This project is developed for educational purposes as part of COMP9001 coursework at the University of Sydney.
+
+## Contact
+
+**Author**: Zhou Li  
+**Email**: your.email@example.com  
+**Institution**: The University of Sydney

@@ -1,5 +1,7 @@
 """
 Booking model
+Author: Zhou Li
+Date: 2025-10-19
 """
 
 from typing import Optional, Tuple

@@ -1,5 +1,7 @@
 """
 Business logic services
+Author: Zhou Li
+Date: 2025-10-18
 """
 
 from database.db import (
@@ -153,6 +155,10 @@ class BookingService:
             if len(booking_row) > 12 and booking_row[12]:
                 start_time_str = booking_row[12].strftime("%H:%M") if hasattr(booking_row[12], 'strftime') else str(booking_row[12])[:5]
             
+            end_time_str = None
+            if len(booking_row) > 13 and booking_row[13]:
+                end_time_str = booking_row[13].strftime("%H:%M") if hasattr(booking_row[13], 'strftime') else str(booking_row[13])[:5]
+            
             # Create booking dictionary with screening details
             booking_dict = {
                 'booking_id': booking.booking_id,
@@ -170,7 +176,7 @@ class BookingService:
                 'screening_date': booking_row[11] if len(booking_row) > 11 else None,
                 'screening_time': booking_row[12] if len(booking_row) > 12 else None,
                 'start_time': start_time_str,  # Format as string
-                'end_time': booking_row[13] if len(booking_row) > 13 else None,
+                'end_time': end_time_str,  # Format as string
                 'movie_id': booking_row[14] if len(booking_row) > 14 else None,
                 'movie_title': booking_row[15] if len(booking_row) > 15 else 'Unknown Movie',
                 'cinema_name': booking_row[16] if len(booking_row) > 16 else 'Unknown Cinema',
@@ -269,6 +275,13 @@ class BookingService:
 
 class ScreeningService:
     """Screening business logic service"""
+    
+    @staticmethod
+    def get_all_screenings():
+        """Get all screenings"""
+        from database.db import get_all_screenings as db_get_all_screenings
+        screenings_data = db_get_all_screenings()
+        return [Screening.from_db_row(screening) for screening in screenings_data]
     
     @staticmethod
     def get_screening_for_booking(screening_id):
@@ -426,3 +439,23 @@ class CinemaHallService:
         if hall_data:
             return CinemaHall.from_db_row(hall_data)
         return None
+    
+    @staticmethod
+    def get_all_halls():
+        """Get all halls"""
+        conn = get_db_connection()
+        if not conn:
+            return []
+        
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT hall_id, cinema_id, hall_name, hall_type, total_rows, seats_per_row, total_seats, screen_size, sound_system, created_at, updated_at FROM cinema_halls ORDER BY hall_id")
+            halls_data = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return [CinemaHall.from_db_row(hall) for hall in halls_data]
+        except Exception as e:
+            print(f"Error getting all halls: {e}")
+            if conn:
+                conn.close()
+            return []
