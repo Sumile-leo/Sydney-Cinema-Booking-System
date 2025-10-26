@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS movies (
     duration_minutes INTEGER,
     release_date DATE,
     director VARCHAR(100),
-    cast TEXT,
+    "cast" TEXT,
     language VARCHAR(50),
     subtitles VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
