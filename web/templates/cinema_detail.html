@@ -38,9 +38,9 @@
                 <div class="cinema-card">
                     <div class="cinema-info text-center">
                         {% if cinema.is_active %}
-                        <h4 class="mb-3">Coming Soon</h4>
-                        <p class="mb-4">Booking functionality will be available soon</p>
-                        <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>View Screenings</button>
+                        <h4 class="mb-3">View Screenings</h4>
+                        <p class="mb-4">Check available movie screenings at this cinema</p>
+                        <a href="{{ url_for('cinema_screenings', cinema_id=cinema.cinema_id) }}" class="btn btn-primary btn-lg w-100 mb-3">View Screenings</a>
                         
                         <h4 class="mb-3">View Halls</h4>
                         <p class="mb-4">See all cinema halls at this location</p>

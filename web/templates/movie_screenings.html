@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - Screenings{% endblock %}
+
+{% block content %}
+<div class="movies-section">
+    <div class="container">
+        <h2 class="section-title mb-4">{{ movie.title }} - Screenings</h2>
+        
+        <!-- Filters -->
+        <div class="cinema-card mb-4">
+            <div class="cinema-info">
+                <h3 class="mb-3">Filter Screenings</h3>
+                <form method="GET" action="{{ url_for('movie_screenings', movie_id=movie.movie_id) }}" class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="cinema" class="form-label text-white">Cinema:</label>
+                        <select name="cinema" id="cinema" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Cinemas</option>
+                            {% for cinema in all_cinemas %}
+                            <option value="{{ cinema.cinema_id }}" {% if cinema.cinema_id == selected_cinema_id %}selected{% endif %}>
+                                {{ cinema.cinema_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="date" class="form-label text-white">Date:</label>
+                        <select name="date" id="date" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Dates</option>
+                            {% for day in available_dates %}
+                            <option value="{{ day.isoformat() }}" {% if day.isoformat() == selected_date %}selected{% endif %}>
+                                {{ day.strftime('%B %d, %Y') }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Screenings -->
+        {% if screenings %}
+        <div class="row">
+            {% for screening in screenings %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="cinema-card">
+                    <div class="cinema-info">
+                        <h4 class="mb-2">
+                            {% if screening.screening_type %}
+                            {{ screening.screening_type }}
+                            {% else %}
+                            Screening
+                            {% endif %}
+                        </h4>
+                        <p class="mb-1"><strong>Date:</strong> {{ screening.screening_date.strftime('%B %d, %Y') }}</p>
+                        <p class="mb-1"><strong>Time:</strong> {{ screening.start_time.strftime('%H:%M') }} - {{ screening.end_time.strftime('%H:%M') }}</p>
+                        <p class="mb-1"><strong>Price:</strong> ${{ "%.2f"|format(screening.ticket_price) }}</p>
+                        {% if screening.language %}
+                        <p class="mb-1"><strong>Language:</strong> {{ screening.language }}</p>
+                        {% endif %}
+                        {% if screening.subtitles %}
+                        <p class="mb-1"><strong>Subtitles:</strong> {{ screening.subtitles }}</p>
+                        {% endif %}
+                        <button class="btn btn-primary btn-sm w-100 mt-3" disabled>Book Now (Coming Soon)</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="cinema-card">
+            <div class="cinema-info text-center">
+                <p>No screenings found for the selected filters.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}" class="btn btn-outline">Back to Movie</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

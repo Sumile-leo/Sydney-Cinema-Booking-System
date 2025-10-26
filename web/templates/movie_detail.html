@@ -50,8 +50,8 @@
                     <div class="movie-info text-center">
                         {% if movie.is_active %}
                         <h4 class="mb-3">Book Your Tickets</h4>
-                        <p class="mb-4">Booking functionality will be available soon</p>
-                        <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>View Screenings</button>
+                        <p class="mb-4">View available screenings for this movie</p>
+                        <a href="{{ url_for('movie_screenings', movie_id=movie.movie_id) }}" class="btn btn-primary btn-lg w-100 mb-3">View Screenings</a>
                         {% else %}
                         <h4 class="mb-3">Not Available</h4>
                         <p class="mb-4">This movie is no longer available for booking.</p>

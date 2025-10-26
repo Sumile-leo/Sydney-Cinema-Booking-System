@@ -10,6 +10,7 @@ from routes.main import register_main_routes
 from routes.cinemas import register_cinemas_routes
 from routes.dashboard import register_dashboard_routes
 from routes.movies import register_movies_routes
+from routes.screenings import register_screenings_routes
 
 
 def create_app():
@@ -32,6 +33,7 @@ def create_app():
     register_cinemas_routes(app)
     register_dashboard_routes(app)
     register_movies_routes(app)
+    register_screenings_routes(app)
     
     # Register error handlers
     from flask import render_template
