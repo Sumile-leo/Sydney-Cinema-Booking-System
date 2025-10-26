@@ -18,40 +18,6 @@ def register_main_routes(app):
         
         return render_template('index.html', movies=latest_movies)
 
-    @app.route('/screenings')
-    def screenings():
-        """Screenings page"""
-        from database.db import get_all_screenings
-        from backend.models.screening import Screening
-        from backend.services import MovieService, CinemaService
-        
-        # Get all screenings
-        screenings_data = get_all_screenings()
-        screenings_list = [Screening.from_db_row(s) for s in screenings_data]
-        
-        # Get today and next 7 days
-        from datetime import date, timedelta
-        today = date.today()
-        end_date = today + timedelta(days=7)
-        
-        # Filter screenings for the next 7 days
-        upcoming_screenings = [
-            s for s in screenings_list 
-            if s.screening_date >= today and s.screening_date <= end_date
-        ]
-        
-        # Group by date
-        screenings_by_date = {}
-        for screening in upcoming_screenings:
-            date_str = screening.screening_date.strftime('%Y-%m-%d')
-            if date_str not in screenings_by_date:
-                screenings_by_date[date_str] = []
-            screenings_by_date[date_str].append(screening)
-        
-        return render_template('screenings.html', 
-                              screenings_by_date=screenings_by_date,
-                              today=today)
-
     @app.route('/bookings')
     def bookings():
         """Bookings page (placeholder)"""
