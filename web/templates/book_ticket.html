@@ -143,6 +143,20 @@
                                 <span>Not Available</span>
                             </div>
                         </div>
+                        <div class="legend-items mt-3 pt-3" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div class="legend-item">
+                                <button class="seat-btn legend-seat-vip" data-seat-type="vip"></button>
+                                <span>VIP (Red Border)</span>
+                            </div>
+                            <div class="legend-item">
+                                <button class="seat-btn legend-seat-premium" data-seat-type="premium"></button>
+                                <span>Premium (Gold Border)</span>
+                            </div>
+                            <div class="legend-item">
+                                <button class="seat-btn legend-seat-standard" data-seat-type="standard"></button>
+                                <span>Standard (Gray Border)</span>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Booking Summary -->
@@ -315,6 +329,19 @@
     box-shadow: 0 0 10px rgba(23, 162, 184, 0.8);
 }
 
+/* Seat type borders */
+.seat-btn[data-seat-type="vip"] {
+    border: 2px solid #dc3545 !important;
+}
+
+.seat-btn[data-seat-type="premium"] {
+    border: 2px solid #ffc107 !important;
+}
+
+.seat-btn[data-seat-type="standard"] {
+    border: 2px solid #6c757d !important;
+}
+
 .seat-legend {
     padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
@@ -336,6 +363,22 @@
 .legend-item .seat-btn {
     width: 30px;
     height: 30px;
+}
+
+/* Legend seat types */
+.legend-seat-vip {
+    background: #28a745 !important;
+    border: 2px solid #dc3545 !important;
+}
+
+.legend-seat-premium {
+    background: #28a745 !important;
+    border: 2px solid #ffc107 !important;
+}
+
+.legend-seat-standard {
+    background: #28a745 !important;
+    border: 2px solid #6c757d !important;
 }
 
 .booking-summary-box {
