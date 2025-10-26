@@ -6,7 +6,7 @@ from database.db import (
     get_user_by_username, create_user, check_username_or_email_exists,
     get_all_cinemas, get_cinema_by_id, create_cinema,
     get_all_movies, get_movie_by_id, create_movie,
-    get_bookings_with_details, get_seats_by_booking
+    get_bookings_with_details, get_seats_by_booking, can_cancel_booking
 )
 from backend.models.user import User
 from backend.models.cinema import Cinema
@@ -139,6 +139,9 @@ class BookingService:
             # Format seat numbers for display - one ticket per line
             seat_display = '<br>'.join([f"Row {seat['row_number']}, Seat {seat['seat_number']}" for seat in seats])
             
+            # Check if booking can be cancelled
+            can_cancel, cancel_message = can_cancel_booking(booking.booking_id)
+            
             # Create booking dictionary with screening details
             booking_dict = {
                 'booking_id': booking.booking_id,
@@ -148,6 +151,8 @@ class BookingService:
                 'booking_status': booking.booking_status,
                 'payment_status': booking.payment_status,
                 'booking_date': booking.booking_date,
+                'can_cancel': can_cancel,
+                'cancel_message': cancel_message,
                 # Screening details
                 'screening_date': booking_row[11] if len(booking_row) > 11 else None,
                 'start_time': booking_row[12] if len(booking_row) > 12 else None,

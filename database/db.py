@@ -642,6 +642,59 @@ def get_bookings_with_details(user_id):
         return []
 
 
+def can_cancel_booking(booking_id):
+    """Check if a booking can be cancelled (at least 2 hours before screening)"""
+    from datetime import datetime, timedelta
+    
+    conn = get_db_connection()
+    if not conn:
+        return False, "Database connection failed"
+    
+    try:
+        cursor = conn.cursor()
+        # Get screening date and time for this booking
+        cursor.execute("""
+            SELECT b.booking_status, s.screening_date, s.start_time
+            FROM bookings b
+            JOIN screenings s ON b.screening_id = s.screening_id
+            WHERE b.booking_id = %s
+        """, (booking_id,))
+        
+        result = cursor.fetchone()
+        if not result:
+            cursor.close()
+            conn.close()
+            return False, "Booking not found"
+        
+        booking_status, screening_date, start_time = result
+        
+        # Check if already cancelled
+        if booking_status == 'cancelled':
+            cursor.close()
+            conn.close()
+            return False, "Booking already cancelled"
+        
+        # Check if can be cancelled (2 hours before screening)
+        screening_datetime = datetime.combine(screening_date, start_time)
+        current_datetime = datetime.now()
+        time_diff = screening_datetime - current_datetime
+        
+        # Must be at least 2 hours before screening
+        if time_diff < timedelta(hours=2):
+            cursor.close()
+            conn.close()
+            return False, f"Cannot cancel within 2 hours of screening. Screening starts in {time_diff.total_seconds() / 60:.0f} minutes."
+        
+        cursor.close()
+        conn.close()
+        return True, "Booking can be cancelled"
+    except Exception as e:
+        print(f"Error checking cancellation eligibility: {e}")
+        if conn:
+            conn.close()
+        return False, f"Error: {str(e)}"
+
+
 def cancel_booking(booking_id):
     """Cancel a booking"""
     conn = get_db_connection()

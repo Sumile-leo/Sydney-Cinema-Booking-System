@@ -4,7 +4,7 @@ Main routes
 
 from flask import render_template, redirect, url_for, session, flash, request
 from backend.services import CinemaService, MovieService, BookingService
-from database.db import cancel_booking, get_booking_user_id
+from database.db import cancel_booking, get_booking_user_id, can_cancel_booking
 
 
 def register_main_routes(app):
@@ -42,6 +42,13 @@ def register_main_routes(app):
         booking_user_id = get_booking_user_id(booking_id)
         if booking_user_id != session['user_id']:
             flash('You can only cancel your own bookings', 'error')
+            return redirect(url_for('bookings'))
+        
+        # Check if booking can be cancelled (2 hours before screening)
+        can_cancel, message = can_cancel_booking(booking_id)
+        
+        if not can_cancel:
+            flash(message, 'error')
             return redirect(url_for('bookings'))
         
         # Cancel the booking
