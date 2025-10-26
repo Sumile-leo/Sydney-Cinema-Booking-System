@@ -11,9 +11,10 @@ A comprehensive cinema booking system for managing movies, cinemas, screenings, 
 
 This project acknowledges the use of AI assistance in its development:
 
-- **Frontend Pages & README**: The HTML templates, CSS styling, and README documentation were generated with the assistance of ChatGPT.
-- **Python Business Logic**: All Python backend code including routes, services, database functions, and models were written by the author (Zhou Li).
+- **CSS Styling**: CSS styles and visual enhancements were refined with ChatGPT assistance.
+- **All Other Code**: All Python backend code including Flask routes, services, database functions, models, and business logic were written by the author (Zhou Li).
 - **Database Schema**: Designed by the author.
+- **Web Framework**: Implemented by the author.
 
 For any inquiries or questions, please contact the author via email.
 
