@@ -175,3 +175,78 @@ def create_cinema(cinema_name, address, suburb, postcode, phone, email, faciliti
         if conn:
             conn.close()
         return False
+
+
+# Movie-related database operations
+def get_all_movies():
+    """Get all movies"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT movie_id, title, description, genre, duration_minutes, release_date, 
+                      director, cast, language, subtitles, created_at, updated_at, is_active 
+               FROM movies ORDER BY release_date DESC"""
+        )
+        movies = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return movies
+    except Exception as e:
+        print(f"Error getting movies: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_movie_by_id(movie_id):
+    """Get movie by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT movie_id, title, description, genre, duration_minutes, release_date, 
+                      director, cast, language, subtitles, created_at, updated_at, is_active 
+               FROM movies WHERE movie_id = %s""",
+            (movie_id,)
+        )
+        movie = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return movie
+    except Exception as e:
+        print(f"Error getting movie: {e}")
+        if conn:
+            conn.close()
+        return None
+
+
+def create_movie(title, description, genre, duration_minutes, release_date, director, cast, language, subtitles, is_active=True):
+    """Create a new movie"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """INSERT INTO movies (title, description, genre, duration_minutes, release_date, 
+                                   director, cast, language, subtitles, is_active)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+            (title, description, genre, duration_minutes, release_date, director, cast, language, subtitles, is_active)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error creating movie: {e}")
+        if conn:
+            conn.close()
+        return False

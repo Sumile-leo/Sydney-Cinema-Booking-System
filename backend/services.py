@@ -4,10 +4,12 @@ Business logic services
 
 from database.db import (
     get_user_by_username, create_user, check_username_or_email_exists,
-    get_all_cinemas, get_cinema_by_id, create_cinema
+    get_all_cinemas, get_cinema_by_id, create_cinema,
+    get_all_movies, get_movie_by_id, create_movie
 )
 from backend.models.user import User
 from backend.models.cinema import Cinema
+from backend.models.movie import Movie
 
 
 class UserService:
@@ -72,3 +74,35 @@ class CinemaService:
         Returns True if successful, False otherwise
         """
         return create_cinema(cinema_name, address, suburb, postcode, phone, email, facilities, is_active)
+
+
+class MovieService:
+    """Movie business logic service"""
+    
+    @staticmethod
+    def get_all_movies():
+        """
+        Get all movies
+        Returns list of Movie objects
+        """
+        movie_rows = get_all_movies()
+        return [Movie.from_db_row(row) for row in movie_rows]
+    
+    @staticmethod
+    def get_movie_by_id(movie_id):
+        """
+        Get movie by ID
+        Returns Movie object or None
+        """
+        movie_row = get_movie_by_id(movie_id)
+        if movie_row:
+            return Movie.from_db_row(movie_row)
+        return None
+    
+    @staticmethod
+    def create_movie(title, description, genre, duration_minutes, release_date, director, cast, language, subtitles, is_active=True):
+        """
+        Create a new movie
+        Returns True if successful, False otherwise
+        """
+        return create_movie(title, description, genre, duration_minutes, release_date, director, cast, language, subtitles, is_active)

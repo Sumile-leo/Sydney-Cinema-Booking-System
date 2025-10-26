@@ -29,3 +29,20 @@ CREATE TABLE IF NOT EXISTS cinemas (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
 );
+
+-- Movies table
+CREATE TABLE IF NOT EXISTS movies (
+    movie_id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    genre VARCHAR(50),
+    duration_minutes INTEGER,
+    release_date DATE,
+    director VARCHAR(100),
+    cast TEXT,
+    language VARCHAR(50),
+    subtitles VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
