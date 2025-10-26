@@ -13,10 +13,21 @@
     
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="text-white fw-bold">
-                <i class="fas fa-tachometer-alt me-2 text-warning"></i>Dashboard
-            </h1>
-            <p class="text-white-50">Welcome back, {{ user.first_name }} {{ user.last_name }}!</p>
+            <div class="welcome-banner p-4 rounded mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="text-white fw-bold mb-2">
+                            <i class="fas fa-tachometer-alt me-2 text-warning"></i>Dashboard
+                        </h1>
+                        <p class="text-white-50 mb-0">
+                            Welcome back, <span class="text-warning fw-bold">{{ user.first_name }} {{ user.last_name }}</span>!
+                        </p>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle fa-4x text-warning"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -76,9 +87,11 @@
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-film fa-3x text-primary mb-3"></i>
-                        <h3 class="text-white mb-1">0</h3>
+                    <div class="card-body text-center p-4 position-relative overflow-hidden">
+                        <div class="stat-icon-wrapper">
+                            <i class="fas fa-film stat-icon"></i>
+                        </div>
+                        <h2 class="text-white mb-1 fw-bold">0</h2>
                         <p class="text-white-50 mb-0">Movies Watched</p>
                     </div>
                 </div>
@@ -87,9 +100,11 @@
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-ticket-alt fa-3x text-success mb-3"></i>
-                        <h3 class="text-white mb-1">0</h3>
+                    <div class="card-body text-center p-4 position-relative overflow-hidden">
+                        <div class="stat-icon-wrapper">
+                            <i class="fas fa-ticket-alt stat-icon"></i>
+                        </div>
+                        <h2 class="text-white mb-1 fw-bold">0</h2>
                         <p class="text-white-50 mb-0">Total Bookings</p>
                     </div>
                 </div>
@@ -98,9 +113,11 @@
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-calendar-check fa-3x text-warning mb-3"></i>
-                        <h3 class="text-white mb-1">0</h3>
+                    <div class="card-body text-center p-4 position-relative overflow-hidden">
+                        <div class="stat-icon-wrapper">
+                            <i class="fas fa-calendar-check stat-icon"></i>
+                        </div>
+                        <h2 class="text-white mb-1 fw-bold">0</h2>
                         <p class="text-white-50 mb-0">Upcoming</p>
                     </div>
                 </div>
@@ -109,9 +126,11 @@
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-clock fa-3x text-info mb-3"></i>
-                        <h3 class="text-white mb-1">0</h3>
+                    <div class="card-body text-center p-4 position-relative overflow-hidden">
+                        <div class="stat-icon-wrapper">
+                            <i class="fas fa-clock stat-icon"></i>
+                        </div>
+                        <h2 class="text-white mb-1 fw-bold">0</h2>
                         <p class="text-white-50 mb-0">Cancelled</p>
                     </div>
                 </div>
@@ -140,6 +159,20 @@
 </div>
 
 <style>
+.welcome-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.user-avatar i {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
 .dashboard-card {
     transition: transform 0.3s ease;
 }
@@ -152,8 +185,36 @@
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
 }
 
+.stat-card {
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
 .stat-card .card {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-icon-wrapper {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    opacity: 0.1;
+}
+
+.stat-icon {
+    font-size: 5rem;
+    color: #ffc107;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
 }
 
 .btn-warning {
@@ -172,10 +233,12 @@
 
 .btn-primary, .btn-success, .btn-info {
     transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary:hover, .btn-success:hover, .btn-info:hover {
     transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .badge {
@@ -193,6 +256,11 @@ h1 {
 
 .card {
     border-radius: 12px !important;
+}
+
+h2.text-white {
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 </style>
 {% endblock %}
