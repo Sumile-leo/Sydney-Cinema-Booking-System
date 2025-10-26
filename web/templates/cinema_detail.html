@@ -27,33 +27,33 @@
                         </div>
                         
                         <div class="info-section mb-4">
-                            <h5 class="section-title mb-3">
+                            <h5 class="section-title mb-3 text-start">
                                 <i class="fas fa-map-marker-alt me-2 text-warning"></i>Location
                             </h5>
-                            <p class="detail-text mb-2">{{ cinema.address }}</p>
-                            <p class="detail-text mb-0">
+                            <p class="detail-text mb-2 text-start">{{ cinema.address }}</p>
+                            <p class="detail-text mb-0 text-start">
                                 {{ cinema.suburb }}, NSW {{ cinema.postcode }}
                             </p>
                         </div>
                         
                         {% if cinema.phone %}
                         <div class="info-section mb-4">
-                            <h5 class="section-title mb-3">
+                            <h5 class="section-title mb-3 text-start">
                                 <i class="fas fa-phone me-2 text-warning"></i>Contact
                             </h5>
-                            <p class="detail-text mb-2">{{ cinema.phone }}</p>
+                            <p class="detail-text mb-2 text-start">{{ cinema.phone }}</p>
                             {% if cinema.email %}
-                            <p class="detail-text mb-0">{{ cinema.email }}</p>
+                            <p class="detail-text mb-0 text-start">{{ cinema.email }}</p>
                             {% endif %}
                         </div>
                         {% endif %}
                         
                         {% if cinema.facilities %}
                         <div class="info-section mb-4">
-                            <h5 class="section-title mb-3">
+                            <h5 class="section-title mb-3 text-start">
                                 <i class="fas fa-star me-2 text-warning"></i>Facilities
                             </h5>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex flex-wrap gap-2 justify-content-start">
                                 {% for facility in cinema.facilities.split(', ') %}
                                 <span class="badge bg-warning text-dark px-3 py-2">{{ facility }}</span>
                                 {% endfor %}
