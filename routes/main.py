@@ -18,10 +18,7 @@ def register_main_routes(app):
         """Movies page (placeholder)"""
         return render_template('index.html')  # Temporary redirect to home
 
-    @app.route('/cinemas')
-    def cinemas():
-        """Cinemas page (placeholder)"""
-        return render_template('index.html')  # Temporary redirect to home
+
 
     @app.route('/screenings')
     def screenings():

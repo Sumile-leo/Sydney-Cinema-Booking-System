@@ -7,6 +7,7 @@ from flask import Flask
 from flask_cors import CORS
 from routes.auth import register_auth_routes
 from routes.main import register_main_routes
+from routes.cinemas import register_cinemas_routes
 
 
 def create_app():
@@ -26,6 +27,7 @@ def create_app():
     # Register routes
     register_main_routes(app)
     register_auth_routes(app)
+    register_cinemas_routes(app)
     
     return app
 
