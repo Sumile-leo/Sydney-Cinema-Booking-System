@@ -103,12 +103,12 @@ def register_main_routes(app):
         seats = []
         for seat_row in seats_data:
             seats.append({
-                'seat_id': seat_row[0],
-                'row_number': seat_row[1],
-                'seat_number': seat_row[2],
-                'seat_type': seat_row[3] if len(seat_row) > 3 else 'standard',
-                'price_multiplier': float(seat_row[4]) if len(seat_row) > 4 and seat_row[4] else 1.0,
-                'is_active': seat_row[5] if len(seat_row) > 5 else True
+                'seat_id': seat_row[0],  # seat_id
+                'row_number': seat_row[2],  # row_number (index 2 after hall_id)
+                'seat_number': seat_row[3],  # seat_number (index 3)
+                'seat_type': seat_row[4] if len(seat_row) > 4 else 'standard',  # seat_type (index 4)
+                'price_multiplier': float(seat_row[5]) if len(seat_row) > 5 and isinstance(seat_row[5], (int, float)) else 1.0,  # price_multiplier (index 5)
+                'is_active': seat_row[6] if len(seat_row) > 6 else True  # is_active (index 6)
             })
         
         # Get already booked seats for this screening
