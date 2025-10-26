@@ -53,8 +53,7 @@ body {
     padding: 80px 0;
     text-align: center;
     position: relative;
-    overflow: hidden;
-    z-index: 1;
+    z-index: 0;
 }
 
 .hero-section::before {
@@ -133,7 +132,7 @@ body {
     padding: 60px 0;
     background-color: var(--secondary-dark);
     position: relative;
-    z-index: 0;
+    z-index: 1;
 }
 
 .features-section:nth-child(even), .movies-section {
