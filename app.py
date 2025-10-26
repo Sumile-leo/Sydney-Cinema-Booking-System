@@ -33,6 +33,17 @@ def create_app():
     register_dashboard_routes(app)
     register_movies_routes(app)
     
+    # Register error handlers
+    from flask import render_template
+    
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        return render_template('errors/500.html'), 500
+    
     return app
 
 
