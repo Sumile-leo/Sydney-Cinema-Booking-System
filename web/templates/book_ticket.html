@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}Book Tickets - {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title mb-4">Book Tickets</h2>
+        
+        <div class="row">
+            <!-- Left Side: Movie & Cinema Info -->
+            <div class="col-lg-4 mb-4">
+                <div class="movie-info-card">
+                    <!-- Movie Poster -->
+                    {% if movie.poster_url %}
+                    <div class="movie-poster-large mb-3">
+                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="poster-img">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Movie Title -->
+                    <h3 class="movie-title mb-3">{{ movie.title }}</h3>
+                    
+                    <!-- Movie Details -->
+                    <div class="movie-details">
+                        {% if movie.genre %}
+                        <p class="mb-2">
+                            <i class="bi bi-tag"></i> 
+                            <strong>Genre:</strong> {{ movie.genre }}
+                        </p>
+                        {% endif %}
+                        {% if movie.duration_minutes %}
+                        <p class="mb-2">
+                            <i class="bi bi-clock"></i> 
+                            <strong>Duration:</strong> {{ movie.duration_minutes }} minutes
+                        </p>
+                        {% endif %}
+                        {% if movie.director %}
+                        <p class="mb-2">
+                            <i class="bi bi-person"></i> 
+                            <strong>Director:</strong> {{ movie.director }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <hr class="my-3">
+                    
+                    <!-- Cinema Info -->
+                    <div class="cinema-info-box">
+                        <h5 class="mb-3">
+                            <i class="bi bi-geo-alt"></i> {{ cinema.cinema_name }}
+                        </h5>
+                        <p class="mb-1">
+                            <i class="bi bi-building"></i> {{ cinema.address }}
+                        </p>
+                        <p class="mb-1">
+                            <i class="bi bi-geo"></i> {{ cinema.suburb }} {{ cinema.postcode }}
+                        </p>
+                        {% if cinema.phone %}
+                        <p class="mb-1">
+                            <i class="bi bi-telephone"></i> {{ cinema.phone }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Screening Info -->
+                    <div class="screening-info-box mt-3">
+                        <p class="mb-2">
+                            <i class="bi bi-calendar-event"></i> 
+                            <strong>Date:</strong> {{ screening.screening_date.strftime('%B %d, %Y') }}
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-clock"></i> 
+                            <strong>Time:</strong> {{ screening.start_time.strftime('%H:%M') }} - {{ screening.end_time.strftime('%H:%M') }}
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-tv"></i> 
+                            <strong>Hall:</strong> {{ hall.hall_name }}
+                        </p>
+                        <p class="mb-0">
+                            <i class="bi bi-tag"></i> 
+                            <strong>Price:</strong> ${{ "%.2f"|format(screening.ticket_price) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side: Seat Map -->
+            <div class="col-lg-8">
+                <div class="seat-map-container">
+                    <h4 class="mb-3">Select Your Seats</h4>
+                    
+                    <!-- Screen -->
+                    <div class="screen-box mb-4">
+                        <h5>SCREEN</h5>
+                    </div>
+                    
+                    <!-- Seat Map -->
+                    <div class="seat-map">
+                        <div class="row-seats" id="seat-map-container">
+                            {% set rows = {} %}
+                            {% for seat in seats %}
+                                {% if seat.row_number not in rows %}
+                                    {% set _ = rows.update({seat.row_number: []}) %}
+                                {% endif %}
+                                {% set _ = rows[seat.row_number].append(seat) %}
+                            {% endfor %}
+                            
+                            {% for row_num in rows.keys() | sort %}
+                            <div class="seat-row mb-2">
+                                <div class="row-label">{{ row_num }}</div>
+                                <div class="row-seats">
+                                    {% for seat in rows[row_num] | sort(attribute='seat_number') %}
+                                    <button class="seat-btn {% if seat.seat_id in booked_seats %}seat-booked{% elif not seat.is_active %}seat-inactive{% else %}seat-available{% endif %}" 
+                                            data-seat-id="{{ seat.seat_id }}"
+                                            data-row="{{ seat.row_number }}"
+                                            data-seat="{{ seat.seat_number }}"
+                                            data-seat-type="{{ seat.seat_type }}"
+                                            {% if seat.seat_id in booked_seats or not seat.is_active %}disabled{% endif %}>
+                                        {{ seat.seat_number }}
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Legend -->
+                    <div class="seat-legend mt-4">
+                        <h6>Legend:</h6>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <button class="seat-btn seat-available"></button>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <button class="seat-btn seat-booked"></button>
+                                <span>Booked</span>
+                            </div>
+                            <div class="legend-item">
+                                <button class="seat-btn seat-inactive"></button>
+                                <span>Not Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.movie-info-card {
+    background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    position: sticky;
+    top: 100px;
+}
+
+.movie-poster-large {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-title {
+    color: #ffc107;
+    font-size: 1.8rem;
+}
+
+.movie-details p {
+    color: #ccc;
+    font-size: 0.95rem;
+}
+
+.movie-details strong {
+    color: #ffc107;
+}
+
+.cinema-info-box, .screening-info-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cinema-info-box h5 {
+    color: #ffc107;
+}
+
+.seat-map-container {
+    background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.screen-box {
+    background: linear-gradient(180deg, #333 0%, #222 100%);
+    border: 2px solid #555;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.screen-box h5 {
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    margin: 0;
+}
+
+.seat-map {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.row-label {
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffc107;
+    margin-right: 1rem;
+}
+
+.row-seats {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.seat-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: #28a745;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.seat-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.seat-btn:disabled {
+    cursor: not-allowed;
+}
+
+.seat-booked {
+    background: #dc3545 !important;
+    cursor: not-allowed;
+}
+
+.seat-inactive {
+    background: #ffc107 !important;
+    cursor: not-allowed;
+}
+
+.seat-btn.selected {
+    background: #17a2b8 !important;
+    box-shadow: 0 0 10px rgba(23, 162, 184, 0.8);
+}
+
+.seat-legend {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.legend-items {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-item .seat-btn {
+    width: 30px;
+    height: 30px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .movie-info-card {
+        position: relative;
+        top: 0;
+    }
+}
+</style>
+
+<script>
+// JavaScript for seat selection
+let selectedSeats = [];
+
+document.querySelectorAll('.seat-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (this.disabled) return;
+        
+        const seatId = this.getAttribute('data-seat-id');
+        
+        if (selectedSeats.includes(seatId)) {
+            // Deselect
+            selectedSeats = selectedSeats.filter(id => id !== seatId);
+            this.classList.remove('selected');
+        } else {
+            // Select
+            selectedSeats.push(seatId);
+            this.classList.add('selected');
+        }
+        
+        console.log('Selected seats:', selectedSeats);
+    });
+});
+</script>
+{% endblock %}
+

@@ -60,7 +60,9 @@
                         {% if screening.subtitles %}
                         <p class="mb-1"><strong>Subtitles:</strong> {{ screening.subtitles }}</p>
                         {% endif %}
-                        <button class="btn btn-primary btn-sm w-100 mt-3" disabled>Book Now (Coming Soon)</button>
+                        <a href="{{ url_for('book_ticket', screening_id=screening.screening_id) }}" class="btn btn-primary btn-sm w-100 mt-3">
+                            Book Now
+                        </a>
                     </div>
                 </div>
             </div>
