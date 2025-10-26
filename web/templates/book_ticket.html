@@ -289,30 +289,8 @@
 .row-seats {
     display: flex;
     gap: 0.5rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
+    flex-wrap: wrap;
     flex: 1;
-    min-width: 0;
-    padding-bottom: 0.25rem;
-}
-
-.row-seats::-webkit-scrollbar {
-    height: 8px;
-}
-
-.row-seats::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.row-seats::-webkit-scrollbar-thumb {
-    background: #ffc107;
-    border-radius: 4px;
-}
-
-.row-seats::-webkit-scrollbar-thumb:hover {
-    background: #ffb300;
 }
 
 .seat-btn {
