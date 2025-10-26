@@ -188,7 +188,7 @@ def get_all_movies():
         cursor = conn.cursor()
         cursor.execute(
             """SELECT movie_id, title, description, genre, duration_minutes, release_date, 
-                      director, cast, language, subtitles, created_at, updated_at, is_active 
+                      director, "cast", language, subtitles, created_at, updated_at, is_active 
                FROM movies ORDER BY release_date DESC"""
         )
         movies = cursor.fetchall()
@@ -212,7 +212,7 @@ def get_movie_by_id(movie_id):
         cursor = conn.cursor()
         cursor.execute(
             """SELECT movie_id, title, description, genre, duration_minutes, release_date, 
-                      director, cast, language, subtitles, created_at, updated_at, is_active 
+                      director, "cast", language, subtitles, created_at, updated_at, is_active 
                FROM movies WHERE movie_id = %s""",
             (movie_id,)
         )
