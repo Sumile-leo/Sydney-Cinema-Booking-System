@@ -3,10 +3,7 @@ Screenings routes
 """
 
 from flask import render_template, request, abort, redirect, url_for
-from database.db import get_screenings_by_movie, get_screenings_by_cinema, get_all_screenings
-from backend.models.screening import Screening
-from backend.services import MovieService, CinemaService
-from datetime import date
+from backend.services import MovieService, CinemaService, ScreeningService
 
 
 def register_screenings_routes(app):
@@ -20,42 +17,17 @@ def register_screenings_routes(app):
         if not movie:
             abort(404)
         
-        # Get all screenings for this movie
-        screenings_data = get_screenings_by_movie(movie_id)
-        all_screenings = [Screening.from_db_row(s) for s in screenings_data]
-        
         # Get filter parameters
         cinema_id = request.args.get('cinema', type=int)
         screening_date = request.args.get('date', type=str)
         
-        # Filter screenings
-        filtered_screenings = all_screenings
-        
-        if cinema_id:
-            filtered_screenings = [s for s in filtered_screenings if s.cinema_id == cinema_id]
-        
-        if screening_date:
-            try:
-                filter_date = date.fromisoformat(screening_date)
-                filtered_screenings = [s for s in filtered_screenings if s.screening_date == filter_date]
-            except ValueError:
-                screening_date = None
+        # Get screenings with cinema info using service
+        screenings_with_info, available_dates = ScreeningService.get_screenings_for_movie_with_cinema(
+            movie_id, cinema_id, screening_date
+        )
         
         # Get all cinemas for filter dropdown
         all_cinemas = CinemaService.get_all_cinemas()
-        
-        # Get available dates
-        available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
-        
-        # Get cinema info for each screening
-        from database.db import get_cinema_by_id
-        screenings_with_info = []
-        for screening in filtered_screenings:
-            cinema_data = get_cinema_by_id(screening.cinema_id)
-            if cinema_data:
-                from backend.models.cinema import Cinema
-                cinema = Cinema.from_db_row(cinema_data)
-                screenings_with_info.append((screening, cinema))
         
         return render_template('movie_screenings.html',
                               movie=movie,
@@ -73,42 +45,17 @@ def register_screenings_routes(app):
         if not cinema:
             abort(404)
         
-        # Get all screenings for this cinema
-        screenings_data = get_screenings_by_cinema(cinema_id)
-        all_screenings = [Screening.from_db_row(s) for s in screenings_data]
-        
         # Get filter parameters
         movie_id = request.args.get('movie', type=int)
         screening_date = request.args.get('date', type=str)
         
-        # Filter screenings
-        filtered_screenings = all_screenings
-        
-        if movie_id:
-            filtered_screenings = [s for s in filtered_screenings if s.movie_id == movie_id]
-        
-        if screening_date:
-            try:
-                filter_date = date.fromisoformat(screening_date)
-                filtered_screenings = [s for s in filtered_screenings if s.screening_date == filter_date]
-            except ValueError:
-                screening_date = None
+        # Get screenings with movie info using service
+        screenings_with_info, available_dates = ScreeningService.get_screenings_for_cinema_with_movie(
+            cinema_id, movie_id, screening_date
+        )
         
         # Get all movies for filter dropdown
         all_movies = MovieService.get_all_movies()
-        
-        # Get available dates
-        available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
-        
-        # Get movie info for each screening
-        from database.db import get_movie_by_id
-        screenings_with_info = []
-        for screening in filtered_screenings:
-            movie_data = get_movie_by_id(screening.movie_id)
-            if movie_data:
-                from backend.models.movie import Movie
-                movie = Movie.from_db_row(movie_data)
-                screenings_with_info.append((screening, movie))
         
         return render_template('cinema_screenings.html',
                               cinema=cinema,

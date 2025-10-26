@@ -115,6 +115,7 @@
                                         data-row="{{ seat.row_number }}"
                                         data-seat="{{ seat.seat_number }}"
                                         data-seat-type="{{ seat.seat_type }}"
+                                        data-price-multiplier="{{ seat.price_multiplier }}"
                                         {% if seat.seat_id in booked_seats or not seat.is_active %}disabled{% endif %}>
                                     {{ seat.seat_number }}
                                 </button>
@@ -435,18 +436,24 @@ const maxSeats = 5;
 
 function updateBookingSummary() {
     const count = selectedSeats.length;
-    const totalPrice = count * ticketPrice;
+    
+    // Calculate total price based on seat types
+    let totalPrice = 0;
+    const seatsDisplay = [];
+    selectedSeats.forEach(seatId => {
+        const btn = document.querySelector(`[data-seat-id="${seatId}"]`);
+        if (btn) {
+            const multiplier = parseFloat(btn.getAttribute('data-price-multiplier')) || 1.0;
+            totalPrice += ticketPrice * multiplier;
+            seatsDisplay.push(`R${btn.getAttribute('data-row')}-S${btn.getAttribute('data-seat')}`);
+        }
+    });
     
     // Update count
     document.getElementById('selected-count').textContent = count;
     
     // Update seats display
-    const seatsDisplay = selectedSeats.map(seatId => {
-        const btn = document.querySelector(`[data-seat-id="${seatId}"]`);
-        return btn ? `R${btn.getAttribute('data-row')}-S${btn.getAttribute('data-seat')}` : '';
-    }).join(', ');
-    
-    document.getElementById('selected-seats').textContent = seatsDisplay || 'None';
+    document.getElementById('selected-seats').textContent = seatsDisplay.join(', ') || 'None';
     
     // Update total price
     document.getElementById('total-price').textContent = '$' + totalPrice.toFixed(2);

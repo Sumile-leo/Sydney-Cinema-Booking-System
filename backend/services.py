@@ -6,12 +6,18 @@ from database.db import (
     get_user_by_username, create_user, check_username_or_email_exists,
     get_all_cinemas, get_cinema_by_id, create_cinema,
     get_all_movies, get_movie_by_id, create_movie,
-    get_bookings_with_details, get_seats_by_booking, can_cancel_booking
+    get_bookings_with_details, get_seats_by_booking, can_cancel_booking,
+    cancel_booking, get_booking_user_id, get_screening_by_id, get_cinema_hall_by_id,
+    get_seats_by_hall, get_cinema_by_id, get_cinema_halls_by_cinema,
+    get_screenings_by_movie, get_screenings_by_cinema, get_all_screenings,
+    get_db_connection
 )
 from backend.models.user import User
 from backend.models.cinema import Cinema
 from backend.models.movie import Movie
 from backend.models.booking import Booking
+from backend.models.screening import Screening
+from backend.models.cinema_hall import CinemaHall
 
 
 class UserService:
@@ -167,3 +173,247 @@ class BookingService:
             result.append(booking_dict)
         
         return result
+    
+    @staticmethod
+    def cancel_user_booking(booking_id, user_id):
+        """Cancel a booking after validation"""
+        # Verify booking belongs to user
+        booking_user_id = get_booking_user_id(booking_id)
+        if booking_user_id != user_id:
+            return False, 'You can only cancel your own bookings'
+        
+        # Check if can be cancelled
+        can_cancel, message = can_cancel_booking(booking_id)
+        if not can_cancel:
+            return False, message
+        
+        # Cancel the booking
+        success = cancel_booking(booking_id)
+        if success:
+            return True, 'Booking cancelled successfully'
+        return False, 'Failed to cancel booking. It may have already been cancelled.'
+    
+    @staticmethod
+    def create_new_booking(user_id, screening_id, seat_ids):
+        """Create a new booking"""
+        import time
+        import random
+        
+        if len(seat_ids) > 5:
+            return False, 'You can only book up to 5 seats', None
+        
+        conn = get_db_connection()
+        if not conn:
+            return False, 'Database connection failed', None
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Get screening price
+            cursor.execute("SELECT ticket_price FROM screenings WHERE screening_id = %s", (screening_id,))
+            ticket_price = cursor.fetchone()[0]
+            
+            # Calculate total amount based on seat types
+            total_amount = 0.0
+            for seat_id in seat_ids:
+                cursor.execute("""
+                    SELECT s.price_multiplier FROM seats s WHERE s.seat_id = %s
+                """, (seat_id,))
+                result = cursor.fetchone()
+                if result:
+                    multiplier = float(result[0]) if result[0] else 1.0
+                    total_amount += float(ticket_price) * multiplier
+            
+            # Generate booking number
+            booking_number = f"BK{int(time.time() * 1000) % 1000000}{random.randint(100, 999)}"
+            
+            # Create booking
+            cursor.execute("""
+                INSERT INTO bookings (user_id, screening_id, booking_number, num_tickets,
+                                    total_amount, booking_status, payment_status)
+                VALUES (%s, %s, %s, %s, %s, 'confirmed', 'paid')
+                RETURNING booking_id
+            """, (user_id, screening_id, booking_number, len(seat_ids), total_amount))
+            
+            booking_id = cursor.fetchone()[0]
+            
+            # Create seat bookings
+            for seat_id in seat_ids:
+                cursor.execute("""
+                    INSERT INTO seat_bookings (booking_id, seat_id)
+                    VALUES (%s, %s)
+                """, (booking_id, seat_id))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            return True, f'Booking confirmed! Your booking number is {booking_number}', booking_number
+            
+        except Exception as e:
+            print(f"Error creating booking: {e}")
+            if conn:
+                conn.rollback()
+                conn.close()
+            return False, 'Failed to create booking. Please try again.', None
+
+
+class ScreeningService:
+    """Screening business logic service"""
+    
+    @staticmethod
+    def get_screening_for_booking(screening_id):
+        """Get screening with all related info for booking page"""
+        screening_data = get_screening_by_id(screening_id)
+        if not screening_data:
+            return None
+        
+        screening = Screening.from_db_row(screening_data)
+        
+        # Get movie
+        movie_data = get_movie_by_id(screening.movie_id)
+        if not movie_data:
+            return None
+        movie = Movie.from_db_row(movie_data)
+        
+        # Get cinema
+        cinema_data = get_cinema_by_id(screening.cinema_id)
+        if not cinema_data:
+            return None
+        
+        cinema = Cinema.from_db_row(cinema_data)
+        
+        # Get hall
+        hall_data = get_cinema_hall_by_id(screening.hall_id)
+        if not hall_data:
+            return None
+        
+        hall = CinemaHall.from_db_row(hall_data)
+        
+        # Get seats for this hall
+        seats_data = get_seats_by_hall(screening.hall_id)
+        seats = []
+        for seat_row in seats_data:
+            seats.append({
+                'seat_id': seat_row[0],
+                'row_number': seat_row[2],
+                'seat_number': seat_row[3],
+                'seat_type': seat_row[4] if len(seat_row) > 4 else 'standard',
+                'price_multiplier': float(seat_row[5]) if len(seat_row) > 5 else 1.0,
+                'is_active': seat_row[6] if len(seat_row) > 6 else True
+            })
+        
+        # Get already booked seats for this screening
+        conn = get_db_connection()
+        booked_seats = set()
+        if conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT DISTINCT sb.seat_id 
+                    FROM seat_bookings sb
+                    JOIN bookings b ON sb.booking_id = b.booking_id
+                    WHERE b.screening_id = %s AND b.booking_status != 'cancelled'
+                """, (screening_id,))
+                booked_seats = {row[0] for row in cursor.fetchall()}
+                cursor.close()
+                conn.close()
+            except Exception as e:
+                print(f"Error getting booked seats: {e}")
+                if conn:
+                    conn.close()
+        
+        return {
+            'screening': screening,
+            'movie': movie,
+            'cinema': cinema,
+            'hall': hall,
+            'seats': seats,
+            'booked_seats': booked_seats
+        }
+    
+    @staticmethod
+    def get_screenings_for_movie_with_cinema(movie_id, cinema_id=None, screening_date=None):
+        """Get screenings for a movie with cinema info"""
+        from datetime import date
+        
+        screenings_data = get_screenings_by_movie(movie_id)
+        all_screenings = [Screening.from_db_row(s) for s in screenings_data]
+        
+        # Filter screenings
+        filtered_screenings = all_screenings
+        
+        if cinema_id:
+            filtered_screenings = [s for s in filtered_screenings if s.cinema_id == cinema_id]
+        
+        if screening_date:
+            try:
+                filter_date = date.fromisoformat(screening_date) if isinstance(screening_date, str) else screening_date
+                filtered_screenings = [s for s in filtered_screenings if s.screening_date == filter_date]
+            except ValueError:
+                pass
+        
+        # Get cinema info for each screening
+        screenings_with_info = []
+        for screening in filtered_screenings:
+            cinema_data = get_cinema_by_id(screening.cinema_id)
+            if cinema_data:
+                cinema = Cinema.from_db_row(cinema_data)
+                screenings_with_info.append((screening, cinema))
+        
+        # Get available dates
+        available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
+        
+        return screenings_with_info, available_dates
+    
+    @staticmethod
+    def get_screenings_for_cinema_with_movie(cinema_id, movie_id=None, screening_date=None):
+        """Get screenings for a cinema with movie info"""
+        from datetime import date
+        
+        screenings_data = get_screenings_by_cinema(cinema_id)
+        all_screenings = [Screening.from_db_row(s) for s in screenings_data]
+        
+        # Filter screenings
+        filtered_screenings = all_screenings
+        
+        if movie_id:
+            filtered_screenings = [s for s in filtered_screenings if s.movie_id == movie_id]
+        
+        if screening_date:
+            try:
+                filter_date = date.fromisoformat(screening_date) if isinstance(screening_date, str) else screening_date
+                filtered_screenings = [s for s in filtered_screenings if s.screening_date == filter_date]
+            except ValueError:
+                pass
+        
+        # Get movie info for each screening
+        screenings_with_info = []
+        for screening in filtered_screenings:
+            movie_data = get_movie_by_id(screening.movie_id)
+            if movie_data:
+                movie = Movie.from_db_row(movie_data)
+                screenings_with_info.append((screening, movie))
+        
+        # Get available dates
+        available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
+        
+        return screenings_with_info, available_dates
+
+
+class CinemaHallService:
+    """Cinema Hall business logic service"""
+    
+    @staticmethod
+    def get_halls_by_cinema(cinema_id):
+        """Get all halls for a cinema"""
+        halls_data = get_cinema_halls_by_cinema(cinema_id)
+        return [CinemaHall.from_db_row(hall) for hall in halls_data]
+    
+    @staticmethod
+    def get_hall_by_id(hall_id):
+        """Get hall by ID"""
+        hall_data = get_cinema_hall_by_id(hall_id)
+        if hall_data:
+            return CinemaHall.from_db_row(hall_data)
+        return None
