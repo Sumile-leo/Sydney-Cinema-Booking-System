@@ -13,17 +13,11 @@ def register_main_routes(app):
         """Homepage"""
         return render_template('index.html')
 
-    @app.route('/movies')
-    def movies():
-        """Movies page (placeholder)"""
-        return render_template('index.html')  # Temporary redirect to home
-
-
-
     @app.route('/screenings')
     def screenings():
         """Screenings page (placeholder)"""
-        return render_template('index.html')  # Temporary redirect to home
+        flash('Screenings page coming soon!', 'info')
+        return redirect(url_for('index'))
 
     @app.route('/bookings')
     def bookings():
@@ -31,9 +25,8 @@ def register_main_routes(app):
         if 'user_id' not in session:
             flash('Please login to view your bookings', 'error')
             return redirect(url_for('login'))
-        return render_template('index.html')  # Temporary redirect to home
-
-
+        flash('My Bookings page coming soon!', 'info')
+        return redirect(url_for('dashboard'))
 
     @app.route('/admin_dashboard')
     def admin_dashboard():
@@ -41,4 +34,5 @@ def register_main_routes(app):
         if 'user_id' not in session:
             flash('Please login to access admin panel', 'error')
             return redirect(url_for('login'))
-        return render_template('index.html')  # Temporary redirect to home
+        flash('Admin dashboard coming soon!', 'info')
+        return redirect(url_for('dashboard'))
