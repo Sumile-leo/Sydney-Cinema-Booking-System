@@ -41,17 +41,16 @@
         <!-- Screenings -->
         {% if screenings %}
         <div class="row">
-            {% for screening in screenings %}
+            {% for screening, movie in screenings %}
             <div class="col-md-6 col-lg-4 mb-3">
                 <div class="cinema-card">
                     <div class="cinema-info">
-                        <h4 class="mb-2">
+                        <h4 class="mb-2">{{ movie.title }}</h4>
+                        <p class="mb-1">
                             {% if screening.screening_type %}
-                            {{ screening.screening_type }}
-                            {% else %}
-                            Screening
+                            <span class="badge bg-warning text-dark">{{ screening.screening_type }}</span>
                             {% endif %}
-                        </h4>
+                        </p>
                         <p class="mb-1"><strong>Date:</strong> {{ screening.screening_date.strftime('%B %d, %Y') }}</p>
                         <p class="mb-1"><strong>Time:</strong> {{ screening.start_time.strftime('%H:%M') }} - {{ screening.end_time.strftime('%H:%M') }}</p>
                         <p class="mb-1"><strong>Price:</strong> ${{ "%.2f"|format(screening.ticket_price) }}</p>

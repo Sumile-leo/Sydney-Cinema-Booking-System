@@ -47,9 +47,19 @@ def register_screenings_routes(app):
         # Get available dates
         available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
         
+        # Get cinema info for each screening
+        from database.db import get_cinema_by_id
+        screenings_with_info = []
+        for screening in filtered_screenings:
+            cinema_data = get_cinema_by_id(screening.cinema_id)
+            if cinema_data:
+                from backend.models.cinema import Cinema
+                cinema = Cinema.from_db_row(cinema_data)
+                screenings_with_info.append((screening, cinema))
+        
         return render_template('movie_screenings.html',
                               movie=movie,
-                              screenings=filtered_screenings,
+                              screenings=screenings_with_info,
                               all_cinemas=all_cinemas,
                               available_dates=available_dates,
                               selected_cinema_id=cinema_id,
@@ -90,9 +100,19 @@ def register_screenings_routes(app):
         # Get available dates
         available_dates = sorted(list(set(s.screening_date for s in all_screenings if s.screening_date >= date.today())))
         
+        # Get movie info for each screening
+        from database.db import get_movie_by_id
+        screenings_with_info = []
+        for screening in filtered_screenings:
+            movie_data = get_movie_by_id(screening.movie_id)
+            if movie_data:
+                from backend.models.movie import Movie
+                movie = Movie.from_db_row(movie_data)
+                screenings_with_info.append((screening, movie))
+        
         return render_template('cinema_screenings.html',
                               cinema=cinema,
-                              screenings=filtered_screenings,
+                              screenings=screenings_with_info,
                               all_movies=all_movies,
                               available_dates=available_dates,
                               selected_movie_id=movie_id,
