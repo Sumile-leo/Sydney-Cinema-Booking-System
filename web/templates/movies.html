@@ -49,7 +49,13 @@
                         {% if movie.language %}
                         <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
                             <i class="bi bi-translate me-2" style="color: #ffd700;"></i>
-                            <strong>Language:</strong> {{ movie.language }}
+                            <strong>Language:</strong> {{ movie.language|replace('/', ', ') }}
+                        </p>
+                        {% endif %}
+                        {% if movie.subtitles %}
+                        <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
+                            <i class="bi bi-subtitles me-2" style="color: #ffd700;"></i>
+                            <strong>Subtitles:</strong> {{ movie.subtitles }}
                         </p>
                         {% endif %}
                     </div>

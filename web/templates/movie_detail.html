@@ -81,7 +81,7 @@
                                 <i class="bi bi-translate" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
                                 <div>
                                     <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Language</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.language }}</p>
+                                    <p class="text-white mb-0 fw-bold">{{ movie.language|replace('/', ', ') }}</p>
                                 </div>
                             </div>
                         </div>

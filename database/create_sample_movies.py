@@ -46,8 +46,29 @@ DESCRIPTIONS = [
     "A cinematic experience that redefines the boundaries of filmmaking.",
 ]
 
-LANGUAGES = ["English", "English", "English", "Mandarin", "Japanese"]
-SUBTITLES = ["English", "Mandarin", "Korean", "Japanese", "Spanish"]
+# Languages can be single or multiple languages separated by "/"
+LANGUAGES = [
+    "English",
+    "English/Chinese", 
+    "English/Chinese",
+    "Mandarin",
+    "Japanese",
+    "English/Japanese",
+    "Chinese",
+    "English/Spanish"
+]
+
+# Subtitles can be single or multiple languages separated by ","
+SUBTITLES = [
+    "English",
+    "English, Chinese",
+    "Chinese",
+    "English, Chinese",
+    "English, Korean",
+    "Japanese",
+    "Spanish",
+    "English, Japanese, Chinese"
+]
 
 
 def create_sample_movies(count=10):
