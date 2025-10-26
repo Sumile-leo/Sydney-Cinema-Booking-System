@@ -72,8 +72,8 @@ def create_sample_movies():
             days_ago = random.randint(-180, 730)
             release_date = date.today() - timedelta(days=days_ago)
             
-            # Set all movies to active by default
-            is_active = True
+            # Randomly make some movies inactive (about 70% active)
+            is_active = random.choice([True, True, True, True, True, True, True, False, False, False])
             
             # Check if movie already exists
             cursor.execute("SELECT COUNT(*) FROM movies WHERE title = %s", (title,))
