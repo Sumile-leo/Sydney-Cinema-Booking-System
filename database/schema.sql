@@ -76,3 +76,23 @@ CREATE TABLE IF NOT EXISTS seats (
     FOREIGN KEY (hall_id) REFERENCES cinema_halls(hall_id) ON DELETE CASCADE,
     UNIQUE(hall_id, row_number, seat_number)
 );
+
+-- Screenings table
+CREATE TABLE IF NOT EXISTS screenings (
+    screening_id SERIAL PRIMARY KEY,
+    movie_id INTEGER NOT NULL,
+    cinema_id INTEGER NOT NULL,
+    hall_id INTEGER NOT NULL,
+    screening_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    ticket_price NUMERIC(10,2) NOT NULL,
+    screening_type VARCHAR(20),
+    language VARCHAR(50),
+    subtitles VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (cinema_id) REFERENCES cinemas(cinema_id) ON DELETE CASCADE,
+    FOREIGN KEY (hall_id) REFERENCES cinema_halls(hall_id) ON DELETE CASCADE
+);
