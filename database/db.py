@@ -382,32 +382,6 @@ def get_seat_by_id(seat_id):
         return None
 
 
-def create_seat(hall_id, row_number, seat_number, seat_type=None,
-                price_multiplier=1.00, is_active=True):
-    """Create a new seat"""
-    conn = get_db_connection()
-    if not conn:
-        return False
-    
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            """INSERT INTO seats (hall_id, row_number, seat_number, seat_type, 
-                                 price_multiplier, is_active)
-               VALUES (%s, %s, %s, %s, %s, %s)""",
-            (hall_id, row_number, seat_number, seat_type, price_multiplier, is_active)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return True
-    except Exception as e:
-        print(f"Error creating seat: {e}")
-        if conn:
-            conn.close()
-        return False
-
-
 def create_seats_for_hall(hall_id, total_rows, seats_per_row, seat_types=None):
     """Create all seats for a hall"""
     conn = get_db_connection()
