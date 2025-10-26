@@ -46,7 +46,7 @@
                             <div class="row-label me-3">{{ row_num }}</div>
                             <div class="seats-container">
                                 {% for seat_num in range(1, hall.seats_per_row + 1) %}
-                                <span class="seat-inactive">●</span>
+                                <div class="seat-box available"></div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -56,9 +56,15 @@
                     <!-- Legend -->
                     <div class="seat-legend text-center mt-4">
                         <p class="text-muted">
-                            <span class="seat-inactive me-3">● Available</span>
-                            <span class="seat-occupied me-3">● Occupied</span>
-                            <span class="seat-selected me-3">● Selected</span>
+                            <span class="legend-item available me-3">
+                                <span class="legend-seat available"></span> Available
+                            </span>
+                            <span class="legend-item occupied me-3">
+                                <span class="legend-seat occupied"></span> Occupied
+                            </span>
+                            <span class="legend-item selected me-3">
+                                <span class="legend-seat selected"></span> Selected
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -113,28 +119,39 @@
 
 .seats-container {
     display: flex;
-    gap: 4px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
-.seat-inactive {
-    color: #28a745;
-    font-size: 1.2rem;
+.seat-box {
+    width: 30px;
+    height: 30px;
+    border: 2px solid;
+    border-radius: 4px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-.seat-inactive:hover {
-    transform: scale(1.3);
+.seat-box.available {
+    background-color: #28a745;
+    border-color: #1e7e34;
 }
 
-.seat-occupied {
-    color: #dc3545;
-    font-size: 1.2rem;
+.seat-box.available:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.5);
 }
 
-.seat-selected {
-    color: #ffc107;
-    font-size: 1.2rem;
+.seat-box.occupied {
+    background-color: #dc3545;
+    border-color: #c82333;
+    cursor: not-allowed;
+}
+
+.seat-box.selected {
+    background-color: #ffc107;
+    border-color: #ffb300;
 }
 
 .seat-legend {
@@ -143,18 +160,49 @@
     border-radius: 8px;
 }
 
+.legend-seat {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.legend-seat.available {
+    background-color: #28a745;
+    border-color: #1e7e34;
+}
+
+.legend-seat.occupied {
+    background-color: #dc3545;
+    border-color: #c82333;
+}
+
+.legend-seat.selected {
+    background-color: #ffc107;
+    border-color: #ffb300;
+}
+
 @media (max-width: 768px) {
-    .seat-inactive, .seat-occupied, .seat-selected {
-        font-size: 0.9rem;
+    .seat-box {
+        width: 25px;
+        height: 25px;
     }
     
     .seats-container {
-        gap: 2px;
+        gap: 3px;
     }
     
     .screen-box {
         padding: 20px 40px;
         min-width: 200px;
+    }
+    
+    .legend-seat {
+        width: 16px;
+        height: 16px;
     }
 }
 </style>
