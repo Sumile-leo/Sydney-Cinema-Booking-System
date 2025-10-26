@@ -66,8 +66,16 @@ def login():
             )
             user = cursor.fetchone()
             
+            # Debug info
+            if user:
+                print(f"Found user: {user[1]}")
+                print(f"Password hash: {user[2][:30]}...")
+                print(f"Input password: {password}")
+                print(f"Hash length: {len(user[2])}")
+            
             # Check password
             if user and bcrypt.checkpw(password.encode('utf-8'), user[2].encode('utf-8')):
+                print("Password check passed!")
                 session['user_id'] = user[0]
                 session['username'] = user[1]
                 flash('Login successful!', 'success')
