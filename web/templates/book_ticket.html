@@ -285,17 +285,42 @@
     font-weight: bold;
     color: #ffc107;
     margin-right: 1rem;
+    flex-shrink: 0;
 }
 
 .row-seats {
     display: flex;
     gap: 0.5rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 0.25rem;
+}
+
+.row-seats::-webkit-scrollbar {
+    height: 8px;
+}
+
+.row-seats::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.row-seats::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 4px;
+}
+
+.row-seats::-webkit-scrollbar-thumb:hover {
+    background: #ffb300;
 }
 
 .seat-btn {
     width: 40px;
     height: 40px;
+    min-width: 40px;
     border-radius: 5px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     background: #28a745;
@@ -303,6 +328,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    flex-shrink: 0;
 }
 
 .seat-btn:hover:not(:disabled) {
