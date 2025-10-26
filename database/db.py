@@ -640,3 +640,52 @@ def get_bookings_with_details(user_id):
         if conn:
             conn.close()
         return []
+
+
+def cancel_booking(booking_id):
+    """Cancel a booking"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        # Update booking status to cancelled
+        cursor.execute("""
+            UPDATE bookings 
+            SET booking_status = 'cancelled', updated_at = CURRENT_TIMESTAMP
+            WHERE booking_id = %s AND booking_status != 'cancelled'
+        """, (booking_id,))
+        
+        success = cursor.rowcount > 0
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return success
+    except Exception as e:
+        print(f"Error cancelling booking: {e}")
+        if conn:
+            conn.rollback()
+            conn.close()
+        return False
+
+
+def get_booking_user_id(booking_id):
+    """Get the user_id of a booking"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM bookings WHERE booking_id = %s", (booking_id,))
+        result = cursor.fetchone()
+        user_id = result[0] if result else None
+        cursor.close()
+        conn.close()
+        return user_id
+    except Exception as e:
+        print(f"Error getting booking user_id: {e}")
+        if conn:
+            conn.close()
+        return None
