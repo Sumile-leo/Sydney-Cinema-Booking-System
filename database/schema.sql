@@ -63,3 +63,16 @@ CREATE TABLE IF NOT EXISTS cinema_halls (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cinema_id) REFERENCES cinemas(cinema_id) ON DELETE CASCADE
 );
+
+-- Seats table
+CREATE TABLE IF NOT EXISTS seats (
+    seat_id SERIAL PRIMARY KEY,
+    hall_id INTEGER NOT NULL,
+    row_number INTEGER NOT NULL,
+    seat_number INTEGER NOT NULL,
+    seat_type VARCHAR(20),
+    price_multiplier NUMERIC(3,2) DEFAULT 1.00,
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (hall_id) REFERENCES cinema_halls(hall_id) ON DELETE CASCADE,
+    UNIQUE(hall_id, row_number, seat_number)
+);

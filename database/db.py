@@ -329,3 +329,119 @@ def create_cinema_hall(cinema_id, hall_name, hall_type=None, total_rows=None,
         if conn:
             conn.close()
         return False
+
+
+# Seat-related database operations
+def get_seats_by_hall(hall_id):
+    """Get all seats for a specific hall"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT seat_id, hall_id, row_number, seat_number, seat_type, 
+                      price_multiplier, is_active 
+               FROM seats WHERE hall_id = %s ORDER BY row_number, seat_number""",
+            (hall_id,)
+        )
+        seats = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return seats
+    except Exception as e:
+        print(f"Error getting seats: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_seat_by_id(seat_id):
+    """Get seat by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT seat_id, hall_id, row_number, seat_number, seat_type, 
+                      price_multiplier, is_active 
+               FROM seats WHERE seat_id = %s""",
+            (seat_id,)
+        )
+        seat = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return seat
+    except Exception as e:
+        print(f"Error getting seat: {e}")
+        if conn:
+            conn.close()
+        return None
+
+
+def create_seat(hall_id, row_number, seat_number, seat_type=None,
+                price_multiplier=1.00, is_active=True):
+    """Create a new seat"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """INSERT INTO seats (hall_id, row_number, seat_number, seat_type, 
+                                 price_multiplier, is_active)
+               VALUES (%s, %s, %s, %s, %s, %s)""",
+            (hall_id, row_number, seat_number, seat_type, price_multiplier, is_active)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error creating seat: {e}")
+        if conn:
+            conn.close()
+        return False
+
+
+def create_seats_for_hall(hall_id, total_rows, seats_per_row, seat_types=None):
+    """Create all seats for a hall"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        seat_type = seat_types or {}
+        
+        for row in range(1, total_rows + 1):
+            for seat in range(1, seats_per_row + 1):
+                # Determine seat type based on row
+                seat_type_value = seat_type.get(row, 'standard')
+                price_multiplier = 1.00
+                
+                if seat_type_value == 'premium':
+                    price_multiplier = 1.50
+                elif seat_type_value == 'vip':
+                    price_multiplier = 2.00
+                
+                cursor.execute(
+                    """INSERT INTO seats (hall_id, row_number, seat_number, seat_type, 
+                                         price_multiplier, is_active)
+                       VALUES (%s, %s, %s, %s, %s, %s)""",
+                    (hall_id, row, seat, seat_type_value, price_multiplier, True)
+                )
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error creating seats for hall: {e}")
+        if conn:
+            conn.close()
+        return False
