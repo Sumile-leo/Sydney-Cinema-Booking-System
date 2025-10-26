@@ -3,7 +3,7 @@ Authentication routes
 """
 
 from flask import render_template, request, redirect, url_for, session, flash
-from database.db import get_db_connection
+from database.db import get_user_by_username, check_username_or_email_exists, create_user, verify_password
 
 
 def register_auth_routes(app):
@@ -20,33 +20,19 @@ def register_auth_routes(app):
                 flash('Please enter username and password', 'error')
                 return render_template('login.html')
             
-            conn = get_db_connection()
-            if not conn:
-                flash('Database connection error', 'error')
-                return render_template('login.html')
+            # Verify password using database function
+            user = verify_password(username, password)
             
-            try:
-                cursor = conn.cursor()
-                cursor.execute(
-                    "SELECT user_id, username, password FROM users WHERE username = %s",
-                    (username,)
-                )
-                user = cursor.fetchone()
-                cursor.close()
-                conn.close()
-                
-                # Simple password comparison (plain text)
-                if user and user[2] == password:
-                    session['user_id'] = user[0]
-                    session['username'] = user[1]
-                    flash('Login successful!', 'success')
-                    return redirect(url_for('index'))
-                else:
-                    flash('Invalid username or password', 'error')
-                
-            except Exception as e:
-                print(f"Login error: {e}")
-                flash('Login error. Please try again.', 'error')
+            if user:
+                session['user_id'] = user[0]
+                session['username'] = user[1]
+                session['first_name'] = user[4] if len(user) > 4 else ''
+                session['last_name'] = user[5] if len(user) > 5 else ''
+                session['user_type'] = user[7] if len(user) > 7 else 'customer'
+                flash('Login successful!', 'success')
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid username or password', 'error')
         
         return render_template('login.html')
 
@@ -66,44 +52,19 @@ def register_auth_routes(app):
                 flash('Please fill in all required fields', 'error')
                 return render_template('register.html')
             
-            conn = get_db_connection()
-            if not conn:
-                flash('Database connection error', 'error')
+            # Check if username or email already exists
+            if check_username_or_email_exists(username, email):
+                flash('Username or email already exists', 'error')
                 return render_template('register.html')
             
-            try:
-                cursor = conn.cursor()
-                
-                # Check if username or email already exists
-                cursor.execute(
-                    "SELECT user_id FROM users WHERE username = %s OR email = %s",
-                    (username, email)
-                )
-                if cursor.fetchone():
-                    flash('Username or email already exists', 'error')
-                    cursor.close()
-                    conn.close()
-                    return render_template('register.html')
-                
-                # Insert user (plain text password)
-                cursor.execute(
-                    """INSERT INTO users (username, email, password, first_name, last_name, phone, user_type)
-                       VALUES (%s, %s, %s, %s, %s, %s, 'customer')""",
-                    (username, email, password, first_name, last_name, phone)
-                )
-                conn.commit()
-                cursor.close()
-                conn.close()
-                
+            # Create user using database function
+            success = create_user(username, email, password, first_name, last_name, phone)
+            
+            if success:
                 flash('Registration successful! Please login.', 'success')
                 return redirect(url_for('login'))
-                
-            except Exception as e:
-                print(f"Registration error: {e}")
+            else:
                 flash('Registration error. Please try again.', 'error')
-            finally:
-                if conn:
-                    conn.close()
         
         return render_template('register.html')
 
