@@ -29,3 +29,21 @@ def register_cinemas_routes(app):
             abort(404)  # Cinema not found
         
         return render_template('cinema_detail.html', cinema=cinema)
+    
+    @app.route('/cinema/<int:cinema_id>/halls')
+    def cinema_halls(cinema_id):
+        """Cinema halls list page"""
+        from flask import abort
+        from database.db import get_cinema_halls_by_cinema
+        from backend.models.cinema_hall import CinemaHall
+        
+        # Get cinema
+        cinema = CinemaService.get_cinema_by_id(cinema_id)
+        if not cinema:
+            abort(404)
+        
+        # Get halls for this cinema
+        halls_data = get_cinema_halls_by_cinema(cinema_id)
+        halls = [CinemaHall.from_db_row(hall) for hall in halls_data]
+        
+        return render_template('cinema_halls.html', cinema=cinema, halls=halls)

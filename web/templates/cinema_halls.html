@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ cinema.cinema_name }} - Halls{% endblock %}
+
+{% block content %}
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title mb-4">{{ cinema.cinema_name }} - Halls</h2>
+        
+        {% if halls %}
+        <div class="row">
+            {% for hall in halls %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="cinema-card">
+                    <div class="cinema-info">
+                        <h3>{{ hall.hall_name }}</h3>
+                        {% if hall.hall_type %}
+                        <p class="cinema-location">Type: {{ hall.hall_type }}</p>
+                        {% endif %}
+                        {% if hall.total_seats %}
+                        <p class="cinema-detail">Total Seats: {{ hall.total_seats }}</p>
+                        {% endif %}
+                        {% if hall.screen_size %}
+                        <p class="cinema-detail">Screen: {{ hall.screen_size }}</p>
+                        {% endif %}
+                        {% if hall.sound_system %}
+                        <p class="cinema-detail">Sound: {{ hall.sound_system }}</p>
+                        {% endif %}
+                        {% if hall.total_rows and hall.seats_per_row %}
+                        <p class="cinema-detail">Layout: {{ hall.total_rows }} rows × {{ hall.seats_per_row }} seats</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center">No halls available for this cinema.</p>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('cinema_detail', cinema_id=cinema.cinema_id) }}" class="btn btn-outline">Back to Cinema Details</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
