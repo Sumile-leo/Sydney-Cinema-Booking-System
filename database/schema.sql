@@ -132,8 +132,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     UPDATE screenings
     SET is_active = FALSE
-    WHERE (screening_date < CURRENT_DATE 
-           OR (screening_date = CURRENT_DATE AND start_time < CURRENT_TIME))
+    WHERE (screening_date || ' ' || start_time)::timestamp < CURRENT_TIMESTAMP
       AND is_active = TRUE;
     RETURN NEW;
 END;
