@@ -79,6 +79,12 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
+        # Debug: Print received data
+        print(f"=== LOGIN ATTEMPT ===")
+        print(f"Username: {username}")
+        print(f"Password: {password}")
+        print(f"Password length: {len(password) if password else 0}")
+        
         if not username or not password:
             flash('Please enter username and password', 'error')
             return render_template('login.html')
