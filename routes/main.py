@@ -3,7 +3,7 @@ Main routes
 """
 
 from flask import render_template, redirect, url_for, session, flash
-from backend.services import CinemaService, MovieService
+from backend.services import CinemaService, MovieService, BookingService
 
 
 def register_main_routes(app):
@@ -20,12 +20,15 @@ def register_main_routes(app):
 
     @app.route('/bookings')
     def bookings():
-        """Bookings page (placeholder)"""
+        """My Bookings page"""
         if 'user_id' not in session:
             flash('Please login to view your bookings', 'error')
             return redirect(url_for('login'))
-        flash('My Bookings page coming soon!', 'info')
-        return redirect(url_for('index'))
+        
+        # Get user's bookings with detailed information
+        bookings = BookingService.get_user_bookings_with_seats(session['user_id'])
+        
+        return render_template('bookings.html', bookings=bookings)
 
     @app.route('/admin_dashboard')
     def admin_dashboard():

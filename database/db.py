@@ -582,7 +582,7 @@ def get_booking_by_id(booking_id):
 
 
 def get_seats_by_booking(booking_id):
-    """Get all seats for a booking"""
+    """Get all seats for a booking with enhanced info"""
     conn = get_db_connection()
     if not conn:
         return []
@@ -590,7 +590,7 @@ def get_seats_by_booking(booking_id):
     try:
         cursor = conn.cursor()
         cursor.execute(
-            """SELECT seat_bookings.seat_id, seats.row_number, seats.seat_number
+            """SELECT seats.seat_id, seats.row_number, seats.seat_number, seats.seat_type
                FROM seat_bookings
                JOIN seats ON seat_bookings.seat_id = seats.seat_id
                WHERE seat_bookings.booking_id = %s
@@ -603,6 +603,40 @@ def get_seats_by_booking(booking_id):
         return seats
     except Exception as e:
         print(f"Error getting seats for booking: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_bookings_with_details(user_id):
+    """Get all bookings for a user with screening and seat details"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT b.booking_id, b.user_id, b.screening_id, b.booking_number,
+                      b.num_tickets, b.total_amount, b.booking_status, b.payment_status,
+                      b.booking_date, b.created_at, b.updated_at,
+                      s.screening_date, s.start_time, s.end_time,
+                      m.title as movie_title,
+                      c.cinema_name, c.address, c.suburb
+               FROM bookings b
+               JOIN screenings s ON b.screening_id = s.screening_id
+               JOIN movies m ON s.movie_id = m.movie_id
+               JOIN cinemas c ON s.cinema_id = c.cinema_id
+               WHERE b.user_id = %s
+               ORDER BY b.booking_date DESC""",
+            (user_id,)
+        )
+        bookings = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return bookings
+    except Exception as e:
+        print(f"Error getting bookings with details: {e}")
         if conn:
             conn.close()
         return []

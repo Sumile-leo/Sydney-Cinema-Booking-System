@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title mb-4">My Bookings</h2>
+        
+        {% if bookings %}
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-md-6 col-lg-12 mb-4">
+                <div class="cinema-card">
+                    <div class="cinema-info">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-3">
+                                    <h4 class="mb-0 me-3">{{ booking.movie_title }}</h4>
+                                    {% if booking.booking_status == 'confirmed' %}
+                                    <span class="badge bg-success">Confirmed</span>
+                                    {% elif booking.booking_status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif booking.booking_status == 'cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ booking.booking_status }}</span>
+                                    {% endif %}
+                                    
+                                    {% if booking.payment_status == 'paid' %}
+                                    <span class="badge bg-success ms-2">Paid</span>
+                                    {% elif booking.payment_status == 'unpaid' %}
+                                    <span class="badge bg-warning text-dark ms-2">Unpaid</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary ms-2">{{ booking.payment_status }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <p class="mb-2">
+                                    <i class="bi bi-calendar-event"></i> 
+                                    <strong>Date:</strong> {{ booking.screening_date.strftime('%B %d, %Y') if booking.screening_date else 'N/A' }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-clock"></i> 
+                                    <strong>Time:</strong> 
+                                    {% if booking.start_time and booking.end_time %}
+                                        {{ booking.start_time.strftime('%H:%M') }} - {{ booking.end_time.strftime('%H:%M') }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-geo-alt"></i> 
+                                    <strong>Cinema:</strong> {{ booking.cinema_name }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-building"></i> 
+                                    {{ booking.cinema_address }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-ticket-perforated"></i> 
+                                    <strong>Seats:</strong> {{ booking.seats_display }}
+                                </p>
+                            </div>
+                            
+                            <div class="col-md-4 text-end">
+                                <div class="booking-details">
+                                    <p class="mb-2">
+                                        <strong>Booking Number:</strong><br>
+                                        <code class="text-success">{{ booking.booking_number }}</code>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Number of Tickets:</strong> {{ booking.num_tickets }}
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Total Amount:</strong><br>
+                                        <span class="h5 text-warning">${{ "%.2f"|format(booking.total_amount) }}</span>
+                                    </p>
+                                    <p class="text-muted small">
+                                        Booked on {{ booking.booking_date.strftime('%B %d, %Y at %H:%M') if booking.booking_date else 'Unknown date' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="cinema-card">
+            <div class="cinema-info text-center">
+                <h3>No Bookings Found</h3>
+                <p class="text-muted">You haven't made any bookings yet.</p>
+                <a href="{{ url_for('movies') }}" class="btn btn-primary">Browse Movies</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.booking-details {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-details code {
+    display: block;
+    padding: 0.5rem;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 5px;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+}
+
+@media (max-width: 768px) {
+    .booking-details {
+        margin-top: 1.5rem;
+        text-align: left !important;
+    }
+    
+    .text-end {
+        text-align: left !important;
+    }
+}
+</style>
+{% endblock %}
+
