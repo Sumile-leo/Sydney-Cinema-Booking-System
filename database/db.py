@@ -105,3 +105,73 @@ def verify_password(username, password):
     if user[2] == password:  # user[2] is password field
         return user  # Return user data if password matches
     return None
+
+
+# Cinema-related database operations
+def get_all_cinemas():
+    """Get all cinemas"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT cinema_id, cinema_name, address, suburb, postcode, phone, email, facilities, created_at, updated_at, is_active FROM cinemas ORDER BY cinema_name"
+        )
+        cinemas = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return cinemas
+    except Exception as e:
+        print(f"Error getting cinemas: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_cinema_by_id(cinema_id):
+    """Get cinema by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT cinema_id, cinema_name, address, suburb, postcode, phone, email, facilities, created_at, updated_at, is_active FROM cinemas WHERE cinema_id = %s",
+            (cinema_id,)
+        )
+        cinema = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return cinema
+    except Exception as e:
+        print(f"Error getting cinema: {e}")
+        if conn:
+            conn.close()
+        return None
+
+
+def create_cinema(cinema_name, address, suburb, postcode, phone, email, facilities, is_active=True):
+    """Create a new cinema"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """INSERT INTO cinemas (cinema_name, address, suburb, postcode, phone, email, facilities, is_active)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+            (cinema_name, address, suburb, postcode, phone, email, facilities, is_active)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error creating cinema: {e}")
+        if conn:
+            conn.close()
+        return False

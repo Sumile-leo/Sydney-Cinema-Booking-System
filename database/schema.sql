@@ -14,3 +14,18 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Cinemas table
+CREATE TABLE IF NOT EXISTS cinemas (
+    cinema_id SERIAL PRIMARY KEY,
+    cinema_name VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    suburb VARCHAR(50) NOT NULL,
+    postcode VARCHAR(10) NOT NULL,
+    phone VARCHAR(20),
+    email VARCHAR(100),
+    facilities TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
