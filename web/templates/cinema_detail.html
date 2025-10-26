@@ -3,86 +3,56 @@
 {% block title %}{{ cinema.cinema_name }} - Cinema Details{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-dark rounded px-3 py-2">
-            <li class="breadcrumb-item"><a href="/" class="text-warning text-decoration-none">Home</a></li>
-            <li class="breadcrumb-item"><a href="/cinemas" class="text-warning text-decoration-none">Cinemas</a></li>
-            <li class="breadcrumb-item active text-white">{{ cinema.cinema_name }}</li>
-        </ol>
-    </nav>
-    
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="cinema-detail-card">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-start mb-4">
-                            <h1 class="text-white fw-bold mb-0" style="font-size: 2rem;">{{ cinema.cinema_name }}</h1>
-                            {% if cinema.is_active %}
-                            <span class="badge bg-success px-3 py-2 fs-6">Open</span>
-                            {% else %}
-                            <span class="badge bg-danger px-3 py-2 fs-6">Closed</span>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="info-section mb-4 text-center">
-                            <h5 class="section-title mb-3">
-                                <i class="fas fa-map-marker-alt me-2 text-warning"></i>Location
-                            </h5>
-                            <p class="detail-text mb-2">{{ cinema.address }}</p>
-                            <p class="detail-text mb-0">
-                                {{ cinema.suburb }}, NSW {{ cinema.postcode }}
-                            </p>
-                        </div>
-                        
+<div class="cinemas-section">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-dark rounded px-3 py-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-warning text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('cinemas') }}" class="text-warning text-decoration-none">Cinemas</a></li>
+                <li class="breadcrumb-item active text-white">{{ cinema.cinema_name }}</li>
+            </ol>
+        </nav>
+
+        <h2 class="section-title mb-4">{{ cinema.cinema_name }}</h2>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cinema-card">
+                    <div class="cinema-image">
+                        <div class="cinema-placeholder">🎭</div>
+                    </div>
+                    <div class="cinema-info">
+                        <h3>{{ cinema.cinema_name }}</h3>
+                        <p class="cinema-location">
+                            📍 {{ cinema.address }}, {{ cinema.suburb }} NSW {{ cinema.postcode }}
+                        </p>
                         {% if cinema.phone %}
-                        <div class="info-section mb-4 text-center">
-                            <h5 class="section-title mb-3">
-                                <i class="fas fa-phone me-2 text-warning"></i>Contact
-                            </h5>
-                            <p class="detail-text mb-2">{{ cinema.phone }}</p>
-                            {% if cinema.email %}
-                            <p class="detail-text mb-0">{{ cinema.email }}</p>
-                            {% endif %}
-                        </div>
+                        <p class="cinema-detail">📞 {{ cinema.phone }}</p>
                         {% endif %}
-                        
+                        {% if cinema.email %}
+                        <p class="cinema-detail">✉️ {{ cinema.email }}</p>
+                        {% endif %}
                         {% if cinema.facilities %}
-                        <div class="info-section mb-4 text-center">
-                            <h5 class="section-title mb-3">
-                                <i class="fas fa-star me-2 text-warning"></i>Facilities
-                            </h5>
-                            <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                {% for facility in cinema.facilities.split(', ') %}
-                                <span class="badge bg-warning text-dark px-3 py-2">{{ facility }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
+                        <p class="cinema-features">{{ cinema.facilities }}</p>
+                        {% endif %}
+                        {% if not cinema.is_active %}
+                        <p style="color: #ff6b6b; font-weight: bold; margin-top: 1rem;">⚠️ Currently Closed</p>
                         {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="col-lg-4">
-            <div class="action-card {% if cinema.is_active %}active-card{% else %}closed-card{% endif %}">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-body text-center p-4">
+            
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="cinema-card">
+                    <div class="cinema-info text-center">
                         {% if cinema.is_active %}
-                        <i class="fas fa-film fa-4x text-warning mb-3"></i>
-                        <h5 class="text-white mb-3 fw-bold">View Screenings</h5>
-                        <p class="text-white-50 mb-4">Check available movie screenings at this cinema</p>
-                        <a href="/screenings?cinema={{ cinema.cinema_id }}" class="btn btn-warning btn-lg w-100 fw-bold">
-                            <i class="fas fa-calendar-alt me-2"></i>View Screenings
-                        </a>
+                        <h4 class="mb-3">View Screenings</h4>
+                        <p class="mb-4">Check available movie screenings at this cinema</p>
+                        <a href="{{ url_for('screenings') }}" class="btn btn-primary btn-lg w-100">View Screenings</a>
                         {% else %}
-                        <i class="fas fa-clock fa-4x text-danger mb-3"></i>
-                        <h5 class="text-white mb-3 fw-bold">Back Soon</h5>
-                        <p class="text-white-50 mb-4">This cinema is currently closed. Please check back later.</p>
-                        <button class="btn btn-danger btn-lg w-100 fw-bold" disabled>
-                            <i class="fas fa-exclamation-circle me-2"></i>Temporarily Closed
-                        </button>
+                        <h4 class="mb-3">Back Soon</h4>
+                        <p class="mb-4">This cinema is currently closed. Please check back later.</p>
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Temporarily Closed</button>
                         {% endif %}
                     </div>
                 </div>
@@ -90,88 +60,4 @@
         </div>
     </div>
 </div>
-
-<style>
-.cinema-detail-card {
-    transition: transform 0.3s ease;
-}
-
-.cinema-detail-card:hover {
-    transform: translateY(-5px);
-}
-
-.cinema-detail-card .card {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-}
-
-.action-card.active-card .card {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-}
-
-.action-card.closed-card .card {
-    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%) !important;
-}
-
-h1 {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    color: #ffffff !important;
-}
-
-.section-title {
-    color: #ffc107 !important;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.detail-text {
-    color: #ffffff !important;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.badge.bg-success, .badge.bg-danger {
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.badge.bg-warning {
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
-}
-
-.btn-warning {
-    background-color: #ffc107 !important;
-    border: none;
-    color: #000 !important;
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
-    transition: all 0.3s ease;
-}
-
-.btn-warning:hover {
-    background-color: #ffb300 !important;
-    transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(255, 193, 7, 0.6);
-}
-
-.btn-danger:disabled {
-    opacity: 0.8;
-    cursor: not-allowed;
-}
-
-.breadcrumb {
-    background-color: #1a1a1a !important;
-}
-
-.breadcrumb-item a:hover {
-    color: #ffb300 !important;
-}
-
-.card {
-    border-radius: 12px !important;
-}
-
-i.fa-film, i.fa-clock {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-</style>
 {% endblock %}

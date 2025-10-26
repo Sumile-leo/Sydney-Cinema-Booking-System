@@ -3,169 +3,37 @@
 {% block title %}Movies - Sydney Cinema{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <!-- Page Header with Animation -->
-    <div class="text-center mb-5">
-        <div class="hero-header" style="background: linear-gradient(135deg, rgba(30, 60, 114, 0.9) 0%, rgba(42, 82, 152, 0.9) 100%); padding: 3rem 2rem; border-radius: 20px; margin-bottom: 3rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-            <h1 class="display-3 fw-bold text-white mb-3 animate-slide-in" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.5); animation: fadeInDown 1s ease-out;">
-                <i class="bi bi-film me-3" style="color: #ffd700; animation: pulse 2s infinite;"></i>Now Showing
-            </h1>
-            <p class="lead text-white animate-fade-in" style="animation-delay: 0.3s;">Discover our latest releases and upcoming features</p>
-        </div>
-    </div>
-
-    <!-- Movies Grid -->
-    {% if movies %}
-    <div class="row g-4">
-        {% for movie in movies %}
-        {% if movie.is_active %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card movie-card h-100" style="border: none; border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
-                <!-- Shine Effect -->
-                <div class="shine-effect" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s; z-index: 1; pointer-events: none;"></div>
-                
-                <div class="card-body p-4 position-relative" style="z-index: 2;">
-                    <!-- Movie Badge -->
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge" style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; padding: 6px 12px; font-weight: 600; border-radius: 20px; font-size: 0.9rem;">
-                            {{ movie.genre }}
-                        </span>
+<div class="movies-section">
+    <div class="container">
+        <h2 class="section-title">Now Showing</h2>
+        <div class="movies-grid">
+            {% if movies %}
+                {% for movie in movies %}
+                {% if movie.is_active %}
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div class="poster-placeholder">🎬</div>
                     </div>
-
-                    <!-- Movie Title -->
-                    <h3 class="card-title text-white mb-3" style="font-size: 1.5rem; font-weight: 700; line-height: 1.3; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                        {{ movie.title }}
-                    </h3>
-
-                    <!-- Movie Info -->
-                    <div class="movie-info mb-3">
-                        {% if movie.director %}
-                        <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
-                            <i class="bi bi-pencil-fill me-2" style="color: #ffd700;"></i>
-                            <strong>Director:</strong> {{ movie.director }}
+                    <div class="movie-info">
+                        <h3>{{ movie.title }}</h3>
+                        <p class="movie-genre">
+                            {% if movie.genre %}{{ movie.genre }}{% endif %}
+                            {% if movie.genre and movie.duration_minutes %} • {% endif %}
+                            {% if movie.duration_minutes %}{{ movie.duration_minutes }} min{% endif %}
+                            {% if movie.language %} • {{ movie.language|replace('/', ', ') }}{% endif %}
                         </p>
+                        {% if movie.description %}
+                        <p class="movie-description">{{ movie.description }}</p>
                         {% endif %}
-                        {% if movie.duration_minutes %}
-                        <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
-                            <i class="bi bi-clock-fill me-2" style="color: #ffd700;"></i>
-                            <strong>Duration:</strong> {{ movie.duration_minutes }} min
-                        </p>
-                        {% endif %}
-                        {% if movie.language %}
-                        <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
-                            <i class="bi bi-translate me-2" style="color: #ffd700;"></i>
-                            <strong>Language:</strong> {{ movie.language|replace('/', ', ') }}
-                        </p>
-                        {% endif %}
-                        {% if movie.subtitles %}
-                        <p class="text-white-50 mb-2" style="font-size: 0.95rem;">
-                            <i class="bi bi-subtitles me-2" style="color: #ffd700;"></i>
-                            <strong>Subtitles:</strong> {{ movie.subtitles }}
-                        </p>
-                        {% endif %}
+                        <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}" class="btn btn-primary">View Details</a>
                     </div>
-
-                    <!-- Movie Description -->
-                    {% if movie.description %}
-                    <p class="text-white-50 mb-4" style="font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                        {{ movie.description }}
-                    </p>
-                    {% endif %}
-
-                    <!-- View Details Button -->
-                    <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}" 
-                       class="btn w-100" 
-                       style="background: linear-gradient(135deg, #ffd700, #ffed4e); border: none; color: #000; font-weight: 700; padding: 12px 24px; border-radius: 10px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">
-                        <i class="bi bi-ticket-detailed me-2"></i>View Details
-                    </a>
                 </div>
-            </div>
+                {% endif %}
+                {% endfor %}
+            {% else %}
+                <p>No movies available at the moment.</p>
+            {% endif %}
         </div>
-
-        <style>
-        .movie-card {
-            cursor: pointer;
-        }
-        
-        .movie-card:hover {
-            transform: translateY(-15px) scale(1.02) !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
-        }
-        
-        .movie-card:hover .shine-effect {
-            left: 100% !important;
-        }
-        
-        .btn {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.7) !important;
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-        }
-        
-        .animate-slide-in {
-            animation: fadeInDown 1s ease-out;
-        }
-        
-        .animate-fade-in {
-            animation: fadeIn 1s ease-out;
-        }
-        </style>
-        {% endif %}
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info text-center" role="alert">
-        <i class="bi bi-info-circle me-2"></i>
-        No movies available at the moment.
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

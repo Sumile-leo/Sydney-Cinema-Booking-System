@@ -3,266 +3,69 @@
 {% block title %}{{ movie.title }} - Sydney Cinema{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-white-50">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('movies') }}" class="text-white-50">Movies</a></li>
-            <li class="breadcrumb-item active text-white" aria-current="page">{{ movie.title }}</li>
-        </ol>
-    </nav>
+<div class="movies-section">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-dark rounded px-3 py-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-warning text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('movies') }}" class="text-warning text-decoration-none">Movies</a></li>
+                <li class="breadcrumb-item active text-white">{{ movie.title }}</li>
+            </ol>
+        </nav>
 
-    <div class="row">
-        <!-- Left Side: Movie Poster & Info -->
-        <div class="col-lg-8">
-            <div class="card border-0 mb-4 movie-detail-card" style="background: linear-gradient(135deg, rgba(30, 60, 114, 0.95) 0%, rgba(42, 82, 152, 0.95) 100%); border-radius: 25px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.6); transition: all 0.4s ease; position: relative;">
-                <!-- Animated Background -->
-                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.1), transparent); pointer-events: none;"></div>
-                
-                <div class="card-body p-5" style="position: relative; z-index: 1;">
-                    <!-- Movie Title with Animation -->
-                    <h1 class="display-4 fw-bold text-white mb-4 animate-title" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.7); animation: slideInLeft 0.8s ease-out;">
-                        {{ movie.title }}
-                    </h1>
-
-                    <!-- Movie Badges -->
-                    <div class="mb-4">
-                        {% if movie.genre %}
-                        <span class="badge me-2" style="background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; padding: 8px 16px; font-weight: 600; border-radius: 20px; font-size: 1rem;">
-                            <i class="bi bi-film me-1"></i>{{ movie.genre }}
-                        </span>
-                        {% endif %}
-                        {% if movie.is_active %}
-                        <span class="badge bg-success">Now Showing</span>
-                        {% else %}
-                        <span class="badge bg-secondary">No Longer Available</span>
-                        {% endif %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div class="poster-placeholder">🎬</div>
                     </div>
-
-                    <!-- Movie Info Grid -->
-                    <div class="row g-4 mb-4">
-                        {% if movie.director %}
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-person-fill" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
-                                <div>
-                                    <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Director</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.director }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if movie.duration_minutes %}
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-clock-fill" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
-                                <div>
-                                    <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Duration</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.duration_minutes }} min</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if movie.release_date %}
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-calendar-event-fill" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
-                                <div>
-                                    <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Release Date</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.release_date.strftime('%B %d, %Y') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if movie.language %}
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-translate" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
-                                <div>
-                                    <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Language</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.language|replace('/', ', ') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if movie.subtitles %}
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-subtitles" style="font-size: 1.5rem; color: #ffd700; margin-right: 12px;"></i>
-                                <div>
-                                    <p class="text-white-50 mb-0" style="font-size: 0.9rem;">Subtitles</p>
-                                    <p class="text-white mb-0 fw-bold">{{ movie.subtitles }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Cast -->
-                    {% if movie.cast %}
-                    <div class="mb-4">
-                        <h5 class="text-white mb-3" style="color: #ffd700 !important;">
-                            <i class="bi bi-people-fill me-2"></i>Cast
-                        </h5>
-                        <p class="text-white">{{ movie.cast }}</p>
-                    </div>
-                    {% endif %}
-
-                    <!-- Description -->
-                    {% if movie.description %}
-                    <div class="mb-4">
-                        <h5 class="text-white mb-3" style="color: #ffd700 !important;">
-                            <i class="bi bi-file-text-fill me-2"></i>Synopsis
-                        </h5>
-                        <p class="text-white-50" style="line-height: 1.8; font-size: 1.05rem;">
-                            {{ movie.description }}
+                    <div class="movie-info">
+                        <h3>{{ movie.title }}</h3>
+                        <p class="movie-genre">
+                            {% if movie.genre %}{{ movie.genre }}{% endif %}
+                            {% if movie.genre and movie.duration_minutes %} • {% endif %}
+                            {% if movie.duration_minutes %}{{ movie.duration_minutes }} min{% endif %}
+                            {% if movie.language %} • {{ movie.language|replace('/', ', ') }}{% endif %}
                         </p>
+                        {% if movie.description %}
+                        <p class="movie-description">{{ movie.description }}</p>
+                        {% endif %}
+                        
+                        <div class="movie-details mt-3">
+                            {% if movie.director %}
+                            <p><strong>Director:</strong> {{ movie.director }}</p>
+                            {% endif %}
+                            {% if movie.release_date %}
+                            <p><strong>Release Date:</strong> {{ movie.release_date.strftime('%B %d, %Y') }}</p>
+                            {% endif %}
+                            {% if movie.subtitles %}
+                            <p><strong>Subtitles:</strong> {{ movie.subtitles }}</p>
+                            {% endif %}
+                            {% if movie.cast %}
+                            <p><strong>Cast:</strong> {{ movie.cast }}</p>
+                            {% endif %}
+                        </div>
                     </div>
-                    {% endif %}
                 </div>
             </div>
-        </div>
-
-        <!-- Right Side: Action Card -->
-        <div class="col-lg-4">
-            <div class="card border-0 action-card" style="position: sticky; top: 20px; background: linear-gradient(135deg, rgba(30, 30, 30, 0.98) 0%, rgba(45, 45, 45, 0.98) 100%); border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.7); transition: all 0.4s ease; backdrop-filter: blur(10px);">
-                <div class="card-body text-center p-5">
-                    <div class="mb-4">
-                        <i class="bi bi-ticket-detailed" style="font-size: 4rem; color: #ffd700;"></i>
+            
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="movie-card">
+                    <div class="movie-info text-center">
+                        {% if movie.is_active %}
+                        <h4 class="mb-3">Book Your Tickets</h4>
+                        <p class="mb-4">View available screenings for this movie</p>
+                        <a href="{{ url_for('screenings') }}" class="btn btn-primary btn-lg w-100">View Screenings</a>
+                        {% else %}
+                        <h4 class="mb-3">Not Available</h4>
+                        <p class="mb-4">This movie is no longer available for booking.</p>
+                        <button class="btn btn-secondary btn-lg w-100" disabled>No Longer Available</button>
+                        {% endif %}
+                        <a href="{{ url_for('movies') }}" class="btn btn-outline btn-lg w-100 mt-3">Back to Movies</a>
                     </div>
-                    <h4 class="text-white mb-4">Book Your Tickets</h4>
-                    
-                    {% if movie.is_active %}
-                    <a href="{{ url_for('screenings') }}" 
-                       class="btn w-100 mb-3" 
-                       style="background: linear-gradient(135deg, #ffd700, #ffed4e); border: none; color: #000; font-weight: 700; padding: 15px 24px; border-radius: 10px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); font-size: 1.1rem;">
-                        <i class="bi bi-calendar-check me-2"></i>View Screenings
-                    </a>
-                    {% else %}
-                    <div class="alert alert-warning mb-3" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        This movie is no longer available for booking.
-                    </div>
-                    {% endif %}
-
-                    <a href="{{ url_for('movies') }}" class="btn btn-outline-light w-100">
-                        <i class="bi bi-arrow-left me-2"></i>Back to Movies
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.breadcrumb {
-    background-color: transparent;
-}
-
-.breadcrumb-item a {
-    text-decoration: none;
-}
-
-.breadcrumb-item a:hover {
-    color: #ffd700 !important;
-}
-
-.movie-detail-card {
-    animation: fadeInUp 1s ease-out;
-}
-
-.movie-detail-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8) !important;
-}
-
-.action-card {
-    animation: fadeInUp 1s ease-out 0.3s backwards;
-}
-
-.action-card:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.9) !important;
-}
-
-.action-card i {
-    animation: float 3s ease-in-out infinite;
-}
-
-.info-item {
-    transition: all 0.3s ease;
-    padding: 1rem;
-    border-radius: 15px;
-}
-
-.info-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateX(5px);
-}
-
-.btn {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.7) !important;
-}
-
-.animate-title {
-    animation: slideInLeft 0.8s ease-out;
-}
-</style>
 {% endblock %}

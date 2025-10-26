@@ -3,136 +3,33 @@
 {% block title %}Cinemas - Sydney Cinema Booking System{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-white fw-bold">
-            <i class="fas fa-building me-2 text-warning"></i>Our Cinemas
-        </h1>
-        <span class="badge bg-warning text-dark fs-6 px-3 py-2">{{ cinemas|length }} Cinemas</span>
-    </div>
-    
-    {% if cinemas %}
-    <div class="row g-4">
-        {% for cinema in cinemas %}
-        <div class="col-md-6 col-lg-4">
-            <div class="cinema-card">
-                <div class="card h-100 {% if not cinema.is_active %}closed-cinema{% else %}active-cinema{% endif %} border-0">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title text-white fw-bold mb-0" style="font-size: 1.15rem;">
-                                {{ cinema.cinema_name }}
-                            </h5>
-                            {% if not cinema.is_active %}
-                            <span class="badge bg-danger px-3 py-2">Closed</span>
-                            {% else %}
-                            <span class="badge bg-success px-3 py-2">Open</span>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="cinema-info mt-3">
-                            <p class="cinema-detail mb-2">
-                                <i class="fas fa-map-marker-alt me-2 text-primary"></i>
-                                <span>{{ cinema.full_address }}</span>
-                            </p>
-                            
-                            {% if cinema.phone %}
-                            <p class="cinema-detail mb-2">
-                                <i class="fas fa-phone me-2 text-primary"></i>
-                                <span>{{ cinema.phone }}</span>
-                            </p>
-                            {% endif %}
-                            
-                            {% if cinema.facilities %}
-                            <p class="cinema-detail mb-3">
-                                <i class="fas fa-star me-2 text-warning"></i>
-                                <span class="small">{{ cinema.facilities }}</span>
-                            </p>
-                            {% endif %}
-                        </div>
-                        
-                        <a href="/cinema/{{ cinema.cinema_id }}" class="btn btn-warning btn-lg w-100 mt-3 fw-bold">
-                            View Details <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
+<div class="cinemas-section">
+    <div class="container">
+        <h2 class="section-title">Our Cinemas</h2>
+        <div class="cinemas-grid">
+            {% if cinemas %}
+                {% for cinema in cinemas %}
+                <div class="cinema-card">
+                    <div class="cinema-image">
+                        <div class="cinema-placeholder">🎭</div>
+                    </div>
+                    <div class="cinema-info">
+                        <h3>{{ cinema.cinema_name }}</h3>
+                        <p class="cinema-location">📍 {{ cinema.suburb }}</p>
+                        {% if cinema.facilities %}
+                        <p class="cinema-features">{{ cinema.facilities }}</p>
+                        {% endif %}
+                        {% if not cinema.is_active %}
+                        <p class="cinema-status" style="color: #ff6b6b; font-weight: bold;">Currently Closed</p>
+                        {% endif %}
+                        <a href="{{ url_for('cinema_detail', cinema_id=cinema.cinema_id) }}" class="btn btn-outline">View Details</a>
                     </div>
                 </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <p>No cinemas available at the moment.</p>
+            {% endif %}
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info text-center py-5">
-        <i class="fas fa-info-circle me-2"></i>
-        No cinemas found.
-    </div>
-    {% endif %}
 </div>
-
-<style>
-.cinema-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cinema-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(255, 193, 7, 0.3) !important;
-}
-
-.active-cinema {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-}
-
-.closed-cinema {
-    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%) !important;
-    opacity: 0.8;
-}
-
-.card-title {
-    color: #ffffff !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.cinema-detail {
-    color: #ffffff !important;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-.cinema-detail span {
-    color: #ffffff !important;
-}
-
-.cinema-detail i {
-    color: #ffc107 !important;
-    width: 20px;
-}
-
-.badge {
-    font-size: 0.8rem;
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.btn-warning {
-    background-color: #ffc107 !important;
-    border: none;
-    color: #000 !important;
-    font-weight: 700;
-    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-warning:hover {
-    background-color: #ffb300 !important;
-    transform: scale(1.02);
-    box-shadow: 0 6px 12px rgba(255, 193, 7, 0.5);
-}
-
-h1 {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.badge.bg-warning {
-    color: #000 !important;
-}
-</style>
 {% endblock %}
