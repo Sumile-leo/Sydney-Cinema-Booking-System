@@ -48,39 +48,25 @@
     <div class="container">
         <h2 class="section-title">Popular Cinemas</h2>
         <div class="cinemas-grid">
-            <div class="cinema-card">
-                <div class="cinema-image">
-                    <div class="cinema-placeholder">🎭</div>
+            {% if cinemas %}
+                {% for cinema in cinemas %}
+                <div class="cinema-card">
+                    <div class="cinema-image">
+                        <div class="cinema-placeholder">🎭</div>
+                    </div>
+                    <div class="cinema-info">
+                        <h3>{{ cinema.cinema_name }}</h3>
+                        <p class="cinema-location">📍 {{ cinema.suburb }}</p>
+                        {% if cinema.facilities %}
+                        <p class="cinema-features">{{ cinema.facilities }}</p>
+                        {% endif %}
+                        <a href="{{ url_for('cinema_detail', cinema_id=cinema.cinema_id) }}" class="btn btn-outline">View Details</a>
+                    </div>
                 </div>
-                <div class="cinema-info">
-                    <h3>Event Cinemas George Street</h3>
-                    <p class="cinema-location">📍 Sydney CBD</p>
-                    <p class="cinema-features">IMAX • Gold Class • VMAX</p>
-                    <a href="/cinema/1" class="btn btn-outline">View Details</a>
-                </div>
-            </div>
-            <div class="cinema-card">
-                <div class="cinema-image">
-                    <div class="cinema-placeholder">🎪</div>
-                </div>
-                <div class="cinema-info">
-                    <h3>Hoyts Broadway</h3>
-                    <p class="cinema-location">📍 Chippendale</p>
-                    <p class="cinema-features">IMAX • Xtremescreen • 8 Screens</p>
-                    <a href="/cinema/2" class="btn btn-outline">View Details</a>
-                </div>
-            </div>
-            <div class="cinema-card">
-                <div class="cinema-image">
-                    <div class="cinema-placeholder">🏖️</div>
-                </div>
-                <div class="cinema-info">
-                    <h3>Village Cinemas Bondi Junction</h3>
-                    <p class="cinema-location">📍 Bondi Junction</p>
-                    <p class="cinema-features">Gold Class • VMAX • 6 Screens</p>
-                    <a href="/cinema/3" class="btn btn-outline">View Details</a>
-                </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <p>No cinemas available at the moment.</p>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -89,39 +75,29 @@
     <div class="container">
         <h2 class="section-title">Now Showing</h2>
         <div class="movies-grid">
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <div class="poster-placeholder">🎬</div>
+            {% if movies %}
+                {% for movie in movies %}
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div class="poster-placeholder">🎬</div>
+                    </div>
+                    <div class="movie-info">
+                        <h3>{{ movie.title }}</h3>
+                        <p class="movie-genre">
+                            {% if movie.genre %}{{ movie.genre }} • {% endif %}
+                            {% if movie.duration_minutes %}{{ movie.duration_minutes }} min{% endif %}
+                            {% if movie.language %} • {{ movie.language|replace('/', ', ') }}{% endif %}
+                        </p>
+                        {% if movie.description %}
+                        <p class="movie-description">{{ movie.description[:100] }}...</p>
+                        {% endif %}
+                        <a href="{{ url_for('movie_detail', movie_id=movie.movie_id) }}" class="btn btn-primary">View Details</a>
+                    </div>
                 </div>
-                <div class="movie-info">
-                    <h3>Avatar: The Way of Water</h3>
-                    <p class="movie-genre">Sci-Fi • 192 min • M</p>
-                    <p class="movie-description">Explore the underwater world of Pandora...</p>
-                    <a href="/movie/1" class="btn btn-primary">Book Now</a>
-                </div>
-            </div>
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <div class="poster-placeholder">✈️</div>
-                </div>
-                <div class="movie-info">
-                    <h3>Top Gun: Maverick</h3>
-                    <p class="movie-genre">Action • 131 min • M</p>
-                    <p class="movie-description">Tom Cruise returns to the iconic role...</p>
-                    <a href="/movie/2" class="btn btn-primary">Book Now</a>
-                </div>
-            </div>
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <div class="poster-placeholder">🦸</div>
-                </div>
-                <div class="movie-info">
-                    <h3>Black Panther: Wakanda Forever</h3>
-                    <p class="movie-genre">Action • 161 min • M</p>
-                    <p class="movie-description">Wakanda faces new challenges...</p>
-                    <a href="/movie/3" class="btn btn-primary">Book Now</a>
-                </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <p>No movies available at the moment.</p>
+            {% endif %}
         </div>
     </div>
 </div>
