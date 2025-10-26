@@ -96,3 +96,31 @@ CREATE TABLE IF NOT EXISTS screenings (
     FOREIGN KEY (cinema_id) REFERENCES cinemas(cinema_id) ON DELETE CASCADE,
     FOREIGN KEY (hall_id) REFERENCES cinema_halls(hall_id) ON DELETE CASCADE
 );
+
+-- Bookings table
+CREATE TABLE IF NOT EXISTS bookings (
+    booking_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    screening_id INTEGER NOT NULL,
+    booking_number VARCHAR(20) UNIQUE NOT NULL,
+    num_tickets INTEGER NOT NULL,
+    total_amount NUMERIC(10,2) NOT NULL,
+    booking_status VARCHAR(20) DEFAULT 'pending',
+    payment_status VARCHAR(20) DEFAULT 'unpaid',
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (screening_id) REFERENCES screenings(screening_id) ON DELETE CASCADE
+);
+
+-- Seat Bookings table (many-to-many relationship)
+CREATE TABLE IF NOT EXISTS seat_bookings (
+    seat_booking_id SERIAL PRIMARY KEY,
+    booking_id INTEGER NOT NULL,
+    seat_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (seat_id) REFERENCES seats(seat_id) ON DELETE CASCADE,
+    UNIQUE(booking_id, seat_id)
+);

@@ -525,3 +525,84 @@ def get_screening_by_id(screening_id):
         if conn:
             conn.close()
         return None
+
+
+# Booking-related database operations
+def get_bookings_by_user(user_id):
+    """Get all bookings for a user"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT booking_id, user_id, screening_id, booking_number,
+                      num_tickets, total_amount, booking_status, payment_status,
+                      booking_date, created_at, updated_at
+               FROM bookings WHERE user_id = %s 
+               ORDER BY booking_date DESC""",
+            (user_id,)
+        )
+        bookings = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return bookings
+    except Exception as e:
+        print(f"Error getting bookings for user: {e}")
+        if conn:
+            conn.close()
+        return []
+
+
+def get_booking_by_id(booking_id):
+    """Get booking by ID"""
+    conn = get_db_connection()
+    if not conn:
+        return None
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT booking_id, user_id, screening_id, booking_number,
+                      num_tickets, total_amount, booking_status, payment_status,
+                      booking_date, created_at, updated_at
+               FROM bookings WHERE booking_id = %s""",
+            (booking_id,)
+        )
+        booking = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return booking
+    except Exception as e:
+        print(f"Error getting booking: {e}")
+        if conn:
+            conn.close()
+        return None
+
+
+def get_seats_by_booking(booking_id):
+    """Get all seats for a booking"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """SELECT seat_bookings.seat_id, seats.row_number, seats.seat_number
+               FROM seat_bookings
+               JOIN seats ON seat_bookings.seat_id = seats.seat_id
+               WHERE seat_bookings.booking_id = %s
+               ORDER BY seats.row_number, seats.seat_number""",
+            (booking_id,)
+        )
+        seats = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return seats
+    except Exception as e:
+        print(f"Error getting seats for booking: {e}")
+        if conn:
+            conn.close()
+        return []
