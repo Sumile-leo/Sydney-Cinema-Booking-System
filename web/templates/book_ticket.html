@@ -96,34 +96,32 @@
                     </div>
                     
                     <!-- Seat Map -->
-                    <div class="seat-map">
-                        <div class="row-seats" id="seat-map-container">
-                            {% set rows = {} %}
-                            {% for seat in seats %}
-                                {% if seat.row_number not in rows %}
-                                    {% set _ = rows.update({seat.row_number: []}) %}
-                                {% endif %}
-                                {% set _ = rows[seat.row_number].append(seat) %}
-                            {% endfor %}
-                            
-                            {% for row_num in rows.keys() | sort %}
-                            <div class="seat-row mb-2">
-                                <div class="row-label">{{ row_num }}</div>
-                                <div class="row-seats">
-                                    {% for seat in rows[row_num] | sort(attribute='seat_number') %}
-                                    <button class="seat-btn {% if seat.seat_id in booked_seats %}seat-booked{% elif not seat.is_active %}seat-inactive{% else %}seat-available{% endif %}" 
-                                            data-seat-id="{{ seat.seat_id }}"
-                                            data-row="{{ seat.row_number }}"
-                                            data-seat="{{ seat.seat_number }}"
-                                            data-seat-type="{{ seat.seat_type }}"
-                                            {% if seat.seat_id in booked_seats or not seat.is_active %}disabled{% endif %}>
-                                        {{ seat.seat_number }}
-                                    </button>
-                                    {% endfor %}
-                                </div>
+                    <div class="seat-map" id="seat-map-container">
+                        {% set rows = {} %}
+                        {% for seat in seats %}
+                            {% if seat.row_number not in rows %}
+                                {% set _ = rows.update({seat.row_number: []}) %}
+                            {% endif %}
+                            {% set _ = rows[seat.row_number].append(seat) %}
+                        {% endfor %}
+                        
+                        {% for row_num in rows.keys() | sort %}
+                        <div class="seat-row mb-2">
+                            <div class="row-label">{{ row_num }}</div>
+                            <div class="row-seats">
+                                {% for seat in rows[row_num] | sort(attribute='seat_number') %}
+                                <button class="seat-btn {% if seat.seat_id in booked_seats %}seat-booked{% elif not seat.is_active %}seat-inactive{% else %}seat-available{% endif %}" 
+                                        data-seat-id="{{ seat.seat_id }}"
+                                        data-row="{{ seat.row_number }}"
+                                        data-seat="{{ seat.seat_number }}"
+                                        data-seat-type="{{ seat.seat_type }}"
+                                        {% if seat.seat_id in booked_seats or not seat.is_active %}disabled{% endif %}>
+                                    {{ seat.seat_number }}
+                                </button>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
                     
                     <!-- Legend -->
